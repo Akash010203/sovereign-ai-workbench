@@ -1,0 +1,12 @@
+{
+  "source_file": "data/raw/synthetic_demo_corpus.txt",
+  "source": "synthetic - authored for this project (SIH 2026 demo)",
+  "license": "CC0-1.0 (project-owned synthetic text)",
+  "sha256": "31948fdabceabbe6fa91cad68d9c01e1726cdfed61168c985d836aa0f6113ae0",
+  "processing_notes": "Lines normalized (whitespace collapsed), filtered to 8-500 characters, pooled with any other raw files, then split into train/validation with a 10% validation ratio.",
+  "stage_counts": {
+    "raw_lines": 73,
+    "cleaned_lines": 73,
+    "filtered_lines": 73
+  }
+}

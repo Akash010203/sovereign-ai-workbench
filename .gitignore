@@ -10,20 +10,14 @@ env/
 venv/
 
 # ── Large data files — rebuild with scripts/prepare_*.py ─────────────────────
-data/processed/*.txt
-data/processed/*.jsonl
-data/cleaned/*.txt
+data/processed/openorca_*
 data/raw/*.txt         # exclude big downloads
 !data/raw/synthetic_demo_corpus.txt   # keep — small, project-authored demo corpus
-data/metadata/*.json
 data/rag_index.json
 
 # ── Model checkpoints — rebuild with scripts/train_model.py ──────────────────
 checkpoints/*.pt
 checkpoints/finetuned/
-
-# ── Tokenizer vocab — rebuild with scripts/train_tokenizer.py ────────────────
-tokenizer/vocab/*.json
 
 # ── Application runtime data ─────────────────────────────────────────────────
 data/sovereign_ai.db

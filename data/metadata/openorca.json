@@ -1,0 +1,11 @@
+{
+  "source": "Open-Orca/OpenOrca",
+  "license": "MIT (see https://huggingface.co/datasets/Open-Orca/OpenOrca)",
+  "rows_requested": 90000,
+  "rows_seen": 90001,
+  "rows_kept": 90000,
+  "filter_technical": false,
+  "pretrain_file": "D:\\sovereign-ai-workbench\\data\\processed\\openorca_pretrain.txt",
+  "instruct_file": "D:\\sovereign-ai-workbench\\data\\processed\\openorca_instruct.jsonl",
+  "honesty_note": "These 5,000 examples are from the OpenOrca dataset by Microsoft Research. They are used for fine-tuning / pretraining data only. The custom MiniLLM model architecture remains our original work. Data source and license are documented here per the project honesty contract."
+}
