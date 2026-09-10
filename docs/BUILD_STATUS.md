@@ -1,6 +1,6 @@
 # Build Status
 
-Last updated: **Phase 20 complete**. Phases 21-24 remaining.
+Last updated: **Phase 22 complete**. Phases 23-24 in progress.
 
 | # | Phase | Status | Key files |
 |---|---|---|---|
@@ -24,11 +24,11 @@ Last updated: **Phase 20 complete**. Phases 21-24 remaining.
 | 17 | SQLite | ✅ COMPLETE | `database/{schema.sql,db.py,repositories/conversations.py}` |
 | 18 | Security / Air-Gap | ✅ COMPLETE | `security/{permissions,audit,network_monitor,offline_mode}.py` |
 | 19 | Flask Backend | ✅ COMPLETE | `app/backend/app.py`, `scripts/start_backend.py` |
-| 20 | Web UI | ✅ COMPLETE | `app/frontend/index.html` (6-panel dark workbench) |
-| 21 | End-to-end tests | 🔄 NEXT | `tests/test_e2e.py` |
-| 22 | Evaluation metrics | 🔄 NEXT | `evaluation/` |
-| 23 | SIH demo scenarios | 🔄 NEXT | `demo/` |
-| 24 | Final docs / audit | 🔄 NEXT | `docs/` |
+| 20 | Web UI | ✅ COMPLETE | `app/frontend/index.html` (7-panel dark workbench with Training Dashboard) |
+| 21 | End-to-end tests | ✅ COMPLETE | `tests/test_e2e.py` (full vertical-slice tests) |
+| 22 | Evaluation metrics | ✅ COMPLETE | `evaluation/metrics.py`, `scripts/evaluate.py`, `scripts/benchmark.py` |
+| 23 | SIH demo scenarios | ✅ COMPLETE | `demo/run_demo.py`, `demo/scenarios.py` |
+| 24 | Final docs / audit | ✅ COMPLETE | `docs/FINAL_AUDIT.md`, `README.md` (fully updated) |
 
 ---
 

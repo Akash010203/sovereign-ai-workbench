@@ -44,8 +44,14 @@ log = logging.getLogger(__name__)
 
 
 def _cosine(a: list[float], b: list[float]) -> float:
-    """Cosine similarity between two pre-normalized vectors."""
-    return sum(x * y for x, y in zip(a, b))
+    """Cosine similarity, with an explicit guard for incompatible indices."""
+    if len(a) != len(b):
+        raise ValueError(f"Embedding dimension mismatch: query={len(a)}, record={len(b)}")
+    a_norm = math.sqrt(sum(x * x for x in a))
+    b_norm = math.sqrt(sum(y * y for y in b))
+    if not a_norm or not b_norm:
+        return 0.0
+    return sum(x * y for x, y in zip(a, b)) / (a_norm * b_norm)
 
 
 class LocalVectorIndex:
@@ -101,7 +107,11 @@ class LocalVectorIndex:
         for record in self._store.values():
             if source_filter and record["source"] != source_filter:
                 continue
-            score = _cosine(query_embedding, record["embedding"])
+            try:
+                score = _cosine(query_embedding, record["embedding"])
+            except ValueError as exc:
+                log.warning("Skipping incompatible RAG record %s: %s", record["chunk_id"], exc)
+                continue
             candidates.append((score, record))
 
         candidates.sort(key=lambda x: x[0], reverse=True)

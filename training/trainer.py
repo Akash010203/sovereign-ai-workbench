@@ -59,7 +59,6 @@ from typing import Optional
 
 import torch
 import torch.nn as nn
-from torch.cuda.amp import GradScaler
 from torch.utils.data import DataLoader
 
 from models.custom_minilm.config import MiniLLMConfig
@@ -123,13 +122,17 @@ class Trainer:
         train_cfg: TrainingConfig,
         tokenizer,
         resume_from: Optional[str | Path] = None,
+        device_override: Optional[torch.device] = None,
     ) -> None:
         self.model_cfg  = model_cfg
         self.train_cfg  = train_cfg
         self.tokenizer  = tokenizer
 
         # ── Device ────────────────────────────────────────────────────
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        if device_override is not None:
+            self.device = device_override
+        else:
+            self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         log.info("Training device: %s", self.device)
 
         # ── Model ─────────────────────────────────────────────────────
@@ -167,7 +170,7 @@ class Trainer:
 
         # ── Mixed precision ────────────────────────────────────────────
         amp_enabled = train_cfg.use_amp and self.device.type == "cuda"
-        self.scaler  = GradScaler(enabled=amp_enabled)
+        self.scaler = torch.amp.GradScaler(self.device.type, enabled=amp_enabled)
         # bfloat16 is preferred on Ampere+ (RTX 30xx / 40xx); falls back to float16
         self.amp_dtype = (
             torch.bfloat16
@@ -180,6 +183,7 @@ class Trainer:
         # ── State ─────────────────────────────────────────────────────
         self.global_step: int = 0
         self.best_val_loss: float = float("inf")
+        self.best_checkpoint: Optional[Path] = None
 
         # ── Directories ───────────────────────────────────────────────
         self.ckpt_dir = Path(train_cfg.checkpoint_dir)
@@ -296,7 +300,9 @@ class Trainer:
                 step_record["val_perplexity"] = round(val_result["val_perplexity"], 3)
                 if last_val_loss < self.best_val_loss:
                     self.best_val_loss = last_val_loss
-                    self._save_checkpoint(step_loss, last_val_loss, tag="best")
+                    self.best_checkpoint = self._save_checkpoint(
+                        step_loss, last_val_loss, tag="best"
+                    )
 
             run_log.append(step_record)
 
@@ -305,7 +311,7 @@ class Trainer:
                 self._save_checkpoint(step_loss, last_val_loss)
 
         # ── Final checkpoint ──────────────────────────────────────────
-        self._save_checkpoint(step_loss, last_val_loss, tag="final")
+        final_checkpoint = self._save_checkpoint(step_loss, last_val_loss, tag="final")
 
         total_elapsed = time.time() - t_start
         log.info(
@@ -326,6 +332,8 @@ class Trainer:
             "device":           str(self.device),
             "total_time_s":     round(total_elapsed, 2),
             "checkpoint_dir":   str(self.ckpt_dir),
+            "final_checkpoint": str(final_checkpoint),
+            "best_checkpoint":  str(self.best_checkpoint or final_checkpoint),
         }
         return summary
 
@@ -366,7 +374,7 @@ class Trainer:
     def _load_checkpoint(self, path: Path) -> None:
         """Load a checkpoint and restore all training state."""
         log.info("Resuming from checkpoint: %s", path)
-        ckpt = torch.load(path, map_location=self.device)
+        ckpt = torch.load(path, map_location=self.device, weights_only=False)
 
         self.model.load_state_dict(ckpt["model_state"])
         self.optimizer.load_state_dict(ckpt["optimizer_state"])

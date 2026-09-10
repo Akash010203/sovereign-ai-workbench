@@ -14,6 +14,11 @@ def setup_logging(name: str, level: int = logging.INFO) -> logging.Logger:
         name: logger name, typically ``__name__`` of the calling module.
         level: logging level (default ``INFO``).
     """
+    # Windows PowerShell sessions can still expose a cp1252 text stream.
+    # Logging must never crash or emit a logging traceback merely because a
+    # message contains a Unicode arrow from a path/status line.
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(errors="backslashreplace")
     settings = get_settings()
     settings.paths.logs.mkdir(parents=True, exist_ok=True)
 

@@ -46,6 +46,10 @@ class ConversationRepository:
             "SELECT * FROM conversations ORDER BY updated_at DESC LIMIT ?", (limit,)
         )
 
+    def delete_conversation(self, conversation_id: str) -> None:
+        self.db.execute("DELETE FROM messages WHERE conversation_id=?", (conversation_id,))
+        self.db.execute("DELETE FROM conversations WHERE id=?", (conversation_id,))
+
 
 class TaskRepository:
     def __init__(self, db: Database) -> None:

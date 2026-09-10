@@ -126,6 +126,7 @@ def create_app(config: dict = None) -> Flask:
         user_input  = data.get("message", "").strip()
         model_name  = data.get("model", "")
         conv_id     = data.get("conversation_id", "")
+        use_rag     = bool(data.get("use_rag", False))
 
         if not user_input:
             return jsonify({"error": "Empty message."}), 400
@@ -134,6 +135,21 @@ def create_app(config: dict = None) -> Flask:
         if not conv_id:
             conv_id = conv_repo.create(title=user_input[:60], model_name=model_name)
         conv_repo.add_message(conv_id, "user", user_input)
+
+        # Retrieve only when explicitly requested. This keeps normal chat
+        # lightweight and lets the client show source provenance separately
+        # instead of trusting a small generative model to format citations.
+        rag_results = []
+        model_input = user_input
+        if use_rag and len(rag_index):
+            rag_results = rag_retriever.retrieve(user_input, top_k=3, min_score=0.10)
+            if rag_results:
+                # The custom MiniLLM has a short context window; retain a
+                # compact, relevant context rather than pushing the question
+                # out of its generation window.
+                model_input = build_rag_prompt(
+                    user_input, rag_results, max_context_chars=240
+                )
 
         # Route and generate
         from router.router import TaskRouter
@@ -144,7 +160,7 @@ def create_app(config: dict = None) -> Flask:
         if decision.model:
             try:
                 reply = decision.model.generate(
-                    user_input,
+                    model_input,
                     GenerationConfig(max_new_tokens=256, temperature=0.8, top_k=40)
                 )
             except Exception as exc:
@@ -162,7 +178,27 @@ def create_app(config: dict = None) -> Flask:
             "model_used":      decision.model_name,
             "category":        decision.category.value,
             "routing_reason":  decision.reason,
+            "rag_used":        bool(rag_results),
+            "sources": [
+                {"source": r.source, "chunk_id": r.chunk_id, "score": r.score}
+                for r in rag_results
+            ],
         })
+
+    # ── Conversations ──────────────────────────────────────────────────
+    @app.route("/api/conversations", methods=["GET"])
+    def list_conversations():
+        return jsonify(conv_repo.list_conversations())
+
+    @app.route("/api/conversations/<conv_id>", methods=["GET"])
+    def get_conversation(conv_id):
+        messages = conv_repo.get_messages(conv_id)
+        return jsonify({"conversation_id": conv_id, "messages": messages})
+
+    @app.route("/api/conversations/<conv_id>", methods=["DELETE"])
+    def delete_conversation(conv_id):
+        conv_repo.delete_conversation(conv_id)
+        return jsonify({"deleted": True, "conversation_id": conv_id})
 
     # ── Agent ─────────────────────────────────────────────────────────
     @app.route("/api/agent", methods=["POST"])

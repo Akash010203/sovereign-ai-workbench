@@ -34,6 +34,7 @@ from __future__ import annotations
 import logging
 import math
 import re
+import hashlib
 from collections import Counter
 from typing import Protocol
 
@@ -62,7 +63,10 @@ class SentenceTransformerEmbedder:
     def __init__(self) -> None:
         try:
             from sentence_transformers import SentenceTransformer
-            self._model = SentenceTransformer(self.MODEL_NAME)
+            # RAG is designed to work in an air-gapped deployment. Do not
+            # unexpectedly download model weights when the service starts;
+            # use a cached local model or the stable hashing fallback.
+            self._model = SentenceTransformer(self.MODEL_NAME, local_files_only=True)
             self._dim   = 384
             log.info("SentenceTransformerEmbedder loaded: %s  dim=%d",
                      self.MODEL_NAME, self._dim)
@@ -121,7 +125,12 @@ class TFIDFEmbedder:
         for tok, count in tf.items():
             idf   = self._idf.get(tok, 1.0)
             score = (count / total) * idf
-            idx   = hash(tok) % self._dim
+            # Python's built-in hash is randomized per process. A persistent
+            # vector index built with it becomes invalid after a restart.
+            idx = int.from_bytes(
+                hashlib.blake2b(tok.encode("utf-8"), digest_size=8).digest(),
+                "big",
+            ) % self._dim
             vec[idx] += score
         # L2 normalize
         norm = math.sqrt(sum(v * v for v in vec)) or 1.0
@@ -143,9 +152,10 @@ def get_embedder() -> "Embedder":
     try:
         embedder = SentenceTransformerEmbedder()
         return embedder
-    except ImportError:
+    except Exception as exc:
         log.warning(
-            "sentence-transformers not available — using TF-IDF fallback. "
-            "Run 'pip install sentence-transformers' for better retrieval quality."
+            "Neural embedder unavailable (%s) — using stable hashing TF-IDF "
+            "fallback. Install and cache sentence-transformers locally for "
+            "better retrieval quality.", exc,
         )
         return TFIDFEmbedder()

@@ -291,7 +291,10 @@ class MiniLLM(nn.Module):
             ─────────────────────────────────────────────
             TOTAL (unique params)   : 4,876,000
         """
-        lines = ["MiniLLM parameter summary", "─" * 48]
+        # Keep CLI output compatible with Windows consoles still configured
+        # for cp1252. Decorative box-drawing characters otherwise abort a
+        # training run before its first optimizer step.
+        lines = ["MiniLLM parameter summary", "-" * 48]
         seen_ids: set[int] = set()
         seen_data: set[int] = set()
 
@@ -309,6 +312,6 @@ class MiniLLM(nn.Module):
             lines.append(f"  {name:<28} : {count:>10,}{tied_note}")
 
         total = self.count_parameters()
-        lines.append("─" * 48)
+        lines.append("-" * 48)
         lines.append(f"  {'TOTAL (unique parameters)':<28} : {total:>10,}")
         return "\n".join(lines)

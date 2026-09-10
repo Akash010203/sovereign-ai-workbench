@@ -182,10 +182,21 @@ class ByteLevelBPETokenizer:
         if add_bos:
             ids.append(self.vocab.special_to_id["<bos>"])
 
-        for piece in PRETOKEN_PATTERN.findall(text):
-            piece_bytes = piece.encode("utf-8")
-            for symbol in self._apply_bpe_to_word(piece_bytes):
-                ids.append(self.vocab.bytes_to_id[symbol])
+        # Treat declared control tokens as indivisible IDs.  This is needed
+        # for instruction tuning: otherwise '<|assistant|>' is expanded into
+        # punctuation and byte tokens, wasting a short model's context.
+        special_tokens = sorted(self.vocab.special_to_id, key=len, reverse=True)
+        pattern = "(" + "|".join(re.escape(token) for token in special_tokens) + ")"
+        for segment in re.split(pattern, text):
+            if not segment:
+                continue
+            if segment in self.vocab.special_to_id:
+                ids.append(self.vocab.special_to_id[segment])
+                continue
+            for piece in PRETOKEN_PATTERN.findall(segment):
+                piece_bytes = piece.encode("utf-8")
+                for symbol in self._apply_bpe_to_word(piece_bytes):
+                    ids.append(self.vocab.bytes_to_id[symbol])
 
         if add_eos:
             ids.append(self.vocab.special_to_id["<eos>"])

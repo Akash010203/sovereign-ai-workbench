@@ -1,8 +1,8 @@
 """
 scripts/train_model.py — Run MiniLLM training experiments.
 
-THREE EXPERIMENTS
------------------
+THREE EXPERIMENT PRESETS + CUSTOM OVERRIDES
+--------------------------------------------
 Experiment 1  (--experiment exp1):  10-50 steps — smoke test.
               Proves the full pipeline (data → tokenizer → model →
               optimizer → checkpoint) executes without errors.
@@ -14,15 +14,24 @@ Experiment 2  (--experiment exp2): 100-500 steps — learning test.
 Experiment 3  (--experiment exp3): configurable longer run for
               the actual demonstration corpus.
 
+Experiment 4  (--experiment exp4): OpenOrca-scale pretraining.
+              Configured for 90K+ rows with larger batch size and
+              gradient accumulation.
+
+Custom overrides: use --max-steps, --batch-size, --lr, --device to
+override any preset's values.
+
 Usage (Windows PowerShell):
     python scripts\\train_model.py --experiment exp1
-    python scripts\\train_model.py --experiment exp2
     python scripts\\train_model.py --experiment exp2 --resume checkpoints/exp1_step0050_final.pt
+    python scripts\\train_model.py --train-file data/processed/openorca_pretrain.txt --max-steps 500 --device cuda
+    python scripts\\train_model.py --experiment exp4 --train-file data/processed/openorca_pretrain.txt --device cuda
 """
 from __future__ import annotations
 
 import argparse
 import logging
+import shutil
 import sys
 from pathlib import Path
 
@@ -71,6 +80,16 @@ EXPERIMENTS = {
         eval_every=100,
         save_every=250,
     ),
+    "exp4": TrainingConfig(
+        experiment_name="exp4_openorca",
+        max_steps=500,
+        batch_size=8,
+        gradient_accumulation_steps=4,
+        learning_rate=2e-4,
+        warmup_steps=50,
+        eval_every=100,
+        save_every=250,
+    ),
 }
 
 
@@ -95,9 +114,35 @@ def parse_args() -> argparse.Namespace:
         help="Path to the training text file.",
     )
     p.add_argument(
-        "--val-file", type=str,
-        default="data/processed/val.txt",
-        help="Path to the validation text file.",
+        "--val-file", type=str, default="",
+        help=("Optional validation text file. If omitted, use openorca_val.txt "
+              "when training on OpenOrca; otherwise use the demo validation set."),
+    )
+    # ── CLI overrides — these override the preset values ────────────────
+    p.add_argument(
+        "--max-steps", type=int, default=None,
+        help="Override the preset's max training steps.",
+    )
+    p.add_argument(
+        "--batch-size", type=int, default=None,
+        help="Override the preset's batch size.",
+    )
+    p.add_argument(
+        "--lr", type=float, default=None,
+        help="Override the preset's learning rate.",
+    )
+    p.add_argument(
+        "--device", type=str, default=None,
+        help="Force device: 'cuda' or 'cpu'. Default: auto-detect.",
+    )
+    p.add_argument(
+        "--model-size", choices=["small", "medium"], default="small",
+        help="Model size preset: 'small' (~5M params) or 'medium' (~12M params).",
+    )
+    p.add_argument(
+        "--export-checkpoint", type=str, default="checkpoints/best.pt",
+        help=("Stable path for the selected validation checkpoint (or final checkpoint "
+              "when validation is unavailable). Set to an empty string to skip export."),
     )
     return p.parse_args()
 
@@ -124,27 +169,46 @@ def main() -> None:
     log.info("Vocab size: %d", tokenizer.vocab_size)
 
     # ── Model config ──────────────────────────────────────────────────
-    model_cfg = MiniLLMConfig(vocab_size=tokenizer.vocab_size)
+    if args.model_size == "medium":
+        model_cfg = MiniLLMConfig.medium(vocab_size=tokenizer.vocab_size)
+    else:
+        model_cfg = MiniLLMConfig.small(vocab_size=tokenizer.vocab_size)
+
     log.info(
-        "Model config: d_model=%d, n_layers=%d, n_heads=%d, d_ff=%d, max_seq_len=%d",
-        model_cfg.d_model, model_cfg.n_layers, model_cfg.n_heads,
+        "Model config (%s): d_model=%d, n_layers=%d, n_heads=%d, d_ff=%d, max_seq_len=%d",
+        args.model_size, model_cfg.d_model, model_cfg.n_layers, model_cfg.n_heads,
         model_cfg.d_ff, model_cfg.max_seq_len,
     )
 
     # ── Training config ───────────────────────────────────────────────
     train_cfg = EXPERIMENTS[args.experiment]
     train_cfg.tokenizer_path = str(vocab_path)
+
+    # Apply CLI overrides
+    if args.max_steps is not None:
+        train_cfg.max_steps = args.max_steps
+    if args.batch_size is not None:
+        train_cfg.batch_size = args.batch_size
+    if args.lr is not None:
+        train_cfg.learning_rate = args.lr
+
     log.info(
-        "Experiment: %s | max_steps=%d | batch=%d × accum=%d",
+        "Experiment: %s | max_steps=%d | batch=%d x accum=%d | lr=%.2e",
         train_cfg.experiment_name, train_cfg.max_steps,
         train_cfg.batch_size, train_cfg.gradient_accumulation_steps,
+        train_cfg.learning_rate,
     )
 
     # ── Datasets ──────────────────────────────────────────────────────
     block_size = model_cfg.max_seq_len
 
     train_path = ROOT / args.train_file
-    val_path   = ROOT / args.val_file
+    if args.val_file:
+        val_path = ROOT / args.val_file
+    elif train_path.name == "openorca_pretrain.txt":
+        val_path = train_path.with_name("openorca_val.txt")
+    else:
+        val_path = ROOT / "data" / "processed" / "val.txt"
 
     if not train_path.exists():
         log.error("Training file not found: %s", train_path)
@@ -174,12 +238,20 @@ def main() -> None:
 
     log.info("Train dataset: %d samples", len(train_ds))
 
+    # ── Device override ───────────────────────────────────────────────
+    import torch
+    if args.device:
+        device_override = torch.device(args.device)
+    else:
+        device_override = None
+
     # ── Trainer ───────────────────────────────────────────────────────
     trainer = Trainer(
         model_cfg=model_cfg,
         train_cfg=train_cfg,
         tokenizer=tokenizer,
         resume_from=args.resume,
+        device_override=device_override,
     )
 
     # ── Print parameter summary ───────────────────────────────────────
@@ -187,6 +259,19 @@ def main() -> None:
 
     # ── Train ─────────────────────────────────────────────────────────
     summary = trainer.fit(train_loader, val_loader)
+
+    # The long-form experiment checkpoint names are useful for provenance, but
+    # callers (the backend and the documented fine-tuning command) need one
+    # stable path. Export the actual best validation state, falling back to the
+    # final state when no validation file was supplied.
+    if args.export_checkpoint:
+        export_path = ROOT / args.export_checkpoint
+        export_path.parent.mkdir(parents=True, exist_ok=True)
+        selected = Path(summary["best_checkpoint"])
+        if selected.resolve() != export_path.resolve():
+            shutil.copy2(selected, export_path)
+        summary["export_checkpoint"] = str(export_path)
+        log.info("Selected checkpoint exported -> %s", export_path)
 
     # ── Final report ──────────────────────────────────────────────────
     print("\n" + "=" * 60)

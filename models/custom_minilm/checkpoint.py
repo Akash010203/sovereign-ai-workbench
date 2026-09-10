@@ -41,14 +41,18 @@ def load_model_from_checkpoint(
         raise FileNotFoundError(f"Checkpoint not found: {path}")
 
     device = torch.device(device) if isinstance(device, str) else device
-    ckpt: dict[str, Any] = torch.load(path, map_location=device)
+    # weights_only=False: we load optimizer state + config dicts, not just weights.
+    # This is a trusted local checkpoint, not an untrusted download.
+    ckpt: dict[str, Any] = torch.load(path, map_location=device, weights_only=False)
 
     # Reconstruct the config from the stored dict
     cfg_dict = ckpt.get("model_config", {})
     model_cfg = MiniLLMConfig(**cfg_dict)
 
     model = MiniLLM(model_cfg)
-    model.load_state_dict(ckpt["model_state"], strict=strict)
+    # Support both Trainer checkpoints ("model_state") and fine-tune checkpoints ("model_state_dict")
+    state_key = "model_state" if "model_state" in ckpt else "model_state_dict"
+    model.load_state_dict(ckpt[state_key], strict=strict)
     model = model.to(device).eval()
 
     meta = {
