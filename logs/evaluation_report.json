@@ -1,0 +1,9 @@
+{
+  "routing": {
+    "accuracy": 1.0,
+    "correct": 20,
+    "total": 20,
+    "errors": [],
+    "label": "Rule-based routing \u2014 NOT neural classification"
+  }
+}

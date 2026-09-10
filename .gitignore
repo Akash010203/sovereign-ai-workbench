@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Virtual environment
+.venv/
+env/
+venv/
+
+# ── Large data files — rebuild with scripts/prepare_*.py ─────────────────────
+data/processed/*.txt
+data/processed/*.jsonl
+data/cleaned/*.txt
+data/raw/*.txt         # exclude big downloads
+!data/raw/synthetic_demo_corpus.txt   # keep — small, project-authored demo corpus
+data/metadata/*.json
+data/rag_index.json
+
+# ── Model checkpoints — rebuild with scripts/train_model.py ──────────────────
+checkpoints/*.pt
+checkpoints/finetuned/
+
+# ── Tokenizer vocab — rebuild with scripts/train_tokenizer.py ────────────────
+tokenizer/vocab/*.json
+
+# ── Application runtime data ─────────────────────────────────────────────────
+data/sovereign_ai.db
+logs/*.log
+logs/*.jsonl
+
+# ── OS / IDE ──────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

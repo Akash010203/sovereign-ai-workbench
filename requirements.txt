@@ -1,0 +1,27 @@
+# ── Phase 0-5: Core ML Foundation ─────────────────────────────────────────────
+torch>=2.2              # PyTorch — custom tensors, autograd, CUDA (model is hand-written)
+numpy>=1.26             # Numerical utilities outside torch
+pytest>=8.0             # Test runner
+
+# ── Phase 6-7: Training Pipeline ──────────────────────────────────────────────
+# (no new deps — uses torch built-ins only)
+
+# ── Phase 10: Tool System ─────────────────────────────────────────────────────
+pdfminer.six            # Local PDF text extraction — no cloud OCR
+openpyxl                # Excel (.xlsx) read/write — no cloud
+python-docx             # Word (.docx) generation — no cloud
+python-pptx             # PowerPoint (.pptx) generation — no cloud
+pytesseract             # Local OCR via Tesseract (install Tesseract binary separately)
+Pillow                  # Image processing for OCR tool
+pdf2image               # PDF page → image for scanned PDF OCR
+
+# ── Phase 12: RAG ─────────────────────────────────────────────────────────────
+sentence-transformers   # Local neural embeddings (all-MiniLM-L6-v2, ~22MB)
+
+# ── Phase 19: Backend ─────────────────────────────────────────────────────────
+flask>=3.0              # Local REST API server — 127.0.0.1 only
+flask-cors              # CORS for the local frontend
+
+# ── Optional: Ollama SDK ───────────────────────────────────────────────────────
+# Ollama itself runs as a separate local process (https://ollama.ai)
+# No pip package needed — we call its REST API via urllib (stdlib)

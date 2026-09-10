@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sovereign-ai-workbench"
+version = "0.1.0"
+description = "Self-hosted, air-gapped AI workbench with a from-scratch educational LLM (SIH 2026, PS: SIH 117)."
+requires-python = ">=3.10"
+readme = "README.md"
+authors = [{ name = "Akash Upadhyay" }]
+
+dependencies = [
+    "torch",
+    "numpy",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["core*", "tokenizer*", "models*"]
+
+# Lets `pytest` (run from the repo root) resolve `import core...`,
+# `import tokenizer...` etc. without needing an editable install or
+# manual PYTHONPATH setup.
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tokenizer/tests", "tests"]
