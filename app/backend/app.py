@@ -70,10 +70,11 @@ def create_app(config: dict = None) -> Flask:
     task_repo = TaskRepository(db)
 
     # Model registry (MiniLLM + Ollama)
-    ckpt_path = config.get(
-        "minilm_checkpoint",
-        str(ROOT / "checkpoints" / "best.pt"),
-    )
+    # Prefer fine-tuned checkpoint; fall back to pretrained
+    _finetuned = ROOT / "checkpoints" / "finetuned" / "finetune_best.pt"
+    _pretrained = ROOT / "checkpoints" / "best.pt"
+    _default_ckpt = str(_finetuned) if _finetuned.exists() else str(_pretrained)
+    ckpt_path = config.get("minilm_checkpoint", _default_ckpt)
     tok_path  = str(ROOT / "tokenizer" / "vocab" / "demo_bpe_vocab.json")
     model_registry = build_default_registry(
         minilm_checkpoint=ckpt_path,
@@ -94,6 +95,16 @@ def create_app(config: dict = None) -> Flask:
         rag_index.load(rag_index_path)
     rag_ingester  = DocumentIngester(rag_index)
     rag_retriever = Retriever(rag_index)
+
+    # ── Global error handler — always return JSON, never HTML ────────
+    from werkzeug.exceptions import HTTPException
+
+    @app.errorhandler(Exception)
+    def handle_any_exception(e):
+        if isinstance(e, HTTPException):
+            return jsonify({"error": e.description}), e.code
+        log.error("Unhandled exception in route: %s", e, exc_info=True)
+        return jsonify({"error": str(e)}), 500
 
     # ── Routes ────────────────────────────────────────────────────────
 

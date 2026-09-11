@@ -1,0 +1,22 @@
+{
+  "experiment_name": "exp1_10m",
+  "description": "Primary sovereign LLM configuration (~10M parameters)",
+  "model_family": "Custom Decoder-Only Transformer",
+  "initialization": "Random Gaussian (From Scratch)",
+  "d_model": 256,
+  "n_layers": 8,
+  "n_heads": 8,
+  "d_ff": 1024,
+  "vocab_size": 8192,
+  "max_seq_len": 512,
+  "activation": "SwiGLU",
+  "norm": "RMSNorm",
+  "positional_embedding": "RoPE",
+  "parameter_count": "~10,200,000",
+  "dataset": "Open-Orca/OpenOrca",
+  "training_steps": 25000,
+  "batch_size": 32,
+  "learning_rate": 3e-4,
+  "weight_decay": 0.01,
+  "warmup_steps": 1000
+}

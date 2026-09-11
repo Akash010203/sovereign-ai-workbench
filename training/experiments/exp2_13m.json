@@ -1,0 +1,22 @@
+{
+  "experiment_name": "exp2_13m",
+  "description": "Experimental scaled configuration (~13.5M parameters)",
+  "model_family": "Custom Decoder-Only Transformer",
+  "initialization": "Random Gaussian (From Scratch)",
+  "d_model": 384,
+  "n_layers": 8,
+  "n_heads": 6,
+  "d_ff": 1536,
+  "vocab_size": 8192,
+  "max_seq_len": 512,
+  "activation": "SwiGLU",
+  "norm": "RMSNorm",
+  "positional_embedding": "RoPE",
+  "parameter_count": "~13,500,000",
+  "dataset": "Open-Orca/OpenOrca",
+  "training_steps": 30000,
+  "batch_size": 16,
+  "learning_rate": 2.5e-4,
+  "weight_decay": 0.01,
+  "warmup_steps": 1200
+}
