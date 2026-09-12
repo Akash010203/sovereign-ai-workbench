@@ -17,14 +17,16 @@ def format_citations(results: list[RetrievalResult]) -> str:
 def build_rag_prompt(
     query: str,
     results: list[RetrievalResult],
-    system: str = "You are a helpful local AI assistant.",
+    system: str = "",
     max_context_chars: int = 2000,
 ) -> str:
     """
-    Build a RAG-augmented prompt:
-        System + Retrieved context + User query
+    Build a RAG-augmented prompt for the small MiniLLM context window.
+
+    Keeps the prefix minimal (no verbose system message) so that the
+    retrieved context + question fit within the model's 128-token limit.
+    Uses the same Q:/A: format that the adapter's instruction prompt uses.
     """
-    from rag.retriever import Retriever
     # Build context string (without needing a Retriever instance)
     parts = []
     total = 0
@@ -34,11 +36,11 @@ def build_rag_prompt(
             break
         parts.append(snippet)
         total += len(snippet)
-    context = "\n\n".join(parts)
+    context = "\n".join(parts)
 
+    # Keep it tight: context block + Q/A marker only
     return (
-        f"{system}\n\n"
-        f"Relevant documents:\n{context}\n\n"
-        f"Question: {query}\n"
-        f"Answer:"
+        f"Context:\n{context}\n\n"
+        f"Q: {query}\n"
+        f"A:"
     )

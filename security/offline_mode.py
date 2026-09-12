@@ -21,11 +21,13 @@ def verify_offline() -> dict:
 
     import json
     from datetime import datetime
+    is_offline = not connectivity["connected"]
     report = {
         "timestamp":         datetime.utcnow().isoformat(),
+        "offline":           is_offline,
         "internet_reachable": connectivity["connected"],
         "tested_hosts":      connectivity["tested_hosts"],
-        "verdict":           connectivity["result"],
+        "verdict":           "OFFLINE" if is_offline else "ONLINE",
     }
 
     # Write proof log

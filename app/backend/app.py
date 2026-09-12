@@ -70,16 +70,26 @@ def create_app(config: dict = None) -> Flask:
     task_repo = TaskRepository(db)
 
     # Model registry (MiniLLM + Ollama)
-    # Prefer fine-tuned checkpoint; fall back to pretrained
-    _finetuned = ROOT / "checkpoints" / "finetuned" / "finetune_best.pt"
+    # Priority: 8k-vocab best → fine-tuned 600-vocab → pretrained 600-vocab
+    _8k_best    = ROOT / "checkpoints" / "best_8k.pt"
+    _finetuned  = ROOT / "checkpoints" / "finetuned" / "finetune_best.pt"
     _pretrained = ROOT / "checkpoints" / "best.pt"
-    _default_ckpt = str(_finetuned) if _finetuned.exists() else str(_pretrained)
+    if _8k_best.exists():
+        _default_ckpt = str(_8k_best)
+        log.info("Using 8k-vocab checkpoint: %s", _default_ckpt)
+    elif _finetuned.exists():
+        _default_ckpt = str(_finetuned)
+        log.info("Using fine-tuned checkpoint: %s", _default_ckpt)
+    else:
+        _default_ckpt = str(_pretrained)
+        log.info("Using pretrained checkpoint: %s", _default_ckpt)
     ckpt_path = config.get("minilm_checkpoint", _default_ckpt)
+    # tokenizer_path is now read from inside the checkpoint automatically
     tok_path  = str(ROOT / "tokenizer" / "vocab" / "demo_bpe_vocab.json")
     model_registry = build_default_registry(
         minilm_checkpoint=ckpt_path,
         tokenizer_path=tok_path,
-        ollama_models=config.get("ollama_models", ["phi3:mini"]),
+        ollama_models=config.get("ollama_models", []),  # empty = no Ollama
     )
 
     # Tool registry
@@ -152,14 +162,16 @@ def create_app(config: dict = None) -> Flask:
         # instead of trusting a small generative model to format citations.
         rag_results = []
         model_input = user_input
-        if use_rag and len(rag_index):
-            rag_results = rag_retriever.retrieve(user_input, top_k=3, min_score=0.10)
+        # Auto-enable RAG whenever the index has data — use_rag flag can still
+        # override to False if the client explicitly opts out.
+        should_use_rag = (use_rag is not False) and len(rag_index) > 0
+        if should_use_rag:
+            rag_results = rag_retriever.retrieve(user_input, top_k=5, min_score=0.10)
             if rag_results:
-                # The custom MiniLLM has a short context window; retain a
-                # compact, relevant context rather than pushing the question
-                # out of its generation window.
+                # Use a generous context window so the model sees real facts
+                # from the knowledge base rather than generating from scratch.
                 model_input = build_rag_prompt(
-                    user_input, rag_results, max_context_chars=240
+                    user_input, rag_results, max_context_chars=1000
                 )
 
         # Route and generate
@@ -172,7 +184,9 @@ def create_app(config: dict = None) -> Flask:
             try:
                 reply = decision.model.generate(
                     model_input,
-                    GenerationConfig(max_new_tokens=256, temperature=0.8, top_k=40)
+                    # Temperature 0.7 for MiniLLM: low enough for consistency,
+                    # high enough to avoid EOS token dominating first position.
+                    GenerationConfig(max_new_tokens=200, temperature=0.7, top_k=50, top_p=0.9)
                 )
             except Exception as exc:
                 reply = f"[Model error: {exc}]"

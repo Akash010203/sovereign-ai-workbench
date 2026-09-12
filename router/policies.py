@@ -25,63 +25,63 @@ from router.task_classifier import TaskCategory
 
 ROUTING_POLICY: dict[TaskCategory, dict] = {
     TaskCategory.CODING: {
-        "preferred": ["ollama/deepseek-coder:6.7b", "ollama/phi3:mini", "custom_minilm_v1"],
+        "preferred": ["custom_minilm_v1", "ollama/deepseek-coder:6.7b", "ollama/phi3:mini"],
         "tools":     ["code_sandbox", "filesystem"],
-        "notes":     "Code tasks need a strong reasoning model; deepseek-coder is preferred.",
+        "notes":     "Custom MiniLLM handles code tasks; upgrade to deepseek-coder when Ollama is available.",
     },
     TaskCategory.CODE_EXECUTION: {
-        "preferred": ["ollama/deepseek-coder:6.7b", "ollama/phi3:mini", "custom_minilm_v1"],
+        "preferred": ["custom_minilm_v1", "ollama/deepseek-coder:6.7b", "ollama/phi3:mini"],
         "tools":     ["code_sandbox"],
         "notes":     "Execution always goes through the sandboxed code runner.",
     },
     TaskCategory.SUMMARIZATION: {
-        "preferred": ["ollama/phi3:mini", "ollama/mistral:7b-instruct-q4_0", "custom_minilm_v1"],
+        "preferred": ["custom_minilm_v1", "ollama/phi3:mini", "ollama/mistral:7b-instruct-q4_0"],
         "tools":     ["pdf", "filesystem"],
-        "notes":     "Summarization needs a capable language model; phi3-mini is compact and fast.",
+        "notes":     "Custom MiniLLM is used first; phi3-mini is a future upgrade path.",
     },
     TaskCategory.DOCUMENT_ANALYSIS: {
-        "preferred": ["ollama/phi3:mini", "ollama/mistral:7b-instruct-q4_0", "custom_minilm_v1"],
+        "preferred": ["custom_minilm_v1", "ollama/phi3:mini", "ollama/mistral:7b-instruct-q4_0"],
         "tools":     ["pdf", "ocr", "filesystem"],
         "notes":     "Document analysis may need OCR for scanned PDFs.",
     },
     TaskCategory.ENGINEERING: {
-        "preferred": ["ollama/phi3:mini", "ollama/mistral:7b-instruct-q4_0", "custom_minilm_v1"],
+        "preferred": ["custom_minilm_v1", "ollama/phi3:mini", "ollama/mistral:7b-instruct-q4_0"],
         "tools":     ["pdf", "ocr", "filesystem", "spreadsheet"],
         "notes":     "Engineering docs combine OCR + domain-specific analysis.",
     },
     TaskCategory.OCR: {
-        "preferred": ["ollama/llava:7b", "custom_minilm_v1"],
+        "preferred": ["custom_minilm_v1", "ollama/llava:7b"],
         "tools":     ["ocr", "pdf"],
-        "notes":     "OCR tasks use the local vision model (llava) or the local OCR pipeline.",
+        "notes":     "OCR tasks use the local OCR pipeline; llava is an optional upgrade.",
     },
     TaskCategory.IMAGE_ANALYSIS: {
-        "preferred": ["ollama/llava:7b", "ollama/phi3:mini", "custom_minilm_v1"],
+        "preferred": ["custom_minilm_v1", "ollama/llava:7b", "ollama/phi3:mini"],
         "tools":     ["ocr"],
-        "notes":     "Vision tasks need a multimodal model; llava is local and open-weight.",
+        "notes":     "Image analysis; llava is an optional multimodal upgrade.",
     },
     TaskCategory.RETRIEVAL: {
-        "preferred": ["ollama/phi3:mini", "ollama/mistral:7b-instruct-q4_0", "custom_minilm_v1"],
+        "preferred": ["custom_minilm_v1", "ollama/phi3:mini", "ollama/mistral:7b-instruct-q4_0"],
         "tools":     ["rag_search", "filesystem"],
-        "notes":     "RAG retrieval uses the local vector index (Phase 12).",
+        "notes":     "RAG retrieval uses the local vector index.",
     },
     TaskCategory.SPREADSHEET: {
-        "preferred": ["ollama/phi3:mini", "custom_minilm_v1"],
+        "preferred": ["custom_minilm_v1", "ollama/phi3:mini"],
         "tools":     ["spreadsheet", "calculator", "filesystem"],
         "notes":     "Spreadsheet tasks need data analysis capability.",
     },
     TaskCategory.CALCULATION: {
-        "preferred": ["ollama/phi3:mini", "custom_minilm_v1"],
+        "preferred": ["custom_minilm_v1", "ollama/phi3:mini"],
         "tools":     ["calculator"],
         "notes":     "Simple calculation uses the local calculator tool.",
     },
     TaskCategory.GENERAL_CHAT: {
-        "preferred": ["ollama/phi3:mini", "ollama/mistral:7b-instruct-q4_0", "custom_minilm_v1"],
+        "preferred": ["custom_minilm_v1", "ollama/phi3:mini", "ollama/mistral:7b-instruct-q4_0"],
         "tools":     [],
-        "notes":     "General chat needs a capable instruction-following model.",
+        "notes":     "Custom MiniLLM handles general chat; Ollama models are upgrades.",
     },
     TaskCategory.UNKNOWN: {
-        "preferred": ["ollama/phi3:mini", "custom_minilm_v1"],
+        "preferred": ["custom_minilm_v1", "ollama/phi3:mini"],
         "tools":     [],
-        "notes":     "Fallback: try general chat model.",
+        "notes":     "Fallback: use custom MiniLLM.",
     },
 }

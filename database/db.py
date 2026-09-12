@@ -8,6 +8,7 @@ from __future__ import annotations
 import json
 import logging
 import sqlite3
+import threading
 from pathlib import Path
 from typing import Any, Optional
 
@@ -20,10 +21,11 @@ def get_connection(db_path: str | Path = DEFAULT_DB_PATH) -> sqlite3.Connection:
     """
     Open a SQLite connection with row_factory for dict-like access.
     Creates the database file if it doesn't exist.
+    check_same_thread=False allows worker threads in Flask to query cleanly.
     """
     db_path = Path(db_path)
     db_path.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(str(db_path))
+    conn = sqlite3.connect(str(db_path), check_same_thread=False, timeout=30.0)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL;")
     conn.execute("PRAGMA foreign_keys=ON;")
@@ -46,29 +48,42 @@ def init_db(db_path: str | Path = DEFAULT_DB_PATH) -> None:
 
 class Database:
     """
-    Thin wrapper around a SQLite connection.
+    Thread-safe wrapper around a SQLite connection.
 
-    Provides execute(), fetch_one(), fetch_all(), and insert() helpers
-    so the repositories don't need to write raw sqlite3 boilerplate.
+    Provides execute(), fetch_one(), fetch_all(), and insert() helpers.
+    Uses threading.local() so each Flask worker thread safely manages its own
+    connection without cross-thread SQLite exceptions.
     """
 
     def __init__(self, db_path: str | Path = DEFAULT_DB_PATH) -> None:
         self._path = Path(db_path)
         init_db(self._path)
-        self._conn = get_connection(self._path)
+        self._local = threading.local()
+        self._lock = threading.Lock()
+
+    @property
+    def _conn(self) -> sqlite3.Connection:
+        conn = getattr(self._local, "conn", None)
+        if conn is None:
+            conn = get_connection(self._path)
+            self._local.conn = conn
+        return conn
 
     def execute(self, sql: str, params: tuple = ()) -> sqlite3.Cursor:
-        cursor = self._conn.execute(sql, params)
-        self._conn.commit()
-        return cursor
+        with self._lock:
+            cursor = self._conn.execute(sql, params)
+            self._conn.commit()
+            return cursor
 
     def fetch_one(self, sql: str, params: tuple = ()) -> Optional[dict]:
-        row = self._conn.execute(sql, params).fetchone()
-        return dict(row) if row else None
+        with self._lock:
+            row = self._conn.execute(sql, params).fetchone()
+            return dict(row) if row else None
 
     def fetch_all(self, sql: str, params: tuple = ()) -> list[dict]:
-        rows = self._conn.execute(sql, params).fetchall()
-        return [dict(r) for r in rows]
+        with self._lock:
+            rows = self._conn.execute(sql, params).fetchall()
+            return [dict(r) for r in rows]
 
     def insert(self, table: str, data: dict) -> int:
         """Insert a row and return the new rowid."""
@@ -79,4 +94,10 @@ class Database:
         return cursor.lastrowid
 
     def close(self) -> None:
-        self._conn.close()
+        conn = getattr(self._local, "conn", None)
+        if conn is not None:
+            try:
+                conn.close()
+            except Exception:
+                pass
+            self._local.conn = None
