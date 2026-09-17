@@ -9,13 +9,11 @@ from __future__ import annotations
 
 import sys
 import argparse
-from itertools import islice
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from core.config import ensure_directories, get_settings  # noqa: E402
-from core.corpus import read_lines  # noqa: E402
 from core.logging_setup import setup_logging  # noqa: E402
 from tokenizer.tokenizer import ByteLevelBPETokenizer, DEFAULT_SPECIAL_TOKENS  # noqa: E402
 
@@ -49,9 +47,20 @@ def main() -> None:
         )
         return
 
-    corpus_lines = read_lines(train_path)
-    if args.max_lines > 0:
-        corpus_lines = list(islice(corpus_lines, args.max_lines))
+    # Do not call read_text() for a multi-million-row blended corpus just to
+    # train a tokenizer on its first representative slice.  BPE itself needs
+    # the selected lines in memory, but this caps that memory to max_lines.
+    with train_path.open("r", encoding="utf-8") as corpus_file:
+        if args.max_lines > 0:
+            corpus_lines = []
+            for line in corpus_file:
+                text = line.strip()
+                if text:
+                    corpus_lines.append(text)
+                    if len(corpus_lines) >= args.max_lines:
+                        break
+        else:
+            corpus_lines = [line.strip() for line in corpus_file if line.strip()]
     if not corpus_lines:
         logger.error("No non-empty lines found in %s", train_path)
         return

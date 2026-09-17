@@ -38,7 +38,7 @@ from pathlib import Path
 from typing import Optional
 
 import torch
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset, DataLoader, IterableDataset
 
 log = logging.getLogger(__name__)
 
@@ -121,6 +121,38 @@ class TokenizedTextDataset(Dataset):
         return chunk[:-1].clone(), chunk[1:].clone()
 
 
+class StreamingTokenizedTextDataset(IterableDataset):
+    """Tokenize a line-oriented corpus incrementally instead of storing it.
+
+    This is intended for the multi-million-row blended corpus.  Only a small
+    token buffer (at most a few documents) exists in host RAM, and no dataset
+    records are transferred to VRAM until a DataLoader batch is consumed.
+    The existing materialized dataset remains faster for small demo corpora.
+    """
+
+    def __init__(self, text_path: str | Path, tokenizer, block_size: int, add_bos_eos: bool = True) -> None:
+        super().__init__()
+        self.text_path = Path(text_path)
+        self.tokenizer = tokenizer
+        self.block_size = block_size
+        self.add_bos_eos = add_bos_eos
+
+    def __iter__(self):
+        token_buffer: list[int] = []
+        with self.text_path.open("r", encoding="utf-8") as corpus_file:
+            for line in corpus_file:
+                text = line.strip()
+                if not text:
+                    continue
+                token_buffer.extend(self.tokenizer.encode(
+                    text, add_bos=self.add_bos_eos, add_eos=self.add_bos_eos
+                ))
+                while len(token_buffer) >= self.block_size + 1:
+                    chunk = torch.tensor(token_buffer[: self.block_size + 1], dtype=torch.long)
+                    del token_buffer[: self.block_size]
+                    yield chunk[:-1], chunk[1:]
+
+
 def make_dataloader(
     dataset: TokenizedTextDataset,
     batch_size: int,
@@ -135,4 +167,15 @@ def make_dataloader(
         num_workers=num_workers,
         pin_memory=torch.cuda.is_available(),
         drop_last=True,   # keeps all batches exactly batch_size
+    )
+
+
+def make_streaming_dataloader(dataset: StreamingTokenizedTextDataset, batch_size: int) -> DataLoader:
+    """Create a memory-bounded loader for a ``StreamingTokenizedTextDataset``."""
+    return DataLoader(
+        dataset,
+        batch_size=batch_size,
+        num_workers=0,  # Multiple workers would duplicate a sequential corpus.
+        pin_memory=torch.cuda.is_available(),
+        drop_last=True,
     )

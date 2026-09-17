@@ -1,0 +1,30 @@
+--- PLANT MAINTENANCE LOGBOOK ---
+Location: ONGC Mehsana Asset — Gas Processing Unit GPU-II
+Page: 47
+Date: 10-Sep-2026
+
+08:15  Routine check – Compressor C-201 running normal.
+       Inlet pressure: 42.3 bar, outlet: 68.1 bar.
+       Vibration level: 2.1 mm/s RMS (within limits).
+
+09:30  ALERT — Pump P-301 bearing temperature rising.
+       Measured: 82°C (limit: 85°C). Lubrication top-up done.
+       ACTION REQUIRED: Schedule bearing replacement by 15-Sep.
+
+10:45  Oil level check — Reservoir T-04.
+       Level: LOW (32%). Replenish with ISO 46 hydraulic oil.
+       ACTION REQUIRED: Procure 200L ISO 46 by 12-Sep.
+
+11:20  Valve V-108 — found packing leak (minor drip).
+       Tightened gland nuts 1/4 turn. Leak stopped.
+       ACTION REQUIRED: Replace valve packing at next shutdown.
+
+14:00  Gas detector calibration — Zone 3.
+       H2S sensor: calibrated OK (span check 25 ppm).
+       LEL sensor: calibrated OK (50% LEL methane).
+
+15:30  Flare stack inspection — no visible flame abnormality.
+       Pilot flame steady. Wind direction: NW.
+
+Shift Engineer: R. K. Sharma
+Countersigned: A. P. Mehta (Shift Supervisor)

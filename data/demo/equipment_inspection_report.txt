@@ -1,0 +1,73 @@
+==============================================================
+EQUIPMENT INSPECTION REPORT — EIR/2026/0342
+==============================================================
+Report No.: EIR/2026/0342
+Date: 08-Sep-2026
+Plant: ONGC Mehsana Asset — Gas Processing Unit GPU-II
+Inspector: K. L. Verma (NDT Level-II Certified)
+==============================================================
+
+1. EQUIPMENT DETAILS
+   Tag Number:     HE-301 (Shell & Tube Heat Exchanger)
+   Service:        Gas cooling (process gas → cooling water)
+   Design Pressure: 85 bar (shell), 12 bar (tube)
+   Design Temp:     180°C (shell), 60°C (tube)
+   Material:        SA-516 Gr.70 (shell), SS 304L (tubes)
+   Last Inspection: 15-Mar-2025 (Report EIR/2025/0198)
+
+2. INSPECTION SCOPE
+   - External visual inspection
+   - Ultrasonic thickness (UT) measurement — 24 grid points
+   - Tube bundle eddy current testing (ECT) — 100% tubes
+   - Flange face inspection
+   - Nozzle weld inspection
+
+3. FINDINGS
+
+   3.1 EXTERNAL VISUAL
+   - No visible corrosion, bulging, or distortion.
+   - Insulation intact. No hot spots detected by thermal camera.
+   - Foundation bolts tight. No settlement observed.
+
+   3.2 ULTRASONIC THICKNESS (UT)
+   - Shell minimum thickness: 18.2mm (nominal: 20mm, retirement: 16mm)
+   - Corrosion rate: 0.15mm/year (consistent with previous readings)
+   - Remaining life: ~14.7 years at current rate
+   - See attached UT grid map for full readings.
+
+   3.3 EDDY CURRENT TESTING (ECT)
+   - Total tubes inspected: 324
+   - Tubes with >40% wall loss: 3 (Tubes #47, #122, #289)
+   - Tubes with >60% wall loss: 1 (Tube #122 — recommend plugging)
+   - No through-wall defects detected.
+
+   3.4 FLANGE FACES
+   - Shell-side inlet nozzle N1: minor pitting on gasket face
+     → Acceptable — re-gasket at next opportunity
+   - All other flanges: satisfactory condition
+
+   3.5 NOZZLE WELDS
+   - MPI performed on N1, N2, N3, N4 nozzle welds
+   - No cracks or indications found
+   - All welds meet ASME Section VIII acceptance criteria
+
+4. RECOMMENDATIONS
+   [PRIORITY 1] Plug Tube #122 (>60% wall loss) before restart.
+   [PRIORITY 2] Monitor Tubes #47 and #289 — re-inspect at next
+                 turnaround (scheduled Mar-2027).
+   [PRIORITY 3] Replace gasket on N1 nozzle flange at next
+                 available maintenance window.
+   [INFO]       Overall exchanger condition is SATISFACTORY.
+                Next full inspection due: Sep-2028 (2-year cycle).
+
+5. ATTACHMENTS
+   - UT Grid Map (Form UT-301-A)
+   - ECT Summary Report (24 pages)
+   - Thermal Image Report (3 pages)
+   - MPI Test Certificates (4 nos.)
+
+==============================================================
+Inspector: K. L. Verma       Signature: _______________
+Reviewed:  R. P. Singh (QA)  Signature: _______________
+Approved:  A. K. Jha (Head)  Signature: _______________
+==============================================================

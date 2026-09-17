@@ -91,3 +91,19 @@ class MiniLLMConfig:
             d_model=384, n_layers=8, n_heads=6,
             d_ff=1024, max_seq_len=256, dropout=0.1,
         )
+
+    @classmethod
+    def industrial_80m(cls, vocab_size: int) -> "MiniLLMConfig":
+        """An ~83M parameter configuration for the blended corpus.
+
+        This is intentionally the largest preset offered for a 6 GB laptop
+        GPU.  It must be used with the conservative RTX 4050 training preset
+        (micro-batch 1, gradient accumulation 16, AMP, 256-token context).
+        The exact count varies with the tokenizer vocabulary; at 16,000
+        tokens it has about 83M unique trainable parameters.
+        """
+        return cls(
+            vocab_size=vocab_size,
+            d_model=768, n_layers=12, n_heads=12,
+            d_ff=1536, max_seq_len=256, dropout=0.1,
+        )

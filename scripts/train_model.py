@@ -43,7 +43,12 @@ from core.config import get_settings, ensure_directories
 from core.logging_setup import setup_logging
 from models.custom_minilm.config import MiniLLMConfig
 from tokenizer.tokenizer import ByteLevelBPETokenizer
-from training.dataset import TokenizedTextDataset, make_dataloader
+from training.dataset import (
+    StreamingTokenizedTextDataset,
+    TokenizedTextDataset,
+    make_dataloader,
+    make_streaming_dataloader,
+)
 from training.trainer import Trainer, TrainingConfig
 
 
@@ -89,6 +94,16 @@ EXPERIMENTS = {
         warmup_steps=50,
         eval_every=100,
         save_every=250,
+    ),
+    "industrial_4050": TrainingConfig(
+        experiment_name="industrial_80m_4050",
+        max_steps=20_000,
+        batch_size=1,
+        gradient_accumulation_steps=16,
+        learning_rate=2e-4,
+        warmup_steps=1_000,
+        eval_every=500,
+        save_every=1_000,
     ),
 }
 
@@ -136,13 +151,18 @@ def parse_args() -> argparse.Namespace:
         help="Force device: 'cuda' or 'cpu'. Default: auto-detect.",
     )
     p.add_argument(
-        "--model-size", choices=["small", "medium"], default="small",
-        help="Model size preset: 'small' (~5M params) or 'medium' (~12M params).",
+        "--model-size", choices=["small", "medium", "industrial-80m"], default="small",
+        help=("Model size: small (~5M), medium (~12M), or industrial-80m "
+              "(~83M with a 16k-token vocabulary)."),
     )
     p.add_argument(
         "--export-checkpoint", type=str, default="checkpoints/best.pt",
         help=("Stable path for the selected validation checkpoint (or final checkpoint "
               "when validation is unavailable). Set to an empty string to skip export."),
+    )
+    p.add_argument(
+        "--streaming-data", action="store_true",
+        help="Tokenize line-oriented corpora lazily; required for multi-million-row blends.",
     )
     return p.parse_args()
 
@@ -169,7 +189,9 @@ def main() -> None:
     log.info("Vocab size: %d", tokenizer.vocab_size)
 
     # ── Model config ──────────────────────────────────────────────────
-    if args.model_size == "medium":
+    if args.model_size == "industrial-80m":
+        model_cfg = MiniLLMConfig.industrial_80m(vocab_size=tokenizer.vocab_size)
+    elif args.model_size == "medium":
         model_cfg = MiniLLMConfig.medium(vocab_size=tokenizer.vocab_size)
     else:
         model_cfg = MiniLLMConfig.small(vocab_size=tokenizer.vocab_size)
@@ -214,29 +236,38 @@ def main() -> None:
         log.error("Training file not found: %s", train_path)
         sys.exit(1)
 
-    log.info("Building training dataset from %s", train_path)
-    train_ds = TokenizedTextDataset(
-        train_path, tokenizer, block_size=block_size, stride=block_size // 2
-    )
+    log.info("Building %s training dataset from %s", "streaming" if args.streaming_data else "materialized", train_path)
+    if args.streaming_data:
+        train_ds = StreamingTokenizedTextDataset(train_path, tokenizer, block_size=block_size)
+    else:
+        train_ds = TokenizedTextDataset(
+            train_path, tokenizer, block_size=block_size, stride=block_size // 2
+        )
 
     val_ds = None
     val_loader = None
     if val_path.exists():
         log.info("Building validation dataset from %s", val_path)
-        val_ds = TokenizedTextDataset(
-            val_path, tokenizer, block_size=block_size, stride=block_size
+        val_ds = (
+            StreamingTokenizedTextDataset(val_path, tokenizer, block_size=block_size)
+            if args.streaming_data else
+            TokenizedTextDataset(val_path, tokenizer, block_size=block_size, stride=block_size)
         )
 
-    train_loader = make_dataloader(train_ds, batch_size=train_cfg.batch_size)
-    if val_ds is not None and len(val_ds) > 0:
-        val_loader = make_dataloader(
-            val_ds, batch_size=train_cfg.batch_size, shuffle=False
+    train_loader = (
+        make_streaming_dataloader(train_ds, batch_size=train_cfg.batch_size)
+        if args.streaming_data else make_dataloader(train_ds, batch_size=train_cfg.batch_size)
+    )
+    if val_ds is not None and (args.streaming_data or len(val_ds) > 0):
+        val_loader = (
+            make_streaming_dataloader(val_ds, batch_size=train_cfg.batch_size)
+            if args.streaming_data else make_dataloader(val_ds, batch_size=train_cfg.batch_size, shuffle=False)
         )
-        log.info("Val dataset: %d samples", len(val_ds))
+        log.info("Val dataset: %s", "streaming" if args.streaming_data else f"{len(val_ds)} samples")
     else:
         log.warning("Validation dataset empty or unavailable — skipping val eval.")
 
-    log.info("Train dataset: %d samples", len(train_ds))
+    log.info("Train dataset: %s", "streaming" if args.streaming_data else f"{len(train_ds)} samples")
 
     # ── Device override ───────────────────────────────────────────────
     import torch

@@ -8,10 +8,21 @@ from tools.spreadsheet import SpreadsheetReadTool, SpreadsheetWriteTool
 from tools.word import WordWriteTool
 from tools.powerpoint import PowerPointWriteTool
 from tools.code_sandbox import CodeSandboxTool
+from tools.rag_search import RagSearchTool
 
 
-def build_default_tool_registry(workspace_root: str = ".") -> ToolRegistry:
-    """Build and return the default tool registry with all tools registered."""
+def build_default_tool_registry(
+    workspace_root: str = ".",
+    retriever=None,
+) -> ToolRegistry:
+    """Build and return the default tool registry with all tools registered.
+
+    Args:
+        workspace_root: Root directory for filesystem tools.
+        retriever: Optional rag.retriever.Retriever instance. When provided,
+                   the ``rag_search`` tool is registered so the agent can
+                   search the knowledge base through the tool pipeline.
+    """
     registry = ToolRegistry()
     registry.register(CalculatorTool())
     registry.register(FileReadTool(workspace_root))
@@ -23,6 +34,8 @@ def build_default_tool_registry(workspace_root: str = ".") -> ToolRegistry:
     registry.register(WordWriteTool())
     registry.register(PowerPointWriteTool())
     registry.register(CodeSandboxTool(timeout_seconds=10))
+    if retriever is not None:
+        registry.register(RagSearchTool(retriever))
     return registry
 
 
@@ -32,5 +45,6 @@ __all__ = [
     "PDFTextExtractTool", "OCRTool",
     "SpreadsheetReadTool", "SpreadsheetWriteTool",
     "WordWriteTool", "PowerPointWriteTool", "CodeSandboxTool",
+    "RagSearchTool",
     "build_default_tool_registry",
 ]

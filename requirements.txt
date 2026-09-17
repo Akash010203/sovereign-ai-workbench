@@ -2,6 +2,9 @@
 torch>=2.2              # PyTorch — custom tensors, autograd, CUDA (model is hand-written)
 numpy>=1.26             # Numerical utilities outside torch
 pytest>=8.0             # Test runner
+datasets>=3.0           # Streaming Hugging Face corpora; avoids loading multi-GB sets into RAM
+tqdm>=4.66              # Progress reporting while materialising streamed training shards
+requests>=2.32          # Sequential JSONL fallback for large Hugging Face Xet files
 
 # ── Phase 6-7: Training Pipeline ──────────────────────────────────────────────
 # (no new deps — uses torch built-ins only)

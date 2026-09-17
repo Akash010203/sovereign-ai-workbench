@@ -23,6 +23,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -70,11 +71,15 @@ def create_app(config: dict = None) -> Flask:
     task_repo = TaskRepository(db)
 
     # Model registry (MiniLLM + Ollama)
-    # Priority: 8k-vocab best → fine-tuned 600-vocab → pretrained 600-vocab
+    # Priority: current industrial 80M model → legacy checkpoints.
+    _industrial = ROOT / "checkpoints" / "industrial_80m_best.pt"
     _8k_best    = ROOT / "checkpoints" / "best_8k.pt"
     _finetuned  = ROOT / "checkpoints" / "finetuned" / "finetune_best.pt"
     _pretrained = ROOT / "checkpoints" / "best.pt"
-    if _8k_best.exists():
+    if _industrial.exists():
+        _default_ckpt = str(_industrial)
+        log.info("Using industrial 80M checkpoint: %s", _default_ckpt)
+    elif _8k_best.exists():
         _default_ckpt = str(_8k_best)
         log.info("Using 8k-vocab checkpoint: %s", _default_ckpt)
     elif _finetuned.exists():
@@ -92,8 +97,11 @@ def create_app(config: dict = None) -> Flask:
         ollama_models=config.get("ollama_models", []),  # empty = no Ollama
     )
 
-    # Tool registry
-    tool_registry = build_default_tool_registry(workspace_root=str(ROOT))
+    # Tool registry (pass retriever so agent can call rag_search via tools)
+    tool_registry = build_default_tool_registry(
+        workspace_root=str(ROOT),
+        retriever=rag_retriever,
+    )
 
     # Agent
     agent = Agent(model_registry, tool_registry)
@@ -157,6 +165,12 @@ def create_app(config: dict = None) -> Flask:
             conv_id = conv_repo.create(title=user_input[:60], model_name=model_name)
         conv_repo.add_message(conv_id, "user", user_input)
 
+        # A short greeting does not need the language model.  This prevents a
+        # small domain model from turning "hi" into an unrelated technical
+        # explanation, while keeping all substantive requests model-generated.
+        normalized_input = re.sub(r"[^a-z ]", "", user_input.lower()).strip()
+        greeting_only = normalized_input in {"hi", "hello", "hey", "good morning", "good afternoon", "good evening"}
+
         # Retrieve only when explicitly requested. This keeps normal chat
         # lightweight and lets the client show source provenance separately
         # instead of trusting a small generative model to format citations.
@@ -180,13 +194,19 @@ def create_app(config: dict = None) -> Flask:
         decision = TaskRouter(model_registry).route(user_input)
 
         reply = "[No model available]"
-        if decision.model:
+        if greeting_only:
+            reply = (
+                "Hello — I’m SovereignAI, your local maintenance and engineering assistant. "
+                "Ask me about an equipment issue, a work instruction, or your local knowledge base."
+            )
+        elif decision.model:
             try:
                 reply = decision.model.generate(
                     model_input,
-                    # Temperature 0.7 for MiniLLM: low enough for consistency,
-                    # high enough to avoid EOS token dominating first position.
-                    GenerationConfig(max_new_tokens=200, temperature=0.7, top_k=50, top_p=0.9)
+                    # Conservative decoding is more reliable for the 80M
+                    # domain model than the creative defaults used by legacy
+                    # demo checkpoints.
+                    GenerationConfig(max_new_tokens=128, temperature=0.25, top_k=20, top_p=0.85)
                 )
             except Exception as exc:
                 reply = f"[Model error: {exc}]"

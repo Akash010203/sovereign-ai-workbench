@@ -11,11 +11,16 @@ import argparse
 import sys
 from pathlib import Path
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(errors="replace")
+
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from tokenizer.tokenizer import ByteLevelBPETokenizer
-from models.custom_minilm.checkpoint import load_model_from_checkpoint
+from models.custom_minilm.checkpoint import load_model_from_checkpoint, resolve_tokenizer_path
 from models.custom_minilm.generate import generate
 
 
@@ -43,15 +48,18 @@ def main() -> None:
     print(f"Loaded: step={meta['step']}  params={meta['model_params']:,}")
 
     # Load tokenizer
-    tok_path = meta.get("tokenizer_path") or "tokenizer/vocab/demo_bpe_vocab.json"
-    tokenizer = ByteLevelBPETokenizer.load(ROOT / tok_path)
+    raw_tok = meta.get("tokenizer_resolved_path") or meta.get("tokenizer_path")
+    tok_path = resolve_tokenizer_path(
+        raw_tok, vocab_size=getattr(model.config, "vocab_size", None), root=ROOT
+    )
+    tokenizer = ByteLevelBPETokenizer.load(tok_path)
 
     # Encode prompt
     prompt_ids = tokenizer.encode(args.prompt, add_bos=True)
 
     print(f"\nPrompt : {args.prompt!r}")
     print(f"Tokens : {len(prompt_ids)}")
-    print("─" * 50)
+    print("-" * 50)
 
     # Generate
     eos_id = tokenizer.vocab.special_to_id.get("<eos>")
@@ -70,7 +78,7 @@ def main() -> None:
     full_ids = prompt_ids + new_ids
     output_text = tokenizer.decode(full_ids)
     print(output_text)
-    print("─" * 50)
+    print("-" * 50)
     print(f"Generated {len(new_ids)} new tokens.")
 
 

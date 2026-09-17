@@ -245,11 +245,15 @@ class Trainer:
                     dtype=self.amp_dtype,
                     enabled=self.scaler.is_enabled(),
                 ):
-                    loss = self.model.compute_loss(input_ids, targets)
-                    loss = loss / cfg.gradient_accumulation_steps
+                    # Keep the unscaled loss for human-readable logs. The
+                    # backward loss is scaled only to implement gradient
+                    # accumulation; reporting that scaled value made every
+                    # displayed loss incorrectly 1/accumulation_steps.
+                    raw_loss = self.model.compute_loss(input_ids, targets)
+                    loss = raw_loss / cfg.gradient_accumulation_steps
 
                 self.scaler.scale(loss).backward()
-                train_loss_accum += loss.item()
+                train_loss_accum += raw_loss.item()
                 micro_step_count += 1
 
             # ── Gradient clipping ─────────────────────────────────────

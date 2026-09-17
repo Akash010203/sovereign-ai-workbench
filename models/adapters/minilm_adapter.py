@@ -15,7 +15,7 @@ from typing import Any, Optional
 import torch
 
 from models.adapters.base import ModelProvider, GenerationConfig
-from models.custom_minilm.checkpoint import load_model_from_checkpoint
+from models.custom_minilm.checkpoint import load_model_from_checkpoint, resolve_tokenizer_path
 from models.custom_minilm.generate import generate as _generate
 from tokenizer.tokenizer import ByteLevelBPETokenizer
 
@@ -61,23 +61,47 @@ class CustomMiniLLMAdapter(ModelProvider):
         self._model, self._meta = load_model_from_checkpoint(
             self._ckpt_path, device=self._device
         )
-        # Use the tokenizer path embedded in the checkpoint; fall back to hint
-        tok_path_in_ckpt = self._meta.get("tokenizer_path", "")
-        if tok_path_in_ckpt and Path(tok_path_in_ckpt).exists():
-            tok_path = Path(tok_path_in_ckpt)
-        elif self._tok_path_hint and self._tok_path_hint.exists():
-            tok_path = self._tok_path_hint
-        else:
-            # last resort: search for any vocab json next to checkpoint
-            vocab_dir = self._ckpt_path.parent.parent / "tokenizer" / "vocab"
-            candidates = sorted(vocab_dir.glob("*.json")) if vocab_dir.exists() else []
-            tok_path = candidates[0] if candidates else None
+        model_vocab_size = getattr(self._model.config, "vocab_size", None)
+
+        # Resolve tokenizer path robustly across drives / relocations
+        raw_tok_path = (
+            self._meta.get("tokenizer_resolved_path")
+            or self._meta.get("tokenizer_path")
+            or self._tok_path_hint
+        )
+        tok_path = None
+        try:
+            tok_path = resolve_tokenizer_path(
+                raw_tok_path,
+                vocab_size=model_vocab_size,
+                root=self._ckpt_path.parent.parent,
+            )
+        except Exception as err:
+            log.warning("resolve_tokenizer_path failed for %s: %s", raw_tok_path, err)
 
         if tok_path is None or not tok_path.exists():
             log.error("No tokenizer found for checkpoint %s", self._ckpt_path)
             return
 
         self._tokenizer = ByteLevelBPETokenizer.load(tok_path)
+
+        # Ensure vocab size matches model embedding dimensions
+        if model_vocab_size and self._tokenizer.vocab_size != model_vocab_size:
+            log.warning(
+                "Loaded tokenizer vocab (%d) does not match model vocab (%d); resolving matching vocab...",
+                self._tokenizer.vocab_size, model_vocab_size,
+            )
+            try:
+                matching_path = resolve_tokenizer_path(
+                    None, vocab_size=model_vocab_size, root=self._ckpt_path.parent.parent
+                )
+                if matching_path.exists():
+                    self._tokenizer = ByteLevelBPETokenizer.load(matching_path)
+                    tok_path = matching_path
+                    log.info("Switched to matching tokenizer: %s (vocab %d)", tok_path.name, self._tokenizer.vocab_size)
+            except Exception as e:
+                log.warning("Could not switch to matching tokenizer: %s", e)
+
         self._loaded = True
         log.info(
             "CustomMiniLLMAdapter loaded — params: %s  tokenizer: %s",
@@ -87,8 +111,13 @@ class CustomMiniLLMAdapter(ModelProvider):
 
     # ── Instruction prompt builder ─────────────────────────────────────
 
-    @staticmethod
-    def _build_instruction_prompt(user_text: str) -> str:
+    def _uses_chat_format(self) -> bool:
+        """Whether this checkpoint's tokenizer supports the trained role tags."""
+        return self._tokenizer is not None and {
+            "<|user|>", "<|assistant|>"
+        }.issubset(self._tokenizer.vocab.special_to_id)
+
+    def _build_instruction_prompt(self, user_text: str) -> str:
         """
         Wrap the user query in a minimal Q/A prompt.
 
@@ -97,7 +126,15 @@ class CustomMiniLLMAdapter(ModelProvider):
         double-wrapping which confuses the model.
         """
         stripped = user_text.strip()
-        # Already has context / structure — don't re-wrap
+        if self._uses_chat_format():
+            # The industrial 80M model was trained on exactly this format.
+            # Using the legacy Q:/A: template makes it treat ordinary chat as
+            # an explanation/completion task instead of an assistant reply.
+            if "<|assistant|>" in stripped:
+                return stripped if stripped.rstrip().endswith("<|assistant|>") else stripped.rstrip() + " <|assistant|>"
+            return f"<|user|> {stripped} <|assistant|>"
+
+        # Legacy checkpoints were trained on Q:/A: text.
         if "Context:" in stripped or stripped.startswith("Q:"):
             # Just ensure it ends with the generation cue
             if not stripped.endswith("A:"):
@@ -201,11 +238,10 @@ class CustomMiniLLMAdapter(ModelProvider):
             temperature=cfg.temperature,
             top_k=cfg.top_k,
             top_p=cfg.top_p,
-            # Do NOT pass eos_id to the generator: the fine-tuned model
-            # over-predicts <eos> at low temperature on the very first step,
-            # producing zero output. Instead we let it run and strip EOS
-            # tokens from the decoded string in _clean_output.
-            eos_id=None,
+            # The legacy checkpoint over-predicts EOS; the industrial model
+            # was trained with explicit role/EOS boundaries and should stop
+            # normally instead of filling the entire token budget.
+            eos_id=eos_id if self._uses_chat_format() else None,
             seed=cfg.seed,
             device=self._device,
         )
@@ -230,6 +266,6 @@ class CustomMiniLLMAdapter(ModelProvider):
             "checkpoint":    str(self._ckpt_path),
             "train_step":    self._meta.get("step", 0),
             "vocab_size":    tok_name,
-            "description":   "Custom MiniLLM — ~5M params, trained from scratch on OpenOrca",
-            "honest_label":  "Small domain-specific model; NOT a production LLM",
+            "description":   "Custom MiniLLM trained locally from scratch",
+            "honest_label":  "Domain-specific local model; outputs require human review",
         }

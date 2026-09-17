@@ -20,6 +20,88 @@ from models.custom_minilm.model import MiniLLM
 log = logging.getLogger(__name__)
 
 
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+
+
+def resolve_tokenizer_path(
+    tok_path: str | Path | None = None,
+    vocab_size: int | None = None,
+    root: Path | None = None,
+) -> Path:
+    """
+    Resolve a tokenizer vocabulary path robustly across machines, drive changes,
+    and directory moves.
+
+    Args:
+        tok_path: Path string or Path object stored in checkpoint or passed as argument.
+        vocab_size: Optional vocabulary size of the model (e.g. 8000 or 600) to help
+                    select the correct vocab file.
+        root: Workspace root directory (defaults to PROJECT_ROOT).
+
+    Returns:
+        A valid Path to an existing tokenizer JSON vocabulary file.
+    """
+    workspace_root = Path(root) if root else PROJECT_ROOT
+    vocab_dir = workspace_root / "tokenizer" / "vocab"
+
+    candidates: list[Path] = []
+
+    if tok_path:
+        tok_p = Path(tok_path)
+        # 1. Direct path exists
+        if tok_p.exists() and tok_p.is_file():
+            candidates.append(tok_p.resolve())
+
+        # 2. Relative to workspace root
+        rel_p = workspace_root / tok_p
+        if rel_p.exists() and rel_p.is_file():
+            candidates.append(rel_p.resolve())
+
+        # 3. Filename inside tokenizer/vocab/ (handles old drives like D:\...\bpe_8k.json)
+        name_p = vocab_dir / tok_p.name
+        if name_p.exists() and name_p.is_file():
+            candidates.append(name_p.resolve())
+
+        # 4. If path string mentions "tokenizer" or "vocab"
+        posix_str = tok_p.as_posix()
+        if "tokenizer/vocab/" in posix_str:
+            sub = posix_str.split("tokenizer/vocab/")[-1]
+            sub_p = vocab_dir / sub
+            if sub_p.exists() and sub_p.is_file():
+                candidates.append(sub_p.resolve())
+
+    # 5. Check based on model vocab_size
+    if vocab_size is not None:
+        if vocab_size >= 4000:
+            bpe_8k = vocab_dir / "bpe_8k.json"
+            if bpe_8k.exists():
+                candidates.append(bpe_8k.resolve())
+        elif vocab_size <= 1000:
+            demo_vocab = vocab_dir / "demo_bpe_vocab.json"
+            if demo_vocab.exists():
+                candidates.append(demo_vocab.resolve())
+
+    # 6. General fallbacks
+    for fallback in [vocab_dir / "bpe_8k.json", vocab_dir / "demo_bpe_vocab.json"]:
+        if fallback.exists():
+            candidates.append(fallback.resolve())
+
+    # Return first existing candidate
+    for c in candidates:
+        if c.exists() and c.is_file():
+            return c
+
+    # Last resort: any json in vocab_dir
+    if vocab_dir.exists():
+        jsons = sorted(vocab_dir.glob("*.json"))
+        if jsons:
+            return jsons[0].resolve()
+
+    raise FileNotFoundError(
+        f"Could not resolve tokenizer vocabulary path for '{tok_path}' (vocab_size={vocab_size}) in {workspace_root}"
+    )
+
+
 def load_model_from_checkpoint(
     path: str | Path,
     device: str | torch.device = "cpu",
@@ -55,12 +137,22 @@ def load_model_from_checkpoint(
     model.load_state_dict(ckpt[state_key], strict=strict)
     model = model.to(device).eval()
 
+    raw_tok = ckpt.get("tokenizer_path")
+    resolved_tok = resolve_tokenizer_path(
+        raw_tok, vocab_size=model_cfg.vocab_size, root=PROJECT_ROOT
+    )
+    try:
+        rel_tok_str = resolved_tok.relative_to(PROJECT_ROOT).as_posix()
+    except ValueError:
+        rel_tok_str = resolved_tok.as_posix()
+
     meta = {
         "step":           ckpt.get("step", 0),
         "experiment":     ckpt.get("experiment", "unknown"),
         "train_loss":     ckpt.get("train_loss"),
         "val_loss":       ckpt.get("val_loss"),
-        "tokenizer_path": ckpt.get("tokenizer_path"),
+        "tokenizer_path": rel_tok_str,
+        "tokenizer_resolved_path": str(resolved_tok),
         "timestamp":      ckpt.get("timestamp"),
         "model_params":   model.count_parameters(),
     }
@@ -83,6 +175,15 @@ def save_model_for_inference(
     """
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
+    if tokenizer_path:
+        try:
+            tok_p = Path(tokenizer_path)
+            if tok_p.is_absolute() and tok_p.is_relative_to(PROJECT_ROOT):
+                tokenizer_path = tok_p.relative_to(PROJECT_ROOT).as_posix()
+            else:
+                tokenizer_path = tok_p.as_posix()
+        except Exception:
+            pass
     payload = {
         "model_state":    model.state_dict(),
         "model_config":   asdict(model.config),
@@ -91,3 +192,4 @@ def save_model_for_inference(
     }
     torch.save(payload, path)
     log.info("Inference checkpoint saved → %s", path)
+

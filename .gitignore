@@ -11,9 +11,14 @@ venv/
 
 # ── Large data files — rebuild with scripts/prepare_*.py ─────────────────────
 data/processed/openorca_*
+data/processed/blended_*
+data/processed/*.part
+data/raw/hf_sources/
 data/raw/*.txt         # exclude big downloads
 !data/raw/synthetic_demo_corpus.txt   # keep — small, project-authored demo corpus
 data/rag_index.json
+output/*
+!output/.gitkeep
 
 # ── Model checkpoints — rebuild with scripts/train_model.py ──────────────────
 checkpoints/**/*.pt

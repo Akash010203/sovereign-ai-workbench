@@ -1,0 +1,103 @@
+==============================================================
+STANDARD OPERATING PROCEDURE — SOP/MEC/042
+Compressor Mechanical Seal Replacement
+==============================================================
+Document No.: SOP/MEC/042
+Revision: 03
+Date: 01-Jan-2026
+Plant: ONGC Mehsana Asset — Gas Processing Unit
+Equipment: Centrifugal Compressor C-201 / C-202
+==============================================================
+
+1. PURPOSE
+   This SOP describes the step-by-step procedure for replacing
+   a faulty mechanical seal on centrifugal compressors C-201
+   and C-202 in the gas processing unit.
+
+2. SAFETY PRECAUTIONS
+   2.1 Obtain a valid Permit-to-Work (PTW) before starting.
+   2.2 Confirm gas-free certificate from safety department.
+   2.3 Ensure Lock-Out/Tag-Out (LOTO) on all energy sources:
+       - Electrical isolate at MCC panel
+       - Close block valves V-201A/B (suction and discharge)
+       - Vent trapped gas via vent valve V-201V
+   2.4 Wear PPE: flame-retardant coverall, safety goggles,
+       chemical-resistant gloves, safety shoes.
+   2.5 Verify zero pressure on suction/discharge gauges.
+   2.6 Stand upwind during any residual gas release.
+
+3. TOOLS AND MATERIALS
+   - Mechanical seal assembly (P/N: SEAL-C201-MK3)
+   - Seal installation sleeve
+   - Torque wrench (range: 20-150 Nm)
+   - Dial indicator with magnetic base
+   - Alignment laser tool
+   - O-rings (Viton, per seal drawing)
+   - Loctite 242 (medium threadlocker)
+   - Clean ISO 32 lubricating oil
+
+4. PROCEDURE
+
+   Step 1: ISOLATION AND PREPARATION
+   - Shut down compressor per shutdown procedure SOP/MEC/001.
+   - Execute LOTO per SOP/SAF/005.
+   - Drain process fluid from seal cavity.
+   - Allow housing to cool below 40°C.
+
+   Step 2: DISASSEMBLY
+   - Remove coupling guard and coupling spacer.
+   - Unbolt seal gland (8 × M16 bolts, torque: 85 Nm).
+   - Carefully slide out old seal assembly.
+   - Inspect shaft sleeve for scoring or corrosion.
+     → If sleeve damage exceeds 0.1mm depth, replace sleeve.
+
+   Step 3: SHAFT AND HOUSING INSPECTION
+   - Measure shaft runout with dial indicator (max: 0.05mm TIR).
+   - Inspect seal chamber bore for pitting or wear.
+   - Clean all mating surfaces with lint-free cloth + solvent.
+
+   Step 4: NEW SEAL INSTALLATION
+   - Lubricate O-rings with clean ISO 32 oil.
+   - Slide seal assembly onto shaft using installation sleeve.
+   - Do NOT push seal faces together dry.
+   - Torque gland bolts in star pattern: 85 Nm ± 5%.
+   - Set seal compression per manufacturer spec (typically 3-5mm).
+
+   Step 5: ALIGNMENT CHECK
+   - Reinstall coupling spacer.
+   - Perform laser alignment (angular: <0.05mm/100mm,
+     offset: <0.05mm).
+   - Record alignment readings on Form MEC/042-A.
+
+   Step 6: LEAK TEST
+   - Close vent valve V-201V.
+   - Slowly open suction block valve V-201A.
+   - Pressurise seal cavity to 5 bar (nitrogen).
+   - Hold for 15 minutes — acceptable leak: <1 bubble/min
+     at atmospheric vent.
+   - If leak detected: retorque gland bolts or reseat seal.
+
+   Step 7: STARTUP
+   - Remove LOTO per SOP/SAF/005.
+   - Start compressor per startup procedure SOP/MEC/002.
+   - Monitor seal temperature and vibration for first 2 hours.
+   - Acceptable: seal face temp <65°C, vibration <3.5mm/s RMS.
+
+5. DOCUMENTATION
+   - Complete Work Order in CMMS.
+   - Record seal part numbers, shaft measurements, and
+     alignment readings on Form MEC/042-A.
+   - Update equipment history in SAP PM module.
+   - File PTW closure with safety department.
+
+6. REFERENCES
+   - Manufacturer manual: FlowServe ISC2 Mechanical Seal
+   - API 682 — Pumps — Shaft Sealing Systems
+   - SOP/SAF/005 — Lock-Out / Tag-Out Procedure
+   - SOP/MEC/001 — Compressor Shutdown Procedure
+   - SOP/MEC/002 — Compressor Startup Procedure
+
+==============================================================
+Prepared by: V. K. Patel (Rotating Equipment Engineer)
+Approved by: S. N. Gupta (Head — Mechanical Maintenance)
+==============================================================
