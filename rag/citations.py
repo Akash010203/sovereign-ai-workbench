@@ -23,9 +23,8 @@ def build_rag_prompt(
     """
     Build a RAG-augmented prompt for the small MiniLLM context window.
 
-    Keeps the prefix minimal (no verbose system message) so that the
-    retrieved context + question fit within the model's 128-token limit.
-    Uses the same Q:/A: format that the adapter's instruction prompt uses.
+    Keeps the prefix minimal so retrieved text + question fit in the small
+    local model's context. The adapter supplies the final chat role markers.
     """
     # Build context string (without needing a Retriever instance)
     parts = []
@@ -38,9 +37,9 @@ def build_rag_prompt(
         total += len(snippet)
     context = "\n".join(parts)
 
-    # Keep it tight: context block + Q/A marker only
+    # Keep it tight: context block + plain question only.
     return (
         f"Context:\n{context}\n\n"
-        f"Q: {query}\n"
-        f"A:"
+        f"Question: {query}\n"
+        "Answer from the context only:"
     )

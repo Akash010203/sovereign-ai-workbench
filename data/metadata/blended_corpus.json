@@ -1,0 +1,47 @@
+{
+  "sources": {
+    "maintenance": "Jvachier/industrial-maintenance-synthetic (Apache-2.0)",
+    "fineweb_edu": "HuggingFaceFW/fineweb-edu (ODC-By-1.0)",
+    "nemotron": "nvidia/Llama-Nemotron-Post-Training-Dataset/SFT/code (see dataset-card terms)",
+    "openorca": "Open-Orca/OpenOrca (see dataset card)"
+  },
+  "requested_rows": {
+    "maintenance": 160000,
+    "fineweb_edu": 100000,
+    "nemotron": 60000,
+    "openorca": 80000
+  },
+  "written_rows": {
+    "maintenance": {
+      "train": 154923,
+      "val": 3197,
+      "skipped": 1880
+    },
+    "fineweb_edu": {
+      "train": 97987,
+      "val": 2013,
+      "skipped": 0
+    },
+    "nemotron": {
+      "train": 58816,
+      "val": 1184,
+      "skipped": 0
+    },
+    "openorca": {
+      "train": 78449,
+      "val": 1551,
+      "skipped": 0
+    }
+  },
+  "weights": {
+    "maintenance": 0.4,
+    "fineweb_edu": 0.25,
+    "nemotron": 0.15,
+    "openorca": 0.2
+  },
+  "validation_ratio": 0.02,
+  "train_file": "C:\\Users\\akash\\Videos\\Captures\\sovereign-ai-workbench\\data\\processed\\blended_train.txt",
+  "val_file": "C:\\Users\\akash\\Videos\\Captures\\sovereign-ai-workbench\\data\\processed\\blended_val.txt",
+  "streaming": true,
+  "source_mode": "local"
+}

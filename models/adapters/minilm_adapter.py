@@ -124,6 +124,11 @@ class CustomMiniLLMAdapter(ModelProvider):
         If the text already contains RAG context (has 'Context:' block)
         or is already formatted, pass it through as-is to avoid
         double-wrapping which confuses the model.
+
+        For the industrial 80M model (chat format), we add a brief system
+        constraint to bias the model toward domain-relevant answers and
+        away from competitive programming solutions (which dominate the
+        training mix).
         """
         stripped = user_text.strip()
         if self._uses_chat_format():
@@ -132,7 +137,16 @@ class CustomMiniLLMAdapter(ModelProvider):
             # an explanation/completion task instead of an assistant reply.
             if "<|assistant|>" in stripped:
                 return stripped if stripped.rstrip().endswith("<|assistant|>") else stripped.rstrip() + " <|assistant|>"
-            return f"<|user|> {stripped} <|assistant|>"
+            # Add a brief system-level constraint to steer the model toward
+            # industrial/maintenance answers. Without this, the mixed training
+            # data (OpenOrca + Nemotron code) causes the model to generate
+            # competitive programming solutions for domain questions.
+            system_hint = (
+                "<|system|> You are an industrial maintenance assistant. "
+                "Answer briefly and factually about equipment, procedures, "
+                "and engineering. "
+            )
+            return f"{system_hint}<|user|> {stripped} <|assistant|>"
 
         # Legacy checkpoints were trained on Q:/A: text.
         if "Context:" in stripped or stripped.startswith("Q:"):
@@ -153,35 +167,45 @@ class CustomMiniLLMAdapter(ModelProvider):
         then clean up obvious repetition loops. Avoid stripping
         tokens like 'A:' globally — they appear legitimately in output.
         """
-        # 1. Remove any BOS/EOS special tokens
+        # 1. Remove any BOS/EOS/role special tokens
         raw = raw.replace("<bos>", "").replace("<eos>", "")
+        raw = raw.replace("<|user|>", "").replace("<|assistant|>", "").replace("<|system|>", "")
 
         # 2. If the prompt was echoed at the start, remove it
         if prompt:
             # Try to strip the prompt prefix from the beginning of the output
             prompt_stripped = prompt.replace("<bos>", "").strip()
-            if raw.startswith(prompt_stripped):
-                raw = raw[len(prompt_stripped):]
+            for tag in ("<|user|>", "<|assistant|>", "<|system|>"):
+                prompt_stripped = prompt_stripped.replace(tag, "")
+            prompt_stripped = prompt_stripped.strip()
+            raw_stripped = raw.strip()
+            if raw_stripped.startswith(prompt_stripped):
+                raw = raw_stripped[len(prompt_stripped):]
 
-        # 3. Remove leading prompt artifacts (Q:/A: at very start only)
+        # 3. Remove <think>...</think> blocks (from Nemotron-style training data)
+        raw = re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL)
+        # Also remove unclosed <think> blocks (model ran out of tokens mid-think)
+        raw = re.sub(r"<think>.*", "", raw, flags=re.DOTALL)
+
+        # 4. Remove leading prompt artifacts (Q:/A: at very start only)
         raw = re.sub(r"^\s*(Q:|A:|### Response:|### Instruction:)\s*", "", raw)
 
-        # 4. Strip meta-commentary that small models produce instead of answers
+        # 5. Strip meta-commentary that small models produce instead of answers
         raw = re.sub(
-            r"(?i)(the given task is|here is a step.by.step|step \d+:|determine if|find the appropriate)[^\n]*\n?",
+            r"(?i)(the given task is|here is a step.by.step|step \d+:|determine if|find the appropriate|the problem is|let's see|okay,)[^\n]*\n?",
             "",
             raw,
         )
 
-        # 5. Collapse runs of the same word repeated 3+ times (hallucination loop)
+        # 6. Collapse runs of the same word repeated 3+ times (hallucination loop)
         raw = re.sub(r"\b(\w+)(\s+\1){3,}", r"\1 \1", raw)
 
-        # 6. Collapse sequences of the same punctuation (e.g. ".....", "-----")
+        # 7. Collapse sequences of the same punctuation (e.g. ".....", "-----")
         raw = re.sub(r"([^\w\s]){5,}", r"\1\1", raw)
 
         raw = raw.strip()
 
-        # 7. Hard cap at 800 chars — cut at sentence boundary if possible
+        # 8. Hard cap at 800 chars — cut at sentence boundary if possible
         if len(raw) > 800:
             cutpoint = raw.rfind(".", 0, 800)
             if cutpoint > 100:
@@ -189,7 +213,7 @@ class CustomMiniLLMAdapter(ModelProvider):
             else:
                 raw = raw[:800].rstrip() + "…"
 
-        # 8. Trim to at most 3 paragraphs
+        # 9. Trim to at most 3 paragraphs
         paragraphs = [p.strip() for p in raw.split("\n\n") if p.strip()]
         if paragraphs:
             raw = "\n\n".join(paragraphs[:3])

@@ -19,10 +19,38 @@ dependencies = [
 dev = [
     "pytest>=8.0",
 ]
+tools = [
+    "pdfminer.six",
+    "openpyxl",
+    "python-docx",
+    "python-pptx",
+    "pytesseract",
+    "Pillow",
+    "pdf2image",
+]
+rag = [
+    "sentence-transformers",
+]
+backend = [
+    "flask>=3.0",
+    "flask-cors",
+]
+data = [
+    "datasets>=3.0",
+    "tqdm>=4.66",
+    "requests>=2.32",
+]
+all = [
+    "sovereign-ai-workbench[dev,tools,rag,backend,data]",
+]
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["core*", "tokenizer*", "models*"]
+include = [
+    "core*", "tokenizer*", "models*", "training*",
+    "agents*", "tools*", "rag*", "router*",
+    "database*", "security*", "evaluation*", "demo*",
+]
 
 # Lets `pytest` (run from the repo root) resolve `import core...`,
 # `import tokenizer...` etc. without needing an editable install or

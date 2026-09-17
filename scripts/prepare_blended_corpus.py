@@ -1,18 +1,23 @@
-"""Create a disk-backed, ratio-controlled corpus from three HF datasets.
+"""Create a disk-backed, ratio-controlled corpus from four HF datasets.
 
-The datasets are read with ``streaming=True``: neither the multi-million-row
-NVIDIA dataset nor the 2.1M-row maintenance dataset is loaded into RAM.  The
-result is line-oriented text that existing tokenizer and training scripts can
-consume.  A document-level holdout is created at the same time.
+The datasets are read with ``streaming=True``: none of the large source
+datasets are loaded entirely into RAM.  The result is line-oriented text
+that existing tokenizer and training scripts can consume.  A document-level
+holdout is created at the same time.
 
-The default 45/35/20 blend intentionally gives industrial maintenance enough
-weight to become a real speciality without erasing general instruction and
-reasoning behaviour.  It is not a claim that any blend makes an 80M model
-"perfect"; a model at this scale still needs extensive token exposure and
-evaluation.
+The default 40/25/15/20 blend gives industrial maintenance the highest
+weight (domain speciality), adds educational web text from FineWeb-Edu for
+general language quality, reduces code/reasoning from Nemotron, and keeps
+OpenOrca for instruction following.
+
+Data sources:
+    1. maintenance (40%) — industrial work orders (Jvachier/industrial-maintenance-synthetic)
+    2. fineweb_edu (25%) — educational web text (HuggingFaceFW/fineweb-edu)
+    3. nemotron   (15%) — code/reasoning (nvidia/Llama-Nemotron-Post-Training-Dataset)
+    4. openorca   (20%) — general instruction following (Open-Orca/OpenOrca)
 
 Example (RTX 4050 / 16 GB RAM):
-    python scripts/prepare_blended_corpus.py --total-rows 300000
+    python scripts/prepare_blended_corpus.py --total-rows 400000
     python scripts/train_tokenizer.py --train-file data/processed/blended_train.txt \\
         --output tokenizer/vocab/blended_16k.json --vocab-size 16000 --max-lines 250000 \\
         --instruction-format
@@ -37,7 +42,13 @@ sys.path.insert(0, str(ROOT))
 
 log = logging.getLogger("prepare_blended_corpus")
 
-DEFAULT_WEIGHTS = {"maintenance": 0.45, "nemotron": 0.35, "openorca": 0.20}
+DEFAULT_WEIGHTS = {
+    "maintenance": 0.40,
+    "fineweb_edu": 0.25,
+    "nemotron": 0.15,
+    "openorca": 0.20,
+}
+SOURCE_ORDER = ("maintenance", "fineweb_edu", "nemotron", "openorca")
 NEMOTRON_CODE_URL = (
     "https://huggingface.co/datasets/nvidia/Llama-Nemotron-Post-Training-Dataset/"
     "resolve/main/SFT/code/code_v1.1.jsonl"
@@ -141,11 +152,16 @@ def stream_local_jsonl(path: Path) -> Iterator[dict[str, Any]]:
 
 def local_source_streams(source_dir: Path) -> dict[str, Iterator[dict[str, Any]]]:
     """Return streams from files made by download_blend_sources.py."""
-    return {
+    streams = {
         "maintenance": stream_local_parquet(source_dir / "maintenance" / "maintenance.parquet"),
         "nemotron": stream_local_jsonl(source_dir / "nemotron" / "SFT" / "code" / "code_v1.1.jsonl"),
         "openorca": stream_local_parquet(source_dir / "openorca" / "1M-GPT4-Augmented.parquet"),
     }
+    # FineWeb-Edu is optional — the download script saves a subset as Parquet
+    fineweb_path = source_dir / "fineweb_edu" / "fineweb_edu_subset.parquet"
+    if fineweb_path.exists():
+        streams["fineweb_edu"] = stream_local_parquet(fineweb_path)
+    return streams
 
 
 def maintenance_to_text(row: dict[str, Any]) -> str:
@@ -175,6 +191,25 @@ def openorca_to_text(row: dict[str, Any]) -> str:
     return f"<|system|> {system} <|user|> {question} <|assistant|> {response}"
 
 
+def fineweb_to_text(row: dict[str, Any]) -> str:
+    """Convert a FineWeb-Edu educational text into an instruction-format example.
+
+    The raw text is high-quality educational content (articles, explanations,
+    etc.).  We wrap it in a simple instruction format so the model learns
+    to produce educational prose when asked to explain something.
+    """
+    text = _clean(row.get("text") or "")
+    if not text or len(text) < 100:
+        return ""
+    # Truncate very long documents to ~2000 chars to keep training efficient.
+    # The model's context window is only 256 tokens anyway.
+    if len(text) > 2000:
+        # Cut at last sentence boundary within limit
+        cut = text.rfind(".", 0, 2000)
+        text = text[:cut + 1] if cut > 500 else text[:2000]
+    return f"<|user|> Explain the following topic. <|assistant|> {text}"
+
+
 def interleave_weighted(streams: dict[str, Iterator[dict[str, Any]]], counts: dict[str, int]):
     """Yield source rows in their requested proportions without buffering.
 
@@ -187,7 +222,7 @@ def interleave_weighted(streams: dict[str, Iterator[dict[str, Any]]], counts: di
         candidates = [name for name, value in remaining.items() if value > 0]
         # Largest remaining fraction == smallest emitted fraction.  The tuple
         # gives deterministic tie-breaking in the documented source order.
-        name = max(candidates, key=lambda source: (remaining[source] / counts[source], -("maintenance", "nemotron", "openorca").index(source)))
+        name = max(candidates, key=lambda source: (remaining[source] / counts[source], -SOURCE_ORDER.index(source) if source in SOURCE_ORDER else 0))
         try:
             yield name, next(streams[name])
         except StopIteration:
@@ -202,11 +237,13 @@ def interleave_weighted(streams: dict[str, Iterator[dict[str, Any]]], counts: di
 def _row_counts(total_rows: int, weights: dict[str, float]) -> dict[str, int]:
     if total_rows <= 0:
         raise ValueError("total_rows must be positive; use a bounded corpus for repeatable training.")
-    if set(weights) != set(DEFAULT_WEIGHTS) or any(value <= 0 for value in weights.values()):
-        raise ValueError("all three source weights must be positive")
+    if any(value <= 0 for value in weights.values()):
+        raise ValueError("all source weights must be positive")
     scale = sum(weights.values())
     counts = {name: int(total_rows * weight / scale) for name, weight in weights.items()}
-    counts["maintenance"] += total_rows - sum(counts.values())
+    # Give rounding remainder to the first source (maintenance)
+    first_source = next(iter(counts))
+    counts[first_source] += total_rows - sum(counts.values())
     return counts
 
 
@@ -247,10 +284,22 @@ def build_corpus(
     else:
         streams = {
             "maintenance": iter(load_dataset("Jvachier/industrial-maintenance-synthetic", split="train", streaming=True)),
+            "fineweb_edu": iter(load_dataset("HuggingFaceFW/fineweb-edu", "default", split="train", streaming=True)),
             "nemotron": stream_jsonl(NEMOTRON_CODE_URL),
             "openorca": iter(load_dataset("Open-Orca/OpenOrca", split="train", streaming=True)),
         }
-    formatters = {"maintenance": maintenance_to_text, "nemotron": nemotron_to_text, "openorca": openorca_to_text}
+    # If FineWeb-Edu is not available (not downloaded yet), remove it from counts
+    if "fineweb_edu" not in streams and "fineweb_edu" in counts:
+        log.warning("FineWeb-Edu not available — falling back to 3-source blend")
+        removed_count = counts.pop("fineweb_edu")
+        # Redistribute to maintenance
+        counts["maintenance"] = counts.get("maintenance", 0) + removed_count
+    formatters = {
+        "maintenance": maintenance_to_text,
+        "fineweb_edu": fineweb_to_text,
+        "nemotron": nemotron_to_text,
+        "openorca": openorca_to_text,
+    }
     written = {name: {"train": 0, "val": 0, "skipped": 0} for name in counts}
 
     try:
@@ -295,6 +344,7 @@ def build_corpus(
     stats = {
         "sources": {
             "maintenance": "Jvachier/industrial-maintenance-synthetic (Apache-2.0)",
+            "fineweb_edu": "HuggingFaceFW/fineweb-edu (ODC-By-1.0)",
             "nemotron": "nvidia/Llama-Nemotron-Post-Training-Dataset/SFT/code (see dataset-card terms)",
             "openorca": "Open-Orca/OpenOrca (see dataset card)",
         },
@@ -312,10 +362,11 @@ def build_corpus(
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Build a streamed three-dataset training blend")
-    parser.add_argument("--total-rows", type=int, default=300_000,
-                        help="Total source rows to materialise (default: 300000).")
+    parser = argparse.ArgumentParser(description="Build a streamed four-dataset training blend")
+    parser.add_argument("--total-rows", type=int, default=400_000,
+                        help="Total source rows to materialise (default: 400000).")
     parser.add_argument("--maintenance-weight", type=float, default=DEFAULT_WEIGHTS["maintenance"])
+    parser.add_argument("--fineweb-weight", type=float, default=DEFAULT_WEIGHTS["fineweb_edu"])
     parser.add_argument("--nemotron-weight", type=float, default=DEFAULT_WEIGHTS["nemotron"])
     parser.add_argument("--openorca-weight", type=float, default=DEFAULT_WEIGHTS["openorca"])
     parser.add_argument("--validation-ratio", type=float, default=0.02)
@@ -329,7 +380,12 @@ def main() -> None:
     args = parse_args()
     stats = build_corpus(
         args.total_rows,
-        {"maintenance": args.maintenance_weight, "nemotron": args.nemotron_weight, "openorca": args.openorca_weight},
+        {
+            "maintenance": args.maintenance_weight,
+            "fineweb_edu": args.fineweb_weight,
+            "nemotron": args.nemotron_weight,
+            "openorca": args.openorca_weight,
+        },
         validation_ratio=args.validation_ratio,
         source_dir=args.source_dir,
     )

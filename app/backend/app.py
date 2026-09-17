@@ -44,12 +44,33 @@ from agents.agent import Agent
 from rag.index import LocalVectorIndex
 from rag.ingest import DocumentIngester
 from rag.retriever import Retriever
+from rag.fineweb_index import FineWebDiskIndex, FineWebRetriever
+from rag.hybrid import HybridRetriever
 from rag.citations import build_rag_prompt, format_citations
 from security.offline_mode import verify_offline
 from security.audit import log_event
 
 setup_logging("backend")
 log = logging.getLogger(__name__)
+
+_DOMAIN_TERMS = {
+    "alarm", "bearing", "compressor", "equipment", "fault", "inspection",
+    "maintenance", "manual", "motor", "pipeline", "pressure", "procedure",
+    "pump", "report", "sensor", "sop", "temperature", "valve", "vibration",
+    "work order", "work instruction",
+}
+_GREETING_ALIASES = {"hi", "ihi", "hello", "hey", "good morning", "good afternoon", "good evening"}
+_VAGUE_MESSAGES = {"what", "what is", "what is it", "help", "help me", "why", "how"}
+
+
+def _chat_response_kind(user_input: str) -> str:
+    """Keep a specialised local model within its demonstrated scope."""
+    normalized = re.sub(r"[^a-z0-9 ]", "", user_input.lower()).strip()
+    if normalized in _GREETING_ALIASES:
+        return "greeting"
+    if normalized in _VAGUE_MESSAGES or len(normalized) <= 3:
+        return "needs_detail"
+    return "domain" if any(term in normalized for term in _DOMAIN_TERMS) else "out_of_scope"
 
 
 def create_app(config: dict = None) -> Flask:
@@ -97,22 +118,32 @@ def create_app(config: dict = None) -> Flask:
         ollama_models=config.get("ollama_models", []),  # empty = no Ollama
     )
 
-    # Tool registry (pass retriever so agent can call rag_search via tools)
-    tool_registry = build_default_tool_registry(
-        workspace_root=str(ROOT),
-        retriever=rag_retriever,
-    )
-
-    # Agent
-    agent = Agent(model_registry, tool_registry)
-
-    # RAG
+    # RAG (must be initialized before tools — RagSearchTool wraps the retriever)
     rag_index_path = ROOT / "data" / "rag_index.json"
     rag_index      = LocalVectorIndex()
     if rag_index_path.exists():
         rag_index.load(rag_index_path)
     rag_ingester  = DocumentIngester(rag_index)
     rag_retriever = Retriever(rag_index)
+    fineweb_index = FineWebDiskIndex(ROOT / "data" / "knowledge" / "fineweb_edu_1p6b_embed")
+    fineweb_retriever = (
+        FineWebRetriever(fineweb_index, embedder=rag_retriever.embedder)
+        if fineweb_index.status.available else None
+    )
+    knowledge_retriever = HybridRetriever(rag_retriever, fineweb_retriever)
+    if fineweb_retriever:
+        log.info("FineWeb knowledge enabled: %d chunks via %s search", len(fineweb_index), fineweb_index.status.mode)
+    else:
+        log.info("FineWeb knowledge unavailable: %s", fineweb_index.status.detail)
+
+    # Tool registry (pass retriever so agent can call rag_search via tools)
+    tool_registry = build_default_tool_registry(
+        workspace_root=str(ROOT),
+        retriever=knowledge_retriever,
+    )
+
+    # Agent
+    agent = Agent(model_registry, tool_registry)
 
     # ── Global error handler — always return JSON, never HTML ────────
     from werkzeug.exceptions import HTTPException
@@ -141,6 +172,13 @@ def create_app(config: dict = None) -> Flask:
             "offline":  offline,
             "models":   models,
             "rag_docs": len(rag_index),
+            "fineweb": {
+                "available": fineweb_index.status.available,
+                "chunks": len(fineweb_index),
+                "dimension": fineweb_index.status.dimension,
+                "mode": fineweb_index.status.mode,
+                "detail": fineweb_index.status.detail,
+            },
         })
 
     # ── Models ────────────────────────────────────────────────────────
@@ -155,7 +193,8 @@ def create_app(config: dict = None) -> Flask:
         user_input  = data.get("message", "").strip()
         model_name  = data.get("model", "")
         conv_id     = data.get("conversation_id", "")
-        use_rag     = bool(data.get("use_rag", False))
+        # ``None`` means the client did not choose; false explicitly opts out.
+        use_rag     = data.get("use_rag")
 
         if not user_input:
             return jsonify({"error": "Empty message."}), 400
@@ -168,24 +207,23 @@ def create_app(config: dict = None) -> Flask:
         # A short greeting does not need the language model.  This prevents a
         # small domain model from turning "hi" into an unrelated technical
         # explanation, while keeping all substantive requests model-generated.
-        normalized_input = re.sub(r"[^a-z ]", "", user_input.lower()).strip()
-        greeting_only = normalized_input in {"hi", "hello", "hey", "good morning", "good afternoon", "good evening"}
+        response_kind = _chat_response_kind(user_input)
 
         # Retrieve only when explicitly requested. This keeps normal chat
         # lightweight and lets the client show source provenance separately
         # instead of trusting a small generative model to format citations.
         rag_results = []
         model_input = user_input
-        # Auto-enable RAG whenever the index has data — use_rag flag can still
-        # override to False if the client explicitly opts out.
-        should_use_rag = (use_rag is not False) and len(rag_index) > 0
+        # Use RAG only when the user explicitly enables it in the UI. This
+        # prevents irrelevant chunks from overwhelming the 256-token context.
+        should_use_rag = use_rag is True and (len(rag_index) > 0 or len(fineweb_index) > 0)
         if should_use_rag:
-            rag_results = rag_retriever.retrieve(user_input, top_k=5, min_score=0.10)
+            rag_results = knowledge_retriever.retrieve(user_input, top_k=2, min_score=0.20)
             if rag_results:
-                # Use a generous context window so the model sees real facts
-                # from the knowledge base rather than generating from scratch.
+                # Leave room for the question and answer in the 256-token
+                # context; oversized RAG text was truncated before generation.
                 model_input = build_rag_prompt(
-                    user_input, rag_results, max_context_chars=1000
+                    user_input, rag_results, max_context_chars=350
                 )
 
         # Route and generate
@@ -194,10 +232,21 @@ def create_app(config: dict = None) -> Flask:
         decision = TaskRouter(model_registry).route(user_input)
 
         reply = "[No model available]"
-        if greeting_only:
+        if response_kind == "greeting":
             reply = (
                 "Hello — I’m SovereignAI, your local maintenance and engineering assistant. "
                 "Ask me about an equipment issue, a work instruction, or your local knowledge base."
+            )
+        elif response_kind == "needs_detail":
+            reply = (
+                "Please give me a specific maintenance or engineering question. For example: "
+                "‘Pump P-101 has high drive-end vibration—what should I inspect first?’"
+            )
+        elif response_kind == "out_of_scope" and not rag_results:
+            reply = (
+                "This local model is specialised for maintenance and engineering, not general chat. "
+                "Ask about equipment, a fault, an inspection, a work order, or enable ‘Use knowledge’ "
+                "to search your local documents."
             )
         elif decision.model:
             try:
@@ -293,7 +342,7 @@ def create_app(config: dict = None) -> Flask:
         if not query:
             return jsonify({"error": "Empty query."}), 400
 
-        results = rag_retriever.retrieve(query, top_k=top_k)
+        results = knowledge_retriever.retrieve(query, top_k=top_k)
         return jsonify({
             "results":   [{"source": r.source, "text": r.text, "score": r.score,
                            "citation": r.citation()} for r in results],

@@ -11,7 +11,9 @@ def test_industrial_adapter_uses_trained_role_markers():
 
     adapter = CustomMiniLLMAdapter("missing.pt")
     adapter._tokenizer = _Tokenizer()
-    assert adapter._build_instruction_prompt("hi") == "<|user|> hi <|assistant|>"
+    prompt = adapter._build_instruction_prompt("hi")
+    assert prompt.endswith("<|user|> hi <|assistant|>")
+    assert "industrial maintenance assistant" in prompt
 
 
 def test_legacy_adapter_keeps_legacy_instruction_format():
@@ -19,3 +21,12 @@ def test_legacy_adapter_keeps_legacy_instruction_format():
 
     adapter = CustomMiniLLMAdapter("missing.pt")
     assert adapter._build_instruction_prompt("hi") == "Q: hi\nA:"
+
+
+def test_chat_scope_keeps_typos_and_vague_messages_out_of_generation():
+    from app.backend.app import _chat_response_kind
+
+    assert _chat_response_kind("ihi") == "greeting"
+    assert _chat_response_kind("what?") == "needs_detail"
+    assert _chat_response_kind("Pump P-101 has high vibration") == "domain"
+    assert _chat_response_kind("Tell me a joke") == "out_of_scope"

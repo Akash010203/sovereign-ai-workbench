@@ -35,11 +35,15 @@ from typing import Any, Optional
 
 @dataclass
 class GenerationConfig:
-    """Standard generation parameters shared across all model adapters."""
-    max_new_tokens: int = 128
-    temperature: float = 0.8
-    top_k: int = 40
-    top_p: float = 0.95
+    """Standard generation parameters shared across all model adapters.
+
+    Defaults are tuned for the industrial 80M domain model — conservative
+    decoding to reduce hallucination from the mixed training data.
+    """
+    max_new_tokens: int = 80
+    temperature: float = 0.6
+    top_k: int = 30
+    top_p: float = 0.90
     seed: Optional[int] = None
     stop_sequences: list[str] = field(default_factory=list)
 

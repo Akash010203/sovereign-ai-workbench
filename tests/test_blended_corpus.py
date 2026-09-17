@@ -67,7 +67,12 @@ def test_default_blend_counts_sum_and_favour_maintenance():
 
     counts = _row_counts(300_000, DEFAULT_WEIGHTS)
     assert sum(counts.values()) == 300_000
-    assert counts == {"maintenance": 135_000, "nemotron": 105_000, "openorca": 60_000}
+    assert counts == {
+        "maintenance": 120_000,
+        "fineweb_edu": 75_000,
+        "nemotron": 45_000,
+        "openorca": 60_000,
+    }
 
 
 def test_weighted_interleave_does_not_concatenate_sources():
