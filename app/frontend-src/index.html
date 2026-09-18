@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SovereignAI — On-Premise AI Workbench</title>
+    <meta name="description" content="SovereignAI Workbench — Air-gapped, on-premise agentic AI for engineering, document analysis, and knowledge management. SIH 2026." />
+    <!-- Prevent dark mode flash -->
+    <script>
+      (function() {
+        try {
+          var theme = JSON.parse(localStorage.getItem('sovereign-ui') || '{}').state?.theme;
+          if (theme === 'light') document.documentElement.classList.remove('dark');
+          else document.documentElement.classList.add('dark');
+        } catch(e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
