@@ -41,75 +41,160 @@ phase is complete.
 
 ---
 
-## 3. System component diagram
+## 3. Comprehensive System Map & Architecture Blueprint
 
 ```mermaid
 flowchart TB
-    subgraph UI["Local Web UI (Phase 20)"]
-        Chat[Chat]
-        DocsUI[Documents]
-        KB[Knowledge Base]
-        Artifacts[Artifacts]
-        StatusUI[Model / Security Status]
+    %% Subgraphs
+    subgraph UI["🖥️ CLIENT & PRESENTATION TIER (Phase 20)"]
+        direction TB
+        ChatUI["💬 Chat Workspace<br/>• Streaming inference<br/>• Model & mode selector<br/>• Stop generation control"]
+        DocsUI["📄 Document Explorer<br/>• Multi-file upload<br/>• PDF / DOCX / TXT / MD<br/>• Chunk visualizer"]
+        KBUI["🧠 Knowledge Catalog<br/>• FineWeb-Edu 1.6B index<br/>• Hybrid semantic retrieval<br/>• Vector store status"]
+        ToolsUI["⚙️ Tool Runner Studio<br/>• AST Math calculator<br/>• Scanned OCR extraction<br/>• Office artifact generator"]
+        SecUI["🔒 Air-Gap Security Monitor<br/>• 0-socket egress indicator<br/>• Real-time connection log<br/>• Tamper-evident audit trail"]
     end
 
-    subgraph Backend["Local Flask Backend (Phase 19)"]
-        API[HTTP API]
+    subgraph Gateway["⚡ APPLICATION GATEWAY & SECURITY LAYER (Phase 18-19)"]
+        direction TB
+        API["🌐 Local Flask REST Gateway<br/>(127.0.0.1:5000 · Zero WAN / Strict Localhost)"]
+        NetMon["🛡️ Socket Interceptor & Network Monitor<br/>• Monkey-patched socket.socket<br/>• Blocks outbound internet traffic<br/>• Real-time socket connection logging"]
+        RBAC["👥 Role-Based Access Controller<br/>• Admin / Engineer / Auditor roles<br/>• Strict capability & tool bounds"]
     end
 
-    subgraph AgentLayer["Agent Layer (Phase 11)"]
-        Planner
-        Executor
-        Verifier
-        Memory
+    subgraph Routing["🧭 TASK ROUTING & DISPATCH (Phase 9)"]
+        direction TB
+        Classifier["🎯 Intent Classifier<br/>• Regex & pattern matching<br/>• Domain keywords<br/>• Fallback arbitration"]
+        Policy["📋 Dispatch Policies<br/>• Direct LLM synthesis<br/>• Grounded RAG query<br/>• Structured SQL inquiry<br/>• Deterministic tool run<br/>• Multi-step agent workflow"]
     end
 
-    subgraph RouterLayer["Task Router (Phase 9)"]
-        Classifier[Task Classifier - rule based]
-        Policies
+    subgraph AgentTriad["🤖 AUTONOMOUS AGENT TRIAD (Phase 11)"]
+        direction TB
+        Planner["📋 Task Planner<br/>• Decomposes goal into DAG<br/>• Assigns deterministic tools<br/>• Establishes halt constraints"]
+        Executor["⚡ Step Executor<br/>• Dispatches tool actions<br/>• Traverses execution plan<br/>• Handles retries & fallbacks"]
+        Verifier["✅ State Verifier<br/>• Tests schema & correctness<br/>• Verifies safety invariants<br/>• Prevents hallucinated leaps"]
+        Scratchpad["🧠 Memory & Scratchpad<br/>• Ephemeral state history<br/>• Serializable task context"]
     end
 
-    subgraph Models["Model Layer (Phase 4-8)"]
-        MiniLLM["Custom MiniLLM (from scratch)"]
-        OpenWeight["Open-weight local model(s)"]
-        Vision["Local vision model"]
+    subgraph Models["🧠 MULTI-MODEL INFERENCE SUBSYSTEM (Phase 3-8)"]
+        direction TB
+        MiniLLM["🧬 Custom MiniLLM (~10.2M)<br/>• From scratch in PyTorch<br/>• RoPE + SwiGLU + RMSNorm<br/>• Tied embedding weights<br/>• Autoregressive sampling"]
+        BPETok["🔤 Byte-Level BPE Tokenizer<br/>• 8,192-token vocabulary<br/>• Written from raw bytes<br/>• Zero external binary blobs"]
+        IndModel["🏭 Industrial 80M Adapter<br/>• PSU & refinery reasoning<br/>• Edge GPU accelerated<br/>• Fully local open-weight"]
+        EmbModel["📐 MiniLM Adapter<br/>• 384-d dense vectorizer<br/>• Sentence-level semantics<br/>• Offline local inference"]
+        VisionModel["👁️ Local Vision / OCR Adapter<br/>• Multimodal schematics<br/>• Engineering blueprint OCR<br/>• Tesseract integration"]
     end
 
-    subgraph Tools["Tool Registry (Phase 10)"]
-        FS[Filesystem]
-        Calc[Calculator]
-        PDFOCR[PDF / OCR]
-        Sheet[Spreadsheet]
-        Writers[Word / PPT / Excel writers]
-        Sandbox[Code Sandbox]
+    subgraph ToolsRegistry["🛠️ DETERMINISTIC LOCAL TOOL REGISTRY (Phase 10, 13-16)"]
+        direction TB
+        ASTCalc["🧮 Safe AST Calculator<br/>• Zero eval() vulnerabilities<br/>• Math & engineering AST"]
+        FSTool["📁 Local Filesystem Tool<br/>• Sandboxed read / write<br/>• Strict directory boundary"]
+        OCRTool["🔍 PDF / OCR Extractor<br/>• PyMuPDF text parser<br/>• Tesseract OCR engine"]
+        SheetTool["📊 Spreadsheet Processor<br/>• OpenPyXL CSV/XLSX<br/>• Tabular aggregation"]
+        OfficeDoc["📝 Office Deliverable Writer<br/>• Word (.docx) generator<br/>• PowerPoint (.pptx) slides<br/>• Excel (.xlsx) workbooks"]
+        Sandbox["📦 Subprocess Code Sandbox<br/>• Restricted execution<br/>• Execution timeout guard"]
     end
 
-    subgraph RAGLayer["Local RAG (Phase 12)"]
-        Ingest --> Chunk --> Embed --> Index --> Retrieve
+    subgraph RAGEngine["📚 HYBRID RAG & KNOWLEDGE ENGINE (Phase 12)"]
+        direction TB
+        Ingest["📥 Document Ingestion<br/>• Multi-format ingestion<br/>• PDF, DOCX, TXT, MD, JSONL"]
+        Chunker["✂️ Sliding-Window Chunker<br/>• 256-512 token windows<br/>• Configurable chunk overlap"]
+        VecIndex["⚡ Dense Vector Index<br/>• Cosine similarity search<br/>• Fast vector math in NumPy/Torch"]
+        FineWeb["🌐 FineWeb-Edu 1.6B Corpus<br/>• Pre-indexed knowledge store<br/>• Fast local semantic lookup"]
+        Citations["📑 Citation Grounding Engine<br/>• Document & page metadata<br/>• Paragraph-level attribution"]
     end
 
-    subgraph Persist["Persistence"]
-        SQLite[(SQLite - Phase 17)]
-        VectorIndex[(Local vector index)]
+    subgraph Storage["💾 PERSISTENCE & RELATIONAL STORAGE (Phase 17)"]
+        direction TB
+        SQLiteDB[("🗄️ SQLite Database (sovereign_ai.db)<br/>• users & sessions<br/>• conversations & messages<br/>• documents & chunks<br/>• task_plans & step_history<br/>• append-only audit_log")]
+        VectorStore[("💾 Vector Storage Cache<br/>• .npy / .bin vector arrays<br/>• FineWeb embeddings")]
     end
 
-    subgraph SecurityLayer["Security / Air-gap (Phase 18)"]
-        Perms[Permissions]
-        Audit[Audit Log]
-        NetMon[Network Monitor]
-    end
+    %% Flow connections
+    ChatUI --> API
+    DocsUI --> API
+    KBUI --> API
+    ToolsUI --> API
+    SecUI --> API
 
-    UI --> API --> RouterLayer --> AgentLayer
-    AgentLayer --> Models
-    AgentLayer --> Tools
-    AgentLayer --> RAGLayer
-    RAGLayer --> VectorIndex
-    AgentLayer --> SQLite
-    API --> SQLite
-    SecurityLayer -.wraps.-> Backend
-    SecurityLayer -.wraps.-> Tools
-    SecurityLayer -.wraps.-> Models
+    API --> NetMon
+    API --> RBAC
+    API --> Classifier
+    Classifier --> Policy
+
+    Policy -->|Direct Synthesis| MiniLLM
+    Policy -->|Domain Synthesis| IndModel
+    Policy -->|Grounded Q&A| Ingest
+    Policy -->|Structured Query| SQLiteDB
+    Policy -->|Tool Invocation| ToolsRegistry
+    Policy -->|Multi-Step Goal| Planner
+
+    Planner --> Executor
+    Executor --> ToolsRegistry
+    Executor --> Models
+    Executor --> Ingest
+    Executor --> Scratchpad
+    Scratchpad --> Verifier
+    Executor --> Verifier
+    Verifier -->|Pass| API
+    Verifier -->|Retry| Executor
+
+    MiniLLM --- BPETok
+    IndModel --- BPETok
+
+    Ingest --> Chunker
+    Chunker --> EmbModel
+    EmbModel --> VecIndex
+    VecIndex --> Citations
+    FineWeb --> VecIndex
+    Citations --> MiniLLM
+
+    ASTCalc --> Scratchpad
+    FSTool --> Scratchpad
+    OCRTool --> Scratchpad
+    SheetTool --> Scratchpad
+    OfficeDoc --> Scratchpad
+    Sandbox --> Scratchpad
+
+    VecIndex --> VectorStore
+    Ingest --> SQLiteDB
+    API --> SQLiteDB
+    NetMon -.->|Socket Audit Records| SQLiteDB
+    RBAC -.->|Permission Audit| SQLiteDB
+
+    %% Styling
+    classDef ui fill:#0f172a,stroke:#38bdf8,stroke-width:2px,color:#f8fafc;
+    classDef gateway fill:#1e1b4b,stroke:#818cf8,stroke-width:2px,color:#f8fafc;
+    classDef router fill:#311042,stroke:#c084fc,stroke-width:2px,color:#f8fafc;
+    classDef agent fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#f8fafc;
+    classDef models fill:#4a044e,stroke:#f472b6,stroke-width:2px,color:#f8fafc;
+    classDef tools fill:#431407,stroke:#fb923c,stroke-width:2px,color:#f8fafc;
+    classDef rag fill:#022c22,stroke:#2dd4bf,stroke-width:2px,color:#f8fafc;
+    classDef storage fill:#172554,stroke:#60a5fa,stroke-width:2px,color:#f8fafc;
+
+    class ChatUI,DocsUI,KBUI,ToolsUI,SecUI ui;
+    class API,NetMon,RBAC gateway;
+    class Classifier,Policy router;
+    class Planner,Executor,Verifier,Scratchpad agent;
+    class MiniLLM,BPETok,IndModel,EmbModel,VisionModel models;
+    class ASTCalc,FSTool,OCRTool,SheetTool,OfficeDoc,Sandbox tools;
+    class Ingest,Chunker,VecIndex,FineWeb,Citations rag;
+    class SQLiteDB,VectorStore storage;
 ```
+
+### Subsystem Responsibility & Layer Mapping
+
+| Subsystem Layer | Directory | Core Components | Operational Responsibility |
+|---|---|---|---|
+| **Client UI** | `app/frontend/`<br/>`app/frontend-src/` | `index.html`, React/Vite App, `chatStore.ts` | 7-panel operator console: streaming chat, document upload, RAG citation inspector, offline audit monitor. |
+| **Gateway & Security** | `app/backend/`<br/>`security/` | `app.py`, `network_monitor.py`, `permissions.py` | Local Flask REST server (127.0.0.1:5000), socket interceptor with 0% outbound network egress, and RBAC controller. |
+| **Task Router** | `router/` | `task_classifier.py`, `policies.py`, `router.py` | Deterministic intent classifier dispatching queries to LLM, RAG, SQL, Tools, or Agent Triad. |
+| **Agent Triad** | `agents/` | `planner.py`, `executor.py`, `verifier.py`, `state.py` | Goal decomposition DAG, tool execution engine, invariant verifier, and serializable task memory. |
+| **Model Layer** | `models/`<br/>`tokenizer/` | `models/custom_minilm/`, `models/adapters/`, `tokenizer/` | Custom ~10.2M Transformer, Byte-level BPE tokenizer (8,192 vocab), Industrial 80M adapter, MiniLM embedding adapter. |
+| **Deterministic Tools**| `tools/` | `calculator.py`, `filesystem.py`, `ocr.py`, `word.py`, `powerpoint.py`, `code_sandbox.py` | Math AST calculator (eval-free), sandboxed filesystem I/O, Tesseract OCR, DOCX/PPTX/XLSX writers, isolated sandbox. |
+| **Hybrid RAG** | `rag/` | `ingest.py`, `chunking.py`, `embeddings.py`, `fineweb.py`, `citations.py` | Local multi-format ingestion, sliding-window chunking, dense vector index, FineWeb-Edu 1.6B knowledge store, and citation engine. |
+| **Persistence** | `database/` | `schema.sql`, `db.py`, `repositories/conversations.py` | SQLite schema and repository storing users, conversations, document chunks, task steps, and append-only audit log. |
+| **Air-Gap Security**| `security/` | `offline_mode.py`, `audit.py` | Socket-level egress blocker, automated air-gap verification script, and immutable hash-verified audit log. |
 
 ## 4. Data flow (training-time)
 

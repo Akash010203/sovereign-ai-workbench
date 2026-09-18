@@ -61,6 +61,8 @@ where $\text{Swish}(z) = z \cdot \sigma(z)$.
 
 In addition to the from-scratch custom LLM, the workbench supports pluggable local models via `models/adapters/`:
 - `CustomLLMAdapter`: Runs native PyTorch inference using trained weights.
+- `Industrial80MAdapter`: Industrial open-weight ~80M parameter model for domain reasoning on local edge GPUs.
+- `MiniLMAdapter`: Local 384-dimensional dense semantic embedding generator for high-speed offline RAG vectorization.
 - `OllamaAdapter`: Connects to local Ollama runtime for open-weight models (e.g., Mistral, Phi-3).
 - `VisionAdapter`: Connects to local multimodal models (e.g., LLaVA) for image and visual diagram understanding.
 

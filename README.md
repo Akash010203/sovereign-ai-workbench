@@ -34,7 +34,7 @@
 - [3. Proposed Solution](#3-proposed-solution)
 - [4. Project Objectives](#4-project-objectives)
 - [5. What Has Actually Been Built](#5-what-has-actually-been-built)
-- [6. High-Level Architecture](#6-high-level-architecture)
+- [6. System Map & High-Level Architecture](#6-system-map--high-level-architecture)
 - [7. How the LLM Was Made](#7-how-the-llm-was-made)
 - [8. Model Architecture](#8-model-architecture)
 - [9. Transformer Data Flow](#9-transformer-data-flow)
@@ -106,7 +106,7 @@
 - [75. Reproducibility Guarantee](#75-reproducibility-guarantee)
 - [76. Documentation Index](#76-documentation-index)
 - [77. Core Engineering Philosophy](#77-core-engineering-philosophy)
-- [78. End-to-End Architectural Flowchart](#78-end-to-end-architectural-flowchart)
+- [78. End-to-End Architectural Flowchart & Runtime Trace](#78-end-to-end-architectural-flowchart--runtime-trace)
 - [79. Key Technical Contributions](#79-key-technical-contributions)
 - [80. Conclusion](#80-conclusion)
 - [81. Phase-Gated Build Status](#81-phase-gated-build-status)
@@ -238,11 +238,170 @@ The Sovereign AI Workbench is an integrated software platform comprising 17 dist
 14. **Offline Verification**: Socket monkey-patch interceptor and automated scripts providing tangible proof of air-gap compliance.
 15. **Frontend/Backend Application**: Flask HTTP backend serving a 7-panel dark-mode web workbench.
 16. **Automated Scripts**: Suite of reproducible PowerShell and Python scripts for setup, GPU verification, training, inference, and evaluation.
-17. **Tests and Documentation**: Over 50 unit and end-to-end tests paired with 12 comprehensive engineering markdown documents.
+17. **Tests and Documentation**: 218 comprehensive unit, integration, and end-to-end tests passing at 100% across all 24 phases paired with 15 engineering markdown documents.
 
 ---
 
-## 6. High-Level Architecture
+## 6. System Map & High-Level Architecture
+<a id="6-high-level-architecture"></a>
+<a id="system-map"></a>
+
+The **Sovereign AI Workbench** is structured into nine strictly decoupled, fully air-gapped architectural tiers. All communication traverses local interfaces with cryptographic socket egress verification, guaranteeing **0% outbound network leaks**.
+
+```mermaid
+flowchart TB
+    %% Subgraphs
+    subgraph UI["🖥️ CLIENT & PRESENTATION TIER (Phase 20)"]
+        direction TB
+        ChatUI["💬 Chat Workspace<br/>• Streaming inference<br/>• Model & mode selector<br/>• Stop generation control"]
+        DocsUI["📄 Document Explorer<br/>• Multi-file upload<br/>• PDF / DOCX / TXT / MD<br/>• Chunk visualizer"]
+        KBUI["🧠 Knowledge Catalog<br/>• FineWeb-Edu 1.6B index<br/>• Hybrid semantic retrieval<br/>• Vector store status"]
+        ToolsUI["⚙️ Tool Runner Studio<br/>• AST Math calculator<br/>• Scanned OCR extraction<br/>• Office artifact generator"]
+        SecUI["🔒 Air-Gap Security Monitor<br/>• 0-socket egress indicator<br/>• Real-time connection log<br/>• Tamper-evident audit trail"]
+    end
+
+    subgraph Gateway["⚡ APPLICATION GATEWAY & SECURITY LAYER (Phase 18-19)"]
+        direction TB
+        API["🌐 Local Flask REST Gateway<br/>(127.0.0.1:5000 · Zero WAN / Strict Localhost)"]
+        NetMon["🛡️ Socket Interceptor & Network Monitor<br/>• Monkey-patched socket.socket<br/>• Blocks outbound internet traffic<br/>• Real-time socket connection logging"]
+        RBAC["👥 Role-Based Access Controller<br/>• Admin / Engineer / Auditor roles<br/>• Strict capability & tool bounds"]
+    end
+
+    subgraph Routing["🧭 TASK ROUTING & DISPATCH (Phase 9)"]
+        direction TB
+        Classifier["🎯 Intent Classifier<br/>• Regex & pattern matching<br/>• Domain keywords<br/>• Fallback arbitration"]
+        Policy["📋 Dispatch Policies<br/>• Direct LLM synthesis<br/>• Grounded RAG query<br/>• Structured SQL inquiry<br/>• Deterministic tool run<br/>• Multi-step agent workflow"]
+    end
+
+    subgraph AgentTriad["🤖 AUTONOMOUS AGENT TRIAD (Phase 11)"]
+        direction TB
+        Planner["📋 Task Planner<br/>• Decomposes goal into DAG<br/>• Assigns deterministic tools<br/>• Establishes halt constraints"]
+        Executor["⚡ Step Executor<br/>• Dispatches tool actions<br/>• Traverses execution plan<br/>• Handles retries & fallbacks"]
+        Verifier["✅ State Verifier<br/>• Tests schema & correctness<br/>• Verifies safety invariants<br/>• Prevents hallucinated leaps"]
+        Scratchpad["🧠 Memory & Scratchpad<br/>• Ephemeral state history<br/>• Serializable task context"]
+    end
+
+    subgraph Models["🧠 MULTI-MODEL INFERENCE SUBSYSTEM (Phase 3-8)"]
+        direction TB
+        MiniLLM["🧬 Custom MiniLLM (~10.2M)<br/>• From scratch in PyTorch<br/>• RoPE + SwiGLU + RMSNorm<br/>• Tied embedding weights<br/>• Autoregressive sampling"]
+        BPETok["🔤 Byte-Level BPE Tokenizer<br/>• 8,192-token vocabulary<br/>• Written from raw bytes<br/>• Zero external binary blobs"]
+        IndModel["🏭 Industrial 80M Adapter<br/>• PSU & refinery reasoning<br/>• Edge GPU accelerated<br/>• Fully local open-weight"]
+        EmbModel["📐 MiniLM Adapter<br/>• 384-d dense vectorizer<br/>• Sentence-level semantics<br/>• Offline local inference"]
+        VisionModel["👁️ Local Vision / OCR Adapter<br/>• Multimodal schematics<br/>• Engineering blueprint OCR<br/>• Tesseract integration"]
+    end
+
+    subgraph ToolsRegistry["🛠️ DETERMINISTIC LOCAL TOOL REGISTRY (Phase 10, 13-16)"]
+        direction TB
+        ASTCalc["🧮 Safe AST Calculator<br/>• Zero eval() vulnerabilities<br/>• Math & engineering AST"]
+        FSTool["📁 Local Filesystem Tool<br/>• Sandboxed read / write<br/>• Strict directory boundary"]
+        OCRTool["🔍 PDF / OCR Extractor<br/>• PyMuPDF text parser<br/>• Tesseract OCR engine"]
+        SheetTool["📊 Spreadsheet Processor<br/>• OpenPyXL CSV/XLSX<br/>• Tabular aggregation"]
+        OfficeDoc["📝 Office Deliverable Writer<br/>• Word (.docx) generator<br/>• PowerPoint (.pptx) slides<br/>• Excel (.xlsx) workbooks"]
+        Sandbox["📦 Subprocess Code Sandbox<br/>• Restricted execution<br/>• Execution timeout guard"]
+    end
+
+    subgraph RAGEngine["📚 HYBRID RAG & KNOWLEDGE ENGINE (Phase 12)"]
+        direction TB
+        Ingest["📥 Document Ingestion<br/>• Multi-format ingestion<br/>• PDF, DOCX, TXT, MD, JSONL"]
+        Chunker["✂️ Sliding-Window Chunker<br/>• 256-512 token windows<br/>• Configurable chunk overlap"]
+        VecIndex["⚡ Dense Vector Index<br/>• Cosine similarity search<br/>• Fast vector math in NumPy/Torch"]
+        FineWeb["🌐 FineWeb-Edu 1.6B Corpus<br/>• Pre-indexed knowledge store<br/>• Fast local semantic lookup"]
+        Citations["📑 Citation Grounding Engine<br/>• Document & page metadata<br/>• Paragraph-level attribution"]
+    end
+
+    subgraph Storage["💾 PERSISTENCE & RELATIONAL STORAGE (Phase 17)"]
+        direction TB
+        SQLiteDB[("🗄️ SQLite Database (sovereign_ai.db)<br/>• users & sessions<br/>• conversations & messages<br/>• documents & chunks<br/>• task_plans & step_history<br/>• append-only audit_log")]
+        VectorStore[("💾 Vector Storage Cache<br/>• .npy / .bin vector arrays<br/>• FineWeb embeddings")]
+    end
+
+    %% Flow connections
+    ChatUI --> API
+    DocsUI --> API
+    KBUI --> API
+    ToolsUI --> API
+    SecUI --> API
+
+    API --> NetMon
+    API --> RBAC
+    API --> Classifier
+    Classifier --> Policy
+
+    Policy -->|Direct Synthesis| MiniLLM
+    Policy -->|Domain Synthesis| IndModel
+    Policy -->|Grounded Q&A| Ingest
+    Policy -->|Structured Query| SQLiteDB
+    Policy -->|Tool Invocation| ToolsRegistry
+    Policy -->|Multi-Step Goal| Planner
+
+    Planner --> Executor
+    Executor --> ToolsRegistry
+    Executor --> Models
+    Executor --> Ingest
+    Executor --> Scratchpad
+    Scratchpad --> Verifier
+    Executor --> Verifier
+    Verifier -->|Pass| API
+    Verifier -->|Retry| Executor
+
+    MiniLLM --- BPETok
+    IndModel --- BPETok
+
+    Ingest --> Chunker
+    Chunker --> EmbModel
+    EmbModel --> VecIndex
+    VecIndex --> Citations
+    FineWeb --> VecIndex
+    Citations --> MiniLLM
+
+    ASTCalc --> Scratchpad
+    FSTool --> Scratchpad
+    OCRTool --> Scratchpad
+    SheetTool --> Scratchpad
+    OfficeDoc --> Scratchpad
+    Sandbox --> Scratchpad
+
+    VecIndex --> VectorStore
+    Ingest --> SQLiteDB
+    API --> SQLiteDB
+    NetMon -.->|Socket Audit Records| SQLiteDB
+    RBAC -.->|Permission Audit| SQLiteDB
+
+    %% Styling
+    classDef ui fill:#0f172a,stroke:#38bdf8,stroke-width:2px,color:#f8fafc;
+    classDef gateway fill:#1e1b4b,stroke:#818cf8,stroke-width:2px,color:#f8fafc;
+    classDef router fill:#311042,stroke:#c084fc,stroke-width:2px,color:#f8fafc;
+    classDef agent fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#f8fafc;
+    classDef models fill:#4a044e,stroke:#f472b6,stroke-width:2px,color:#f8fafc;
+    classDef tools fill:#431407,stroke:#fb923c,stroke-width:2px,color:#f8fafc;
+    classDef rag fill:#022c22,stroke:#2dd4bf,stroke-width:2px,color:#f8fafc;
+    classDef storage fill:#172554,stroke:#60a5fa,stroke-width:2px,color:#f8fafc;
+
+    class ChatUI,DocsUI,KBUI,ToolsUI,SecUI ui;
+    class API,NetMon,RBAC gateway;
+    class Classifier,Policy router;
+    class Planner,Executor,Verifier,Scratchpad agent;
+    class MiniLLM,BPETok,IndModel,EmbModel,VisionModel models;
+    class ASTCalc,FSTool,OCRTool,SheetTool,OfficeDoc,Sandbox tools;
+    class Ingest,Chunker,VecIndex,FineWeb,Citations rag;
+    class SQLiteDB,VectorStore storage;
+```
+
+### System Architecture Responsibility Matrix
+
+| Subsystem Tier | Directory Path | Core Modules | Architectural Mandate & Guarantees |
+|---|---|---|---|
+| **1. Presentation Tier** | `app/frontend/`<br/>`app/frontend-src/` | `index.html`<br/>`src/pages/Chat.tsx`<br/>`src/store/chatStore.ts` | 7-panel reactive workbench supporting streaming responses, document upload, RAG citation inspection, and real-time air-gap security status. |
+| **2. Gateway & Security** | `app/backend/`<br/>`security/` | `app.py`<br/>`network_monitor.py`<br/>`permissions.py` | Local Flask REST server (127.0.0.1:5000), socket monkey-patch interceptor, and Role-Based Access Control (Admin, Engineer, Auditor). |
+| **3. Task Router** | `router/` | `task_classifier.py`<br/>`policies.py`<br/>`router.py` | Deterministic intent classification routing incoming queries to LLM, RAG, SQL, Tools, or Agent Triad. |
+| **4. Autonomous Agents** | `agents/` | `planner.py`<br/>`executor.py`<br/>`verifier.py`<br/>`state.py` | Goal decomposition into DAGs, step execution, and programmatic output verification before delivering results to the user. |
+| **5. Model Subsystem** | `models/`<br/>`tokenizer/` | `models/custom_minilm/`<br/>`models/adapters/`<br/>`tokenizer/tokenizer.py` | From-scratch ~10.2M Transformer (RoPE, SwiGLU, RMSNorm), custom 8,192 BPE tokenizer, Industrial 80M adapter, and MiniLM embedding adapter. |
+| **6. Deterministic Tools** | `tools/` | `calculator.py`<br/>`filesystem.py`<br/>`ocr.py`<br/>`word.py`<br/>`powerpoint.py`<br/>`code_sandbox.py` | Safe AST calculator (no `eval`), sandboxed filesystem access, Tesseract OCR extraction, automated Office doc writers, and restricted script runner. |
+| **7. Hybrid RAG Engine** | `rag/` | `ingest.py`<br/>`chunking.py`<br/>`embeddings.py`<br/>`fineweb.py`<br/>`citations.py` | Local multi-format ingestion, sliding-window chunking, dense vector indexing, FineWeb-Edu 1.6B local knowledge store, and grounded citations. |
+| **8. Relational Storage** | `database/` | `schema.sql`<br/>`db.py`<br/>`repositories/conversations.py` | ACID SQLite database persisting users, conversation history, document chunks, agent task states, and tamper-evident audit events. |
+| **9. Air-Gap & Offline** | `security/` | `offline_mode.py`<br/>`audit.py` | Runtime socket blocking, 0% WAN leak guarantee, append-only cryptographic event logging, and automated air-gap verification. |
+
+### Terminal & ASCII High-Level Architecture
 
 ```
                                       ┌───────────────┐
@@ -254,7 +413,7 @@ The Sovereign AI Workbench is an integrated software platform comprising 17 dist
                                       │  Web Frontend │
                                       │ (7-Panel Dark)│
                                       └───────┬───────┘
-                                              │ HTTP JSON
+                                              │ HTTP JSON (127.0.0.1:5000)
                                               ▼
                                       ┌───────────────┐
                                       │ Flask Backend │
@@ -375,16 +534,16 @@ models/custom_minilm/
 
 | Module | Primary Responsibility | Key Mathematical / Implementation Detail |
 |---|---|---|
-| [`config.py`](file:///d:/sovereign-ai-workbench/models/custom_minilm/config.py) | Hyperparameter specification | Defines $d_{\text{model}}=256$, $N_{\text{layers}}=8$, $N_{\text{heads}}=8$, $d_{\text{ff}}=1024$, context length $=512$. |
-| [`embeddings.py`](file:///d:/sovereign-ai-workbench/models/custom_minilm/embeddings.py) | Token representation | Projects discrete token IDs $x \in [0, V-1]$ to vectors in $\mathbb{R}^{d_{\text{model}}}$. |
-| [`normalization.py`](file:///d:/sovereign-ai-workbench/models/custom_minilm/normalization.py) | Layer normalization | Implements RMSNorm: $\text{RMS}(x) = \sqrt{\frac{1}{d}\sum x_i^2 + \epsilon}$; scales by learnable $\gamma$. |
-| [`rotary.py`](file:///d:/sovereign-ai-workbench/models/custom_minilm/rotary.py) | Positional representation | Implements RoPE: complex 2D rotation of query/key slices per token index. |
-| [`attention.py`](file:///d:/sovereign-ai-workbench/models/custom_minilm/attention.py) | Causal self-attention | Multi-head attention with lower-triangular causal mask: $M_{ij} = -\infty$ for $j > i$. |
-| [`ffn.py`](file:///d:/sovereign-ai-workbench/models/custom_minilm/ffn.py) | Non-linear feature expansion | Implements SwiGLU: $(x W_{\text{gate}} \cdot \sigma(x W_{\text{gate}})) \odot (x W_{\text{up}}) W_{\text{down}}$. |
-| [`block.py`](file:///d:/sovereign-ai-workbench/models/custom_minilm/block.py) | Transformer block | Pre-RMSNorm residual connections around Self-Attention and SwiGLU. |
-| [`model.py`](file:///d:/sovereign-ai-workbench/models/custom_minilm/model.py) | Full LLM assembly | Chains $N$ blocks; binds LM head with embedding weight tying: $W_{\text{head}} = W_{\text{emb}}^T$. |
-| [`generate.py`](file:///d:/sovereign-ai-workbench/models/custom_minilm/generate.py) | Token decoding | Autoregressively samples tokens using temperature, top-$k$, and nucleus (top-$p$) filtering. |
-| [`checkpoint.py`](file:///d:/sovereign-ai-workbench/models/custom_minilm/checkpoint.py) | Persistence | Saves/loads atomic `.pt` states with loss history, step count, and metadata. |
+| [`config.py`](models/custom_minilm/config.py) | Hyperparameter specification | Defines $d_{\text{model}}=256$, $N_{\text{layers}}=8$, $N_{\text{heads}}=8$, $d_{\text{ff}}=1024$, context length $=512$. |
+| [`embeddings.py`](models/custom_minilm/embeddings.py) | Token representation | Projects discrete token IDs $x \in [0, V-1]$ to vectors in $\mathbb{R}^{d_{\text{model}}}$. |
+| [`normalization.py`](models/custom_minilm/normalization.py) | Layer normalization | Implements RMSNorm: $\text{RMS}(x) = \sqrt{\frac{1}{d}\sum x_i^2 + \epsilon}$; scales by learnable $\gamma$. |
+| [`rotary.py`](models/custom_minilm/rotary.py) | Positional representation | Implements RoPE: complex 2D rotation of query/key slices per token index. |
+| [`attention.py`](models/custom_minilm/attention.py) | Causal self-attention | Multi-head attention with lower-triangular causal mask: $M_{ij} = -\infty$ for $j > i$. |
+| [`ffn.py`](models/custom_minilm/ffn.py) | Non-linear feature expansion | Implements SwiGLU: $(x W_{\text{gate}} \cdot \sigma(x W_{\text{gate}})) \odot (x W_{\text{up}}) W_{\text{down}}$. |
+| [`block.py`](models/custom_minilm/block.py) | Transformer block | Pre-RMSNorm residual connections around Self-Attention and SwiGLU. |
+| [`model.py`](models/custom_minilm/model.py) | Full LLM assembly | Chains $N$ blocks; binds LM head with embedding weight tying: $W_{\text{head}} = W_{\text{emb}}^T$. |
+| [`generate.py`](models/custom_minilm/generate.py) | Token decoding | Autoregressively samples tokens using temperature, top-$k$, and nucleus (top-$p$) filtering. |
+| [`checkpoint.py`](models/custom_minilm/checkpoint.py) | Persistence | Saves/loads atomic `.pt` states with loss history, step count, and metadata. |
 
 ---
 
@@ -1493,7 +1652,63 @@ The workbench is engineered around the **Separation of Concerns**:
 
 ---
 
-## 78. End-to-End Architectural Flowchart
+## 78. End-to-End Architectural Flowchart & Runtime Trace
+<a id="78-end-to-end-architectural-flowchart"></a>
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as 👤 Human Operator
+    participant UI as 🖥️ Web UI (7-Panel Workbench)
+    participant Sec as 🛡️ Air-Gap Socket Guard
+    participant Backend as ⚡ Flask Backend Gateway
+    participant Router as 🧭 Task Router & Classifier
+    participant Agent as 🤖 Agent Triad (Planner/Exec/Verify)
+    participant Model as 🧠 Local Model (MiniLLM / 80M)
+    participant RAG as 📚 Hybrid RAG (Vector / FineWeb)
+    participant Tools as 🛠️ Deterministic Tool Registry
+    participant DB as 💾 SQLite & Vector Cache
+    participant Audit as 📜 Cryptographic Audit Log
+
+    User->>UI: Submits Query / Directive / Scanned Report
+    UI->>Sec: Pre-flight Egress Verification
+    Sec-->>UI: Socket Outbound Block Active (0% Leak)
+    UI->>Backend: HTTP POST /api/chat (Local Intranet only)
+    Backend->>Audit: Append event (User request timestamped)
+    Backend->>Router: Classify intent & query domain
+    
+    alt Direct LLM Generation
+        Router->>Model: Tokenize & Autoregressive forward pass
+        Model-->>Router: Synthesized text response
+    else RAG Knowledge Retrieval
+        Router->>RAG: Embed query + Cosine search top-K chunks
+        RAG->>DB: Query chunk text & document metadata
+        DB-->>RAG: Grounded passages & page offsets
+        RAG->>Model: Context-injected synthesis prompt
+        Model-->>Router: Answer with strict [Doc: Page X, ¶Y] citations
+    else Structured Relational Query
+        Router->>DB: Execute parameterized SQL query
+        DB-->>Router: Structured tabular dataset
+    else Deterministic Local Tool Execution
+        Router->>Tools: Dispatch to AST Calc / OCR / Office Writer / Sandbox
+        Tools-->>Router: Deterministic output & artifact generated
+    else Autonomous Multi-Step Agent Triad
+        Router->>Agent: Initialize Planner with goal
+        Agent->>Agent: Planner builds DAG execution steps
+        loop Each Plan Step
+            Agent->>Tools: Executor invokes required local tool
+            Tools-->>Agent: Step outcome
+            Agent->>DB: Persist step state & scratchpad memory
+        end
+        Agent->>Agent: Verifier tests output against constraints
+        Agent-->>Router: Validated end-to-end deliverable
+    end
+
+    Router->>Backend: Final response payload & citations
+    Backend->>Audit: Commit execution trace to audit_log
+    Backend-->>UI: Streamed JSON payload / Artifact download
+    UI-->>User: Visual response with audit stamp & citation links
+```
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐

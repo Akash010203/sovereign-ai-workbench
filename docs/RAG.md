@@ -22,12 +22,15 @@ The RAG subsystem is organized under `rag/`:
 
 ```
 rag/
-├── ingest.py       # Ingests PDF, DOCX, TXT, and Markdown files
-├── chunking.py     # Semantic & sliding-window text chunking with token overlap
-├── embeddings.py   # Local vector embedding generator
-├── index.py        # Vector index storage with fast cosine similarity search
-├── retriever.py    # Top-K relevance retrieval & reciprocal rank fusion
-└── citations.py    # Source attribution and paragraph reference tracking
+├── ingest.py           # Ingests PDF, DOCX, TXT, and Markdown files
+├── chunking.py         # Semantic & sliding-window text chunking with token overlap
+├── embeddings.py       # Local vector embedding generator (TF-IDF & dense)
+├── index.py            # Vector index storage with fast cosine similarity search
+├── retriever.py        # Top-K relevance retrieval & reciprocal rank fusion
+├── citations.py        # Source attribution and paragraph reference tracking
+├── fineweb.py          # FineWeb-Edu dataset chunk reader and streaming iterator
+├── fineweb_index.py    # Offline index loader for 1.6B pre-indexed embeddings
+└── hybrid.py           # Hybrid fusion combining user document RAG with FineWeb-Edu
 ```
 
 ---
