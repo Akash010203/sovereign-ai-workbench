@@ -13,10 +13,14 @@ from __future__ import annotations
 import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Optional
 
 log = logging.getLogger(__name__)
+
+
+def _utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat()
 
 
 @dataclass
@@ -27,7 +31,7 @@ class ToolResult:
     output:     Any
     error:      Optional[str] = None
     metadata:   dict = field(default_factory=dict)
-    timestamp:  str = field(default_factory=lambda: datetime.utcnow().isoformat())
+    timestamp:  str = field(default_factory=_utc_now)
 
 
 class BaseTool(ABC):

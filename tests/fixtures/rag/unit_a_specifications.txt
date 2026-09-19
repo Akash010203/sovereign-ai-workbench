@@ -1,0 +1,11 @@
+The maximum operating temperature of Unit A is 180°C. This limit was established
+during the original commissioning in 2019. Operating above this temperature for
+more than 15 minutes requires an emergency shutdown and a mandatory inspection
+by the site reliability team before restart. The temperature is measured by
+thermocouple TC-A-001 located at the exhaust manifold. Calibration of TC-A-001
+must be performed quarterly according to SOP-TEMP-042.
+
+Unit A is a centrifugal compressor rated for continuous duty at 3,600 RPM with
+a maximum discharge pressure of 42 bar. The lubrication system uses ISO VG 68
+synthetic turbine oil with a recommended change interval of 8,000 operating
+hours or 12 months, whichever comes first.

@@ -1,0 +1,121 @@
+{
+  "timestamp": "2026-09-18T18:44:31.138796",
+  "duration_s": 400.82894563674927,
+  "total_passed": 278,
+  "total_failed": 10,
+  "total_errors": 0,
+  "categories": {
+    "Environment / Startup": {
+      "returncode": 0,
+      "passed": 94,
+      "failed": 0,
+      "errors": 0,
+      "status": "PASS"
+    },
+    "Tokenizer": {
+      "returncode": 0,
+      "passed": 36,
+      "failed": 0,
+      "errors": 0,
+      "status": "PASS"
+    },
+    "Custom LLM": {
+      "returncode": 0,
+      "passed": 30,
+      "failed": 0,
+      "errors": 0,
+      "status": "PASS"
+    },
+    "Training Pipeline": {
+      "returncode": 0,
+      "passed": 5,
+      "failed": 0,
+      "errors": 0,
+      "status": "PASS"
+    },
+    "Router": {
+      "returncode": 1,
+      "passed": 23,
+      "failed": 1,
+      "errors": 0,
+      "status": "FAIL"
+    },
+    "Agent System": {
+      "returncode": 1,
+      "passed": 7,
+      "failed": 1,
+      "errors": 0,
+      "status": "FAIL"
+    },
+    "RAG": {
+      "returncode": 1,
+      "passed": 12,
+      "failed": 2,
+      "errors": 0,
+      "status": "FAIL"
+    },
+    "OCR": {
+      "returncode": 0,
+      "passed": 4,
+      "failed": 0,
+      "errors": 0,
+      "status": "PASS"
+    },
+    "Document Generation": {
+      "returncode": 0,
+      "passed": 11,
+      "failed": 0,
+      "errors": 0,
+      "status": "PASS"
+    },
+    "Code Sandbox": {
+      "returncode": 0,
+      "passed": 14,
+      "failed": 0,
+      "errors": 0,
+      "status": "PASS"
+    },
+    "Database": {
+      "returncode": 0,
+      "passed": 11,
+      "failed": 0,
+      "errors": 0,
+      "status": "PASS"
+    },
+    "Security": {
+      "returncode": 1,
+      "passed": 15,
+      "failed": 3,
+      "errors": 0,
+      "status": "FAIL"
+    },
+    "Air-Gap / Offline": {
+      "returncode": 1,
+      "passed": 2,
+      "failed": 1,
+      "errors": 0,
+      "status": "FAIL"
+    },
+    "Backend API": {
+      "returncode": -1,
+      "passed": 0,
+      "failed": 0,
+      "errors": 0,
+      "status": "BLOCKED"
+    },
+    "Performance": {
+      "returncode": 1,
+      "passed": 6,
+      "failed": 1,
+      "errors": 0,
+      "status": "FAIL"
+    },
+    "Fake Implementation Detection": {
+      "returncode": 1,
+      "passed": 8,
+      "failed": 1,
+      "errors": 0,
+      "status": "FAIL"
+    }
+  }
+}

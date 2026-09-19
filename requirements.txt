@@ -18,13 +18,6 @@ pytesseract             # Local OCR via Tesseract (install Tesseract binary sepa
 Pillow                  # Image processing for OCR tool
 pdf2image               # PDF page → image for scanned PDF OCR
 
-# ── Phase 12: RAG ─────────────────────────────────────────────────────────────
-sentence-transformers   # Local neural embeddings (all-MiniLM-L6-v2, ~22MB)
-
 # ── Phase 19: Backend ─────────────────────────────────────────────────────────
 flask>=3.0              # Local REST API server — 127.0.0.1 only
 flask-cors              # CORS for the local frontend
-
-# ── Optional: Ollama SDK ───────────────────────────────────────────────────────
-# Ollama itself runs as a separate local process (https://ollama.ai)
-# No pip package needed — we call its REST API via urllib (stdlib)

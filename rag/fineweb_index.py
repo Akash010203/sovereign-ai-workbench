@@ -133,7 +133,15 @@ class FineWebRetriever:
         self.embedder = embedder or get_embedder()
 
     def retrieve(self, query: str, top_k: int = 5, min_score: float = 0.0) -> list[RetrievalResult]:
-        raw = self.index.search(self.embedder.embed(query), top_k=top_k)
+        query_embedding = self.embedder.embed(query)
+        if len(query_embedding) != self.index.status.dimension:
+            log.warning(
+                "FineWeb index uses %s-dimensional legacy embeddings; current local "
+                "embedder uses %s dimensions. Rebuild the index before searching it.",
+                self.index.status.dimension, len(query_embedding),
+            )
+            return []
+        raw = self.index.search(query_embedding, top_k=top_k)
         return [
             RetrievalResult(
                 chunk_id=record["chunk_id"], source=record["source"], text=record["text"],

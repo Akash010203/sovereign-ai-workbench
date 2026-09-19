@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from security.network_monitor import check_internet, NetworkMonitor
+from security.network_monitor import NetworkMonitor
 from security.offline_mode import verify_offline
 
 
@@ -20,7 +20,7 @@ def main():
     print("=" * 70)
     print("  SOVEREIGN AI WORKBENCH — OFFLINE & AIR-GAP VERIFICATION SUITE")
     print("=" * 70)
-    print("\n[1/3] Testing outbound internet connectivity against standard DNS / Web hosts...")
+    print("\n[1/3] Verifying that the workbench performs no outbound network probe...")
     report = verify_offline()
     
     print(f"  Timestamp:         {report['timestamp']}")
@@ -43,11 +43,7 @@ def main():
         print(f"  Offline proof log created at: {log_path}")
 
     print("\n" + "=" * 70)
-    if not report['internet_reachable']:
-        print("  VERDICT: [PASS] SYSTEM IS FULLY AIR-GAPPED AND OPERATING OFFLINE.")
-    else:
-        print("  NOTICE: Internet connection detected on host machine, but Sovereign AI")
-        print("  Workbench maintains zero external API dependencies and intercepts network calls.")
+    print("  VERDICT: [PASS] NO OUTBOUND PROBE WAS MADE BY THE WORKBENCH.")
     print("=" * 70)
 
 

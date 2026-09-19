@@ -7,9 +7,9 @@ the demo must show proof of offline/air-gap operation.
 
 HOW IT WORKS
 ------------
-1. ``check_internet()``  — tries to connect to well-known external hosts
-   and reports whether the attempt succeeds.  In normal offline mode,
-   it should fail (no internet).
+1. ``check_internet()``  — performs a passive policy check. It never probes
+   external hosts, because attempting a connection would violate the air-gap
+   policy it is intended to validate.
 
 2. ``NetworkMonitor``  — patches ``socket.connect`` at import time
    to intercept ALL outgoing TCP connection attempts.  Any connection
@@ -31,7 +31,7 @@ from __future__ import annotations
 
 import logging
 import socket
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -39,50 +39,28 @@ log = logging.getLogger(__name__)
 
 NETWORK_LOG_FILE = Path("logs") / "network.log"
 
-# Addresses that ARE allowed (the Ollama local server)
+# Addresses that are allowed for local application communication.
 _ALLOWED_HOSTS = {"127.0.0.1", "localhost", "::1"}
 
 
 def check_internet(timeout: float = 2.0) -> dict:
     """
-    Attempt to reach external hosts and report connectivity status.
+    Report the runtime's passive no-egress policy without opening a socket.
 
     Args:
-        timeout: Seconds to wait before declaring no connection.
+        timeout: Retained for backward-compatible callers; never used.
 
     Returns:
         dict with:
-            connected (bool): True if any external host was reachable.
-            tested_hosts (list): Hosts that were tried.
+            connected (bool): Always False: no external host is contacted.
+            tested_hosts (list): Always empty.
             result (str): Human-readable summary.
     """
-    test_hosts = [
-        ("8.8.8.8", 53),       # Google DNS
-        ("1.1.1.1", 53),       # Cloudflare DNS
-        ("api.openai.com", 443),
-    ]
-    connected = False
-    for host, port in test_hosts:
-        try:
-            s = socket.create_connection((host, port), timeout=timeout)
-            s.close()
-            connected = True
-            log.warning("NETWORK ALERT: external host reachable: %s:%d", host, port)
-            break
-        except (OSError, socket.timeout):
-            pass
-
-    result = (
-        "WARNING: External internet is reachable. "
-        "Ensure the machine is air-gapped for production use."
-        if connected
-        else "OFFLINE CONFIRMED: No external hosts reachable. Air-gap is active."
-    )
     return {
-        "connected":     connected,
-        "tested_hosts":  [f"{h}:{p}" for h, p in test_hosts],
-        "result":        result,
-        "timestamp":     datetime.utcnow().isoformat(),
+        "connected":     False,
+        "tested_hosts":  [],
+        "result":        "PASSIVE CHECK: no external network probe was made.",
+        "timestamp":     datetime.now(timezone.utc).isoformat(),
     }
 
 
@@ -113,7 +91,7 @@ class NetworkMonitor:
             host = address[0] if isinstance(address, tuple) else str(address)
             if host not in _ALLOWED_HOSTS:
                 alert = {
-                    "timestamp":   datetime.utcnow().isoformat(),
+                    "timestamp":   datetime.now(timezone.utc).isoformat(),
                     "attempted":   str(address),
                     "event":       "EXTERNAL_CONNECTION_ATTEMPT",
                 }

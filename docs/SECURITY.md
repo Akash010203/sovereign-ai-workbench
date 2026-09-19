@@ -36,7 +36,7 @@ Every critical event is logged to a persistent SQLite database table and append-
 
 ### C. Network Monitor (`security/network_monitor.py`)
 At application startup, `NetworkMonitor` monkey-patches `socket.connect` to intercept outgoing TCP attempts.
-- Connections to `127.0.0.1`, `localhost`, and `::1` (internal Ollama/Flask communication) are permitted.
+- Connections to `127.0.0.1`, `localhost`, and `::1` for the local web application are permitted.
 - Any attempt to reach an external non-localhost IP or domain triggers an immediate security alert and is recorded in `logs/network.log`.
 
 ### D. Offline Mode Verification (`security/offline_mode.py`)

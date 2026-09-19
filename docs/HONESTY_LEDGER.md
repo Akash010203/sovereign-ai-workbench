@@ -66,18 +66,12 @@ a winning quality.
 - Context window sliding for long prompts — custom
 - Uses `torch.multinomial` for sampling from the final probability distribution
 
-### 5. Multi-Model Abstraction Layer
-**Label: ✅ CUSTOM FROM SCRATCH (architecture) + ⚡ OPEN-WEIGHT (models)**
+### 5. Model Abstraction Layer
+**Label: ✅ CUSTOM FROM SCRATCH**
 
 - `ModelProvider` abstract class — designed and written here
-- `CustomMiniLLMAdapter` — wraps our own model
-- `OllamaModelAdapter` — calls `http://localhost:11434` via Python's `urllib` (stdlib)
+- `CustomMiniLLMAdapter` — wraps and runs our own model in-process
 - `ModelRegistry` — register/lookup/availability check
-
-> Ollama itself (the binary) is open-source software by Ollama Inc.
-> The models it serves (phi3:mini, mistral, deepseek-coder, llava) are
-> open-weight models by Microsoft, Mistral AI, DeepSeek, and Meta respectively.
-> None of these were trained as part of this project.
 
 ### 6. Task Router
 **Label: 🔧 RULE-BASED**
@@ -113,7 +107,7 @@ a winning quality.
 - `agents/agent.py` — orchestrator wiring all of the above
 
 ### 9. RAG (Retrieval-Augmented Generation)
-**Label: ✅ CUSTOM FROM SCRATCH (infrastructure) + ⚡ OPEN-WEIGHT (embedding model)**
+**Label: ✅ CUSTOM FROM SCRATCH**
 
 | Component | Label |
 |-----------|-------|
@@ -122,8 +116,7 @@ a winning quality.
 | `rag/ingest.py` — document ingestion pipeline | ✅ CUSTOM |
 | `rag/retriever.py` — query embed → search → ranked results | ✅ CUSTOM |
 | `rag/citations.py` — citation formatting + RAG prompt builder | ✅ CUSTOM |
-| Embedding model: `all-MiniLM-L6-v2` via `sentence-transformers` | ⚡ OPEN-WEIGHT |
-| Fallback: `TFIDFEmbedder` — bag-of-words, pure Python | ✅ CUSTOM |
+| `TFIDFEmbedder` — bag-of-words, pure Python | ✅ CUSTOM |
 
 > The vector index is NOT Pinecone, Chroma, Weaviate, or any cloud/external DB.
 > It is a Python dict + cosine similarity in 30 lines of code.
@@ -177,9 +170,6 @@ a winning quality.
 | Component | Why it's appropriate |
 |-----------|---------------------|
 | PyTorch | A numerical computation library — like using NumPy |
-| Ollama | A local model server — the models it serves are pre-trained |
-| phi3:mini, mistral, deepseek-coder, llava | Open-weight models by Microsoft/Mistral/DeepSeek/Meta |
-| all-MiniLM-L6-v2 (sentence-transformers) | Pre-trained embedding model for RAG only |
 | Flask | HTTP library — like using requests |
 | sqlite3 | Built into Python stdlib |
 | pytesseract/Tesseract | OCR engine — we wrap it, not reimplement it |
@@ -197,11 +187,11 @@ a winning quality.
 > Because we're training it on a demo corpus on a laptop GPU (RTX 4050, 6GB VRAM).
 > The purpose of the custom model is to prove we understand Transformer architecture from
 > first principles — not to compete with GPT-4 in generation quality.
-> The platform routes to Ollama/phi3:mini for tasks requiring genuine capability.
+> The platform routes language tasks to the locally trained custom MiniLLM and deterministic local tools.
 
 **Q: How do you prove no data is leaving the machine?**
 > Run Scenario 5. The NetworkMonitor patches Python's socket layer.
-> All Ollama models serve from localhost. The custom MiniLLM runs in-process.
+> The custom MiniLLM runs in-process, with no model-server connection.
 > The audit log shows every tool call and model call. The network log shows zero
 > external TCP connection attempts.
 

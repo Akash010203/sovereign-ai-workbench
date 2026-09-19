@@ -52,9 +52,12 @@ class Verifier:
                         f"{step.result.get('stderr', '')[:200]}"
                     )
 
+        if state.error:
+            issues.insert(0, state.error)
+
         if issues:
             log.warning("Verifier found %d issue(s): %s", len(issues), issues)
-            state.update_status(TaskStatus.DONE)   # still done, just flagged
+            state.update_status(TaskStatus.FAILED)
             if state.final_answer:
                 state.final_answer += (
                     f"\n\n[Verifier notes: {'; '.join(issues)}]"

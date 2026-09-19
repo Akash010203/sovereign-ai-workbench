@@ -33,6 +33,7 @@ sys.path.insert(0, str(ROOT))
 
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
+from werkzeug.utils import secure_filename
 
 from core.config import get_settings, ensure_directories
 from core.logging_setup import setup_logging
@@ -44,33 +45,89 @@ from agents.agent import Agent
 from rag.index import LocalVectorIndex
 from rag.ingest import DocumentIngester
 from rag.retriever import Retriever
-from rag.fineweb_index import FineWebDiskIndex, FineWebRetriever
-from rag.hybrid import HybridRetriever
 from rag.citations import build_rag_prompt, format_citations
+from rag.hybrid import HybridRetriever
+from rag.fineweb_index import FineWebDiskIndex, FineWebRetriever
+from rag.fineweb_lexical import FineWebLexicalRetriever
 from security.offline_mode import verify_offline
 from security.audit import log_event
 
 setup_logging("backend")
 log = logging.getLogger(__name__)
 
-_DOMAIN_TERMS = {
-    "alarm", "bearing", "compressor", "equipment", "fault", "inspection",
-    "maintenance", "manual", "motor", "pipeline", "pressure", "procedure",
-    "pump", "report", "sensor", "sop", "temperature", "valve", "vibration",
-    "work order", "work instruction",
-}
 _GREETING_ALIASES = {"hi", "ihi", "hello", "hey", "good morning", "good afternoon", "good evening"}
-_VAGUE_MESSAGES = {"what", "what is", "what is it", "help", "help me", "why", "how"}
+_QUERY_STOP_WORDS = {
+    "about", "after", "again", "also", "answer", "before", "could", "does", "from",
+    "have", "help", "into", "know", "local", "more", "need", "please", "should",
+    "tell", "that", "the", "their", "there", "these", "this", "what", "when", "where",
+    "which", "with", "would", "your",
+}
 
 
 def _chat_response_kind(user_input: str) -> str:
-    """Keep a specialised local model within its demonstrated scope."""
+    """Classify greetings without suppressing ordinary user questions."""
     normalized = re.sub(r"[^a-z0-9 ]", "", user_input.lower()).strip()
     if normalized in _GREETING_ALIASES:
         return "greeting"
-    if normalized in _VAGUE_MESSAGES or len(normalized) <= 3:
-        return "needs_detail"
-    return "domain" if any(term in normalized for term in _DOMAIN_TERMS) else "out_of_scope"
+    return "question"
+
+
+def _has_local_evidence(query: str, result) -> bool:
+    """Reject fuzzy vector matches that contain none of the question's subject words."""
+    def normalize(word: str) -> str:
+        word = word.lower().replace("calliper", "caliper")
+        return word[:-1] if word.endswith("s") and len(word) > 4 else word
+
+    terms = {
+        normalize(word)
+        for word in re.findall(r"[a-z0-9]+", query.lower())
+        if len(word) >= 4 and word not in _QUERY_STOP_WORDS
+    }
+    if not terms:
+        return True
+    passage_terms = {
+        normalize(word) for word in re.findall(r"[a-z0-9]+", result.text.lower())
+    }
+    return bool(terms & passage_terms)
+
+
+def _extractive_local_reply(query: str, results: list) -> str:
+    """Present retrieved local material without inventing an answer."""
+    query_terms = [term for term in re.findall(r"[a-z0-9]+", query.lower()) if len(term) >= 4]
+    excerpts = []
+    for result in results[:2]:
+        text = re.sub(r"\s+", " ", result.text).strip()
+        if text:
+            lowered = text.lower().replace("calliper", "caliper")
+            positions = [lowered.find(term.replace("calliper", "caliper")) for term in query_terms]
+            positions = [position for position in positions if position >= 0]
+            if positions:
+                start = max(0, min(positions) - 150)
+                end = min(len(text), start + 560)
+                excerpt = text[start:end]
+                if start:
+                    excerpt = "…" + excerpt
+                if end < len(text):
+                    excerpt = excerpt.rstrip() + "…"
+            else:
+                excerpt = text[:420].rstrip()
+            excerpts.append(f"- {excerpt}")
+    if not excerpts:
+        return "No readable local passage was found."
+    return (
+        "I found these relevant passages in your local knowledge base:\n\n"
+        + "\n\n".join(excerpts)
+        + "\n\nThese are retrieved local excerpts, not an answer invented by the model."
+    )
+
+
+def _is_low_quality_generation(reply: str) -> bool:
+    """Reject obvious repetition or uncertainty from a small under-trained model."""
+    lowered = reply.lower().strip()
+    if not lowered or "not sure how to proceed" in lowered:
+        return True
+    words = re.findall(r"\w+", lowered)
+    return len(words) >= 12 and len(set(words)) / len(words) < 0.38
 
 
 def create_app(config: dict = None) -> Flask:
@@ -91,7 +148,7 @@ def create_app(config: dict = None) -> Flask:
     conv_repo = ConversationRepository(db)
     task_repo = TaskRepository(db)
 
-    # Model registry (MiniLLM + Ollama)
+    # Model registry: the project's direct, in-process MiniLLM only.
     # Priority: current industrial 80M model → legacy checkpoints.
     _industrial = ROOT / "checkpoints" / "industrial_80m_best.pt"
     _8k_best    = ROOT / "checkpoints" / "best_8k.pt"
@@ -110,31 +167,66 @@ def create_app(config: dict = None) -> Flask:
         _default_ckpt = str(_pretrained)
         log.info("Using pretrained checkpoint: %s", _default_ckpt)
     ckpt_path = config.get("minilm_checkpoint", _default_ckpt)
-    # tokenizer_path is now read from inside the checkpoint automatically
-    tok_path  = str(ROOT / "tokenizer" / "vocab" / "demo_bpe_vocab.json")
+    # Use the tokenizer that matches the trained checkpoint.
+    # Industrial 80M was trained with the 16K blended vocabulary;
+    # earlier small/medium experiments used the 8K or demo vocab.
+    _tok_16k  = ROOT / "tokenizer" / "vocab" / "blended_16k.json"
+    _tok_8k   = ROOT / "tokenizer" / "vocab" / "bpe_8k.json"
+    _tok_demo = ROOT / "tokenizer" / "vocab" / "demo_bpe_vocab.json"
+    if _industrial.exists() and _tok_16k.exists():
+        tok_path = str(_tok_16k)
+    elif _tok_8k.exists():
+        tok_path = str(_tok_8k)
+    else:
+        tok_path = str(_tok_demo)
+    log.info("Tokenizer: %s", tok_path)
     model_registry = build_default_registry(
         minilm_checkpoint=ckpt_path,
         tokenizer_path=tok_path,
-        ollama_models=config.get("ollama_models", []),  # empty = no Ollama
     )
 
-    # RAG (must be initialized before tools — RagSearchTool wraps the retriever)
-    rag_index_path = ROOT / "data" / "rag_index.json"
+    # ── Local user knowledge index ──────────────────────────────────────
+    rag_index_path = Path(config.get(
+        "knowledge_index", ROOT / "data" / "user_knowledge_index.json"
+    ))
+    knowledge_upload_dir = ROOT / "data" / "user_knowledge"
+    knowledge_upload_dir.mkdir(parents=True, exist_ok=True)
     rag_index      = LocalVectorIndex()
     if rag_index_path.exists():
         rag_index.load(rag_index_path)
     rag_ingester  = DocumentIngester(rag_index)
     rag_retriever = Retriever(rag_index)
-    fineweb_index = FineWebDiskIndex(ROOT / "data" / "knowledge" / "fineweb_edu_1p6b_embed")
-    fineweb_retriever = (
-        FineWebRetriever(fineweb_index, embedder=rag_retriever.embedder)
-        if fineweb_index.status.available else None
+    log.info("User knowledge base loaded: %d passages", len(rag_index))
+
+    # ── FineWeb 1.6B knowledge store (disk-backed, 5.2M chunks) ────────
+    fineweb_dir = ROOT / "data" / "knowledge" / "fineweb_edu_1p6b_embed"
+    fineweb_retriever = None
+    lexical_retriever = None
+    if fineweb_dir.exists():
+        try:
+            fw_index = FineWebDiskIndex(fineweb_dir)
+            if fw_index.status.available:
+                fineweb_retriever = FineWebRetriever(fw_index)
+                log.info("FineWeb knowledge connected: %d chunks, %d-dim",
+                         fw_index.status.chunks, fw_index.status.dimension)
+            try:
+                lexical_retriever = FineWebLexicalRetriever(fineweb_dir)
+                log.info("FineWeb lexical search available.")
+            except Exception:
+                pass
+        except Exception as exc:
+            log.warning("FineWeb index load failed: %s", exc)
+
+    # ── Hybrid retriever: local knowledge + FineWeb semantic + lexical ─
+    knowledge_retriever = HybridRetriever(
+        local=rag_retriever,
+        fineweb=fineweb_retriever,
+        lexical=lexical_retriever,
     )
-    knowledge_retriever = HybridRetriever(rag_retriever, fineweb_retriever)
-    if fineweb_retriever:
-        log.info("FineWeb knowledge enabled: %d chunks via %s search", len(fineweb_index), fineweb_index.status.mode)
-    else:
-        log.info("FineWeb knowledge unavailable: %s", fineweb_index.status.detail)
+    log.info("Hybrid retriever active: local=%d, fineweb=%s, lexical=%s",
+             len(rag_index),
+             "connected" if fineweb_retriever else "offline",
+             "connected" if lexical_retriever else "offline")
 
     # Tool registry (pass retriever so agent can call rag_search via tools)
     tool_registry = build_default_tool_registry(
@@ -172,13 +264,7 @@ def create_app(config: dict = None) -> Flask:
             "offline":  offline,
             "models":   models,
             "rag_docs": len(rag_index),
-            "fineweb": {
-                "available": fineweb_index.status.available,
-                "chunks": len(fineweb_index),
-                "dimension": fineweb_index.status.dimension,
-                "mode": fineweb_index.status.mode,
-                "detail": fineweb_index.status.detail,
-            },
+            "knowledge_sources": len({record["source"] for record in rag_index._store.values()}),
         })
 
     # ── Models ────────────────────────────────────────────────────────
@@ -204,21 +290,21 @@ def create_app(config: dict = None) -> Flask:
             conv_id = conv_repo.create(title=user_input[:60], model_name=model_name)
         conv_repo.add_message(conv_id, "user", user_input)
 
-        # A short greeting does not need the language model.  This prevents a
-        # small domain model from turning "hi" into an unrelated technical
-        # explanation, while keeping all substantive requests model-generated.
+        # A short greeting does not need the language model. Every substantive
+        # message, including general questions, continues to generation.
         response_kind = _chat_response_kind(user_input)
 
-        # Retrieve only when explicitly requested. This keeps normal chat
-        # lightweight and lets the client show source provenance separately
-        # instead of trusting a small generative model to format citations.
+        # Search local knowledge by default. The client can explicitly opt out
+        # for a faster direct model response.
         rag_results = []
         model_input = user_input
-        # Use RAG only when the user explicitly enables it in the UI. This
-        # prevents irrelevant chunks from overwhelming the 256-token context.
-        should_use_rag = use_rag is True and (len(rag_index) > 0 or len(fineweb_index) > 0)
+        should_use_rag = use_rag is not False and len(rag_index) > 0
         if should_use_rag:
             rag_results = knowledge_retriever.retrieve(user_input, top_k=2, min_score=0.20)
+            rag_results = [
+                result for result in rag_results
+                if _has_local_evidence(user_input, result)
+            ]
             if rag_results:
                 # Leave room for the question and answer in the 256-token
                 # context; oversized RAG text was truncated before generation.
@@ -234,20 +320,11 @@ def create_app(config: dict = None) -> Flask:
         reply = "[No model available]"
         if response_kind == "greeting":
             reply = (
-                "Hello — I’m SovereignAI, your local maintenance and engineering assistant. "
-                "Ask me about an equipment issue, a work instruction, or your local knowledge base."
+                "Hello — I answer from the local knowledge you add. Open Knowledge base "
+                "to paste text or upload documents, then ask a question about them."
             )
-        elif response_kind == "needs_detail":
-            reply = (
-                "Please give me a specific maintenance or engineering question. For example: "
-                "‘Pump P-101 has high drive-end vibration—what should I inspect first?’"
-            )
-        elif response_kind == "out_of_scope" and not rag_results:
-            reply = (
-                "This local model is specialised for maintenance and engineering, not general chat. "
-                "Ask about equipment, a fault, an inspection, a work order, or enable ‘Use knowledge’ "
-                "to search your local documents."
-            )
+        elif rag_results:
+            reply = _extractive_local_reply(user_input, rag_results)
         elif decision.model:
             try:
                 reply = decision.model.generate(
@@ -257,6 +334,11 @@ def create_app(config: dict = None) -> Flask:
                     # demo checkpoints.
                     GenerationConfig(max_new_tokens=128, temperature=0.25, top_k=20, top_p=0.85)
                 )
+                if _is_low_quality_generation(reply):
+                    reply = (
+                        "I do not have reliable local knowledge for that question yet. Add a relevant "
+                        "document in Knowledge base, then ask again."
+                    )
             except Exception as exc:
                 reply = f"[Model error: {exc}]"
 
@@ -333,6 +415,80 @@ def create_app(config: dict = None) -> Flask:
         n_chunks = rag_ingester.ingest_text(text, source=source)
         rag_index.save(rag_index_path)
         return jsonify({"chunks_added": n_chunks, "total_chunks": len(rag_index)})
+
+    @app.route("/api/rag/upload", methods=["POST"])
+    def rag_upload():
+        """Store and index user-selected local files without any network upload."""
+        allowed_extensions = {
+            ".txt", ".md", ".csv", ".json", ".pdf", ".docx", ".xlsx", ".pptx",
+            ".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp", ".tif", ".tiff",
+        }
+        uploaded_files = request.files.getlist("files")
+        if not uploaded_files:
+            return jsonify({"error": "Choose at least one document."}), 400
+
+        added_chunks = 0
+        imported_sources = []
+        rejected = []
+        for uploaded in uploaded_files:
+            filename = secure_filename(uploaded.filename or "")
+            suffix = Path(filename).suffix.lower()
+            if not filename or suffix not in allowed_extensions:
+                rejected.append(uploaded.filename or "unnamed file")
+                continue
+            destination = knowledge_upload_dir / filename
+            uploaded.save(destination)
+            try:
+                count = rag_ingester.ingest_file(destination)
+            except Exception as exc:
+                rejected.append(f"{filename}: {exc}")
+                continue
+            added_chunks += count
+            imported_sources.append({"source": filename, "chunks_added": count})
+
+        if added_chunks:
+            rag_index.save(rag_index_path)
+        return jsonify({
+            "chunks_added": added_chunks,
+            "total_chunks": len(rag_index),
+            "imported": imported_sources,
+            "rejected": rejected,
+        })
+
+    @app.route("/api/rag/sources")
+    def rag_sources():
+        counts: dict[str, int] = {}
+        for record in rag_index._store.values():
+            source = record["source"]
+            counts[source] = counts.get(source, 0) + 1
+        sources = [
+            {"source": source, "chunks": count}
+            for source, count in sorted(counts.items(), key=lambda item: item[0].lower())
+        ]
+        return jsonify({"total_sources": len(sources), "sources": sources[:100]})
+
+    @app.route("/api/rag/import-project-knowledge", methods=["POST"])
+    def import_project_knowledge():
+        """Explicitly import the earlier local index into the user knowledge base."""
+        project_index_path = ROOT / "data" / "rag_index_tfidf.json"
+        if not project_index_path.is_file():
+            return jsonify({"error": "No compatible project knowledge index was found."}), 404
+
+        project_index = LocalVectorIndex()
+        project_index.load(project_index_path)
+        expected_dimension = len(rag_retriever.embedder.embed("dimension check"))
+        compatible = {
+            chunk_id: record for chunk_id, record in project_index._store.items()
+            if len(record.get("embedding", [])) == expected_dimension
+        }
+        added = sum(chunk_id not in rag_index._store for chunk_id in compatible)
+        rag_index._store.update(compatible)
+        rag_index.save(rag_index_path)
+        return jsonify({
+            "chunks_added": added,
+            "total_chunks": len(rag_index),
+            "source_index": project_index_path.name,
+        })
 
     @app.route("/api/rag/search", methods=["POST"])
     def rag_search():

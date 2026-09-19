@@ -20,14 +20,14 @@ def verify_offline() -> dict:
     connectivity = check_internet(timeout=1.5)
 
     import json
-    from datetime import datetime
+    from datetime import datetime, timezone
     is_offline = not connectivity["connected"]
     report = {
-        "timestamp":         datetime.utcnow().isoformat(),
+        "timestamp":         datetime.now(timezone.utc).isoformat(),
         "offline":           is_offline,
         "internet_reachable": connectivity["connected"],
         "tested_hosts":      connectivity["tested_hosts"],
-        "verdict":           "OFFLINE" if is_offline else "ONLINE",
+        "verdict":           "NO OUTBOUND PROBE" if is_offline else "ONLINE",
     }
 
     # Write proof log

@@ -17,7 +17,7 @@ Runtime Application Process
 ┌───────────────────────┐
 │ Python socket.connect │  <── Monkey-patched by NetworkMonitor
 └───────────┬───────────┘
-            ├── Dest: 127.0.0.1 (Localhost / Ollama / DB)  ──► [ALLOW]
+            ├── Dest: 127.0.0.1 (Local web app / DB)       ──► [ALLOW]
             └── Dest: External IP / Domain               ──► [LOG ALERT & BLOCK]
 ```
 

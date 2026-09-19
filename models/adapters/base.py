@@ -5,7 +5,6 @@ WHY AN ABSTRACTION LAYER?
 --------------------------
 The SovereignAI platform supports multiple local models:
   - The custom from-scratch MiniLLM (Phase 5-7)
-  - Open-weight models (e.g. Phi-3-mini, Mistral-7B via llama.cpp/Ollama)
   - A vision/multimodal model (Phase 14)
 
 Without an abstraction layer, every component (router, agent, backend)
@@ -53,7 +52,7 @@ class ModelProvider(ABC):
     Abstract base class for all local model adapters.
 
     Every model — the custom MiniLLM, open-weight models loaded via
-    llama.cpp, Ollama, or any future backend — must implement this
+    any future in-process model backend — must implement this
     interface so the router and agent can use them interchangeably.
     """
 

@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import json
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 from database.db import Database
@@ -19,8 +19,8 @@ class ConversationRepository:
         conv_id = str(uuid.uuid4())
         self.db.insert("conversations", {
             "id": conv_id, "title": title, "model_name": model_name,
-            "created_at": datetime.utcnow().isoformat(),
-            "updated_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
         })
         return conv_id
 
@@ -31,7 +31,7 @@ class ConversationRepository:
             "conversation_id": conversation_id,
             "role": role,
             "content": content,
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
             "metadata": json.dumps(metadata or {}),
         })
 
@@ -67,14 +67,14 @@ class TaskRepository:
             "category":     task_state.category,
             "final_answer": task_state.final_answer,
             "error":        task_state.error,
-            "updated_at":   datetime.utcnow().isoformat(),
+            "updated_at":   datetime.now(timezone.utc).isoformat(),
         }
         if existing:
             sets = ", ".join(f"{k}=?" for k in data if k != "id")
             vals = [v for k, v in data.items() if k != "id"] + [task_state.task_id]
             self.db.execute(f"UPDATE tasks SET {sets} WHERE id=?", tuple(vals))
         else:
-            data["created_at"] = datetime.utcnow().isoformat()
+            data["created_at"] = datetime.now(timezone.utc).isoformat()
             self.db.insert("tasks", data)
 
         # Save steps

@@ -59,11 +59,7 @@ where $\text{Swish}(z) = z \cdot \sigma(z)$.
 
 ## 3. Pluggable Adapters & Model Registry
 
-In addition to the from-scratch custom LLM, the workbench supports pluggable local models via `models/adapters/`:
-- `CustomLLMAdapter`: Runs native PyTorch inference using trained weights.
-- `Industrial80MAdapter`: Industrial open-weight ~80M parameter model for domain reasoning on local edge GPUs.
-- `MiniLMAdapter`: Local 384-dimensional dense semantic embedding generator for high-speed offline RAG vectorization.
-- `OllamaAdapter`: Connects to local Ollama runtime for open-weight models (e.g., Mistral, Phi-3).
-- `VisionAdapter`: Connects to local multimodal models (e.g., LLaVA) for image and visual diagram understanding.
+The workbench uses one generative adapter via `models/adapters/`:
+- `CustomMiniLLMAdapter`: Runs native PyTorch inference using locally trained, from-scratch weights.
 
-The `models/registry.py` manages lifecycle, health checks, and fallback mechanisms across all models.
+The `models/registry.py` manages its lifecycle and health checks. It deliberately contains no external model-server or API adapter.

@@ -43,16 +43,20 @@ class PowerPointWriteTool(BaseTool):
         title_slide_layout = prs.slide_layouts[0]
         title_slide = prs.slides.add_slide(title_slide_layout)
         title_slide.shapes.title.text = title
-        if title_slide.placeholders[1:]:
+        try:
             title_slide.placeholders[1].text = "SovereignAI — Generated Locally"
+        except (KeyError, IndexError):
+            pass  # layout may not have a subtitle placeholder
 
         # Content slides
         for slide_data in (slides or []):
             slide = prs.slides.add_slide(slide_layout)
             slide.shapes.title.text = slide_data.get("title", "")
             content = slide_data.get("content", "")
-            if slide.placeholders[1:]:
+            try:
                 slide.placeholders[1].text = content
+            except (KeyError, IndexError):
+                pass
 
         out_path = Path(path)
         out_path.parent.mkdir(parents=True, exist_ok=True)

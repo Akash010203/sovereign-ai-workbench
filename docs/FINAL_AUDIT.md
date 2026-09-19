@@ -24,8 +24,6 @@
 | Agent (Planner/Executor/Verifier) | **Custom implementation** | `agents/agent.py` — plan, execute tools, verify, build answer. |
 | RAG (retrieval) | **Custom implementation** | `rag/` — chunking, TF-IDF embedding (from scratch), cosine similarity retrieval, citation formatting. |
 | OCR | **Local library** | `tools/ocr.py` — Tesseract via pytesseract. The OCR engine itself is not custom. |
-| Vision model | **Open-weight** | llava:7b served via Ollama. Local inference only. Not custom. |
-| Open-weight LLM | **Open-weight** | Phi-3-mini (or equivalent) via Ollama adapter. Local inference only. Not custom. |
 | Industrial 80M Model | **Open-weight** | Local 80M domain reasoning model via adapter (`models/adapters/`). Runs entirely on local edge GPU. |
 | MiniLM Embeddings | **Open-weight** | 384-dimensional dense semantic embedding generator via `models/adapters/minilm_adapter.py` for high-speed offline RAG vectorization. |
 | FineWeb-Edu Knowledge Index | **Curated Dataset / Index** | Pre-indexed local encyclopedic knowledge base (`rag/fineweb.py`, `rag/fineweb_index.py`, `rag/hybrid.py`) queried offline. |
@@ -117,7 +115,7 @@
 | "Is the training data yours?" | The demo corpus is synthetic (CC0). OpenOrca data is MIT-licensed from Microsoft Research. Both are documented. |
 | "What's the model size?" | ~4.88M params (small) or ~12M params (medium). This is deliberately small — it's a learning vehicle. |
 | "Can it actually generate text?" | Yes — see `scripts/run_inference.py`. Quality is proportional to training data and model size. |
-| "What's not custom?" | OCR (Tesseract), open-weight models (Ollama), document libs (python-docx etc.). All are honestly labelled. |
+| "What's not custom?" | OCR (Tesseract) and document libraries (python-docx etc.). All are honestly labelled. |
 
 ---
 

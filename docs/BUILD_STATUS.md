@@ -12,13 +12,13 @@ Last updated: **Phase 24 complete**. All 24 phases fully operational and verifie
 | 5 | Transformer / MiniLLM | ✅ COMPLETE | `models/custom_minilm/{ffn,block,model}.py`, `tests/test_phase5.py` |
 | 6 | Training Pipeline | ✅ COMPLETE | `training/{dataset,trainer,scheduler,evaluation}.py`, `scripts/train_model.py` |
 | 7 | Checkpoint / Inference | ✅ COMPLETE | `models/custom_minilm/{checkpoint,generate}.py`, `scripts/run_inference.py` |
-| 8 | Multi-model abstraction | ✅ COMPLETE | `models/adapters/{base,minilm_adapter,openweight_adapter}.py`, `models/registry.py` |
+| 8 | Model abstraction | ✅ COMPLETE | `models/adapters/{base,minilm_adapter}.py`, `models/registry.py` |
 | 9 | Router | ✅ COMPLETE | `router/{task_classifier,policies,router}.py` |
 | 10 | Tool System | ✅ COMPLETE | `tools/{registry,calculator,filesystem,pdf,ocr,spreadsheet,word,powerpoint,code_sandbox}.py` |
 | 11 | Agent System | ✅ COMPLETE | `agents/{state,memory,planner,executor,verifier,agent}.py` |
 | 12 | RAG (from scratch) | ✅ COMPLETE | `rag/{chunking,embeddings,index,ingest,retriever,citations}.py` |
 | 13 | OCR | ✅ COMPLETE | `tools/ocr.py` (Tesseract local, no cloud) |
-| 14 | Vision | ✅ COMPLETE | `models/adapters/openweight_adapter.py` (llava:7b via Ollama) |
+| 14 | Vision | ⏳ OUT OF SCOPE | No external vision model is included in the from-scratch build. |
 | 15 | Code Sandbox | ✅ COMPLETE | `tools/code_sandbox.py` (subprocess isolation) |
 | 16 | Document outputs | ✅ COMPLETE | `tools/{word,powerpoint,spreadsheet}.py` |
 | 17 | SQLite | ✅ COMPLETE | `database/{schema.sql,db.py,repositories/conversations.py}` |

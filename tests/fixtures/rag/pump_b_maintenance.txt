@@ -1,0 +1,16 @@
+The inspection interval for Pump B is 90 days. Each inspection must cover:
+
+1. Bearing condition assessment using vibration analysis (ISO 10816-3)
+2. Seal leakage measurement (maximum allowable: 2 drops per minute)
+3. Coupling alignment check (tolerance: 0.05 mm radial, 0.03 mm axial)
+4. Discharge pressure test at rated flow (minimum: 12.5 bar)
+5. Motor winding insulation resistance (minimum: 50 MΩ at 500V DC)
+
+Pump B is a horizontal centrifugal pump serving the cooling water circuit.
+Model: KSB Etanorm 65-200, installed 2021-03-15, serial number PB-2021-0847.
+The pump is rated for 85 m³/h at 35m head with a 22 kW motor.
+
+Critical spare parts (minimum stock):
+- Mechanical seal: John Crane Type 2100 (part no. JC-2100-65)
+- Bearing set: SKF 6310-2RS (2 required per overhaul)
+- Coupling insert: Rotex 42 Spider (Shore 98A)

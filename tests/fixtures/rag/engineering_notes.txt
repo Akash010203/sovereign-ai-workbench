@@ -1,0 +1,16 @@
+Bolt torque specifications for flange assembly FA-D-100:
+
+Bolt size: M24 x 3.0, Grade 8.8
+Required torque: 450 Nm ± 5%
+Tightening sequence: Star pattern, 3 passes (30%, 60%, 100%)
+Lubricant: Molykote P-37 anti-seize compound
+
+Gasket: Spiral wound, 316SS/graphite, ASME B16.20
+Flange rating: ASME Class 300, RF (Raised Face)
+Service: High-pressure steam, 280°C, 38 bar
+
+Notes:
+- All bolts must be replaced if any corrosion pitting exceeds 0.5 mm depth
+- Flange faces must be inspected for damage before assembly
+- Gasket must never be reused
+- Final torque verification required 24 hours after initial tightening

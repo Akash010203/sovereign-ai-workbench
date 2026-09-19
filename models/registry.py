@@ -25,8 +25,6 @@ class ModelRegistry:
 
         registry = ModelRegistry()
         registry.register(CustomMiniLLMAdapter(...))
-        registry.register(OllamaModelAdapter("phi3:mini"))
-
         model = registry.get("custom_minilm_v1")
         text  = model.generate("The pump inspection")
     """
@@ -65,7 +63,6 @@ class ModelRegistry:
 def build_default_registry(
     minilm_checkpoint: str = "",
     tokenizer_path: str = "tokenizer/vocab/demo_bpe_vocab.json",
-    ollama_models: list[str] | None = None,
 ) -> ModelRegistry:
     """
     Build the default platform registry.
@@ -75,27 +72,20 @@ def build_default_registry(
                            If empty, the adapter is registered but marked
                            unavailable.
         tokenizer_path:    Path to the tokenizer vocab JSON.
-        ollama_models:     List of Ollama model tags to register.
-                           Defaults to ['phi3:mini'].
-
     Returns:
-        A populated ModelRegistry.
+        A registry containing the project's from-scratch MiniLLM adapter.
     """
     from models.adapters.minilm_adapter import CustomMiniLLMAdapter
-    from models.adapters.openweight_adapter import OllamaModelAdapter
 
     registry = ModelRegistry()
 
-    # Always register the custom MiniLLM (may be unavailable before training)
+    # The only generative model is the project's own MiniLLM.  It is loaded
+    # directly from a locally trained checkpoint and never calls a model API.
     registry.register(
         CustomMiniLLMAdapter(
             checkpoint_path=minilm_checkpoint,
             tokenizer_path=tokenizer_path,
         )
     )
-
-    # Register Ollama models
-    for tag in (ollama_models or ["phi3:mini"]):
-        registry.register(OllamaModelAdapter(model_name=tag))
 
     return registry

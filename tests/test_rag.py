@@ -211,13 +211,7 @@ class TestCitations:
 class TestDocumentIngester:
     def test_ingest_text(self):
         """Ingest a text string and verify chunks are added to the index."""
-        try:
-            from rag.ingest import DocumentIngester
-            from rag.embeddings import get_embedder
-            # This will fail if sentence-transformers is not installed
-            get_embedder()
-        except Exception:
-            pytest.skip("sentence-transformers not available")
+        from rag.ingest import DocumentIngester
 
         index = LocalVectorIndex()
         ingester = DocumentIngester(index)
@@ -231,12 +225,7 @@ class TestDocumentIngester:
 
     def test_ingest_file(self, tmp_path):
         """Ingest a file from disk."""
-        try:
-            from rag.ingest import DocumentIngester
-            from rag.embeddings import get_embedder
-            get_embedder()
-        except Exception:
-            pytest.skip("sentence-transformers not available")
+        from rag.ingest import DocumentIngester
 
         test_file = tmp_path / "test.txt"
         test_file.write_text(

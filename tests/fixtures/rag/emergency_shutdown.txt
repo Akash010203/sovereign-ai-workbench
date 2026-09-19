@@ -1,0 +1,35 @@
+Emergency Shutdown Procedure — Plant Section C
+
+1. INITIATION
+   Emergency shutdown may be initiated by:
+   - Manual activation of the ESD button (red mushroom head, panel CP-003)
+   - Automatic trip from the safety instrumented system (SIS)
+   - Authorization from the shift supervisor or plant manager
+
+2. VALVE ISOLATION
+   Emergency shutdown procedure requires valve isolation of all process
+   feeds within 30 seconds of ESD activation. The following valves must
+   close automatically:
+   - XV-C-001: Main feed isolation (fail-closed, pneumatic)
+   - XV-C-002: Product outlet isolation (fail-closed, pneumatic)
+   - XV-C-003: Utility steam isolation (fail-closed, pneumatic)
+   - XV-C-004: Cooling water supply (fail-open — maintains cooling)
+
+3. DEPRESSURIZATION
+   After valve isolation, section C must be depressurized to below 2 bar
+   within 15 minutes through the flare header. Blowdown valve BDV-C-001
+   opens automatically on ESD activation.
+
+4. NOTIFICATION
+   The control room operator must notify:
+   - Site emergency response team within 2 minutes
+   - Environmental monitoring within 5 minutes
+   - Plant management within 15 minutes
+
+5. RESTART CLEARANCE
+   Restart after emergency shutdown requires:
+   - Root cause investigation completion
+   - Written clearance from the shift supervisor
+   - Verification of all safety instrumented functions
+   - Pressure test of isolated sections
+   - Management of change review if any modifications were made

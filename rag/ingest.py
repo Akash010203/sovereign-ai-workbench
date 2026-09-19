@@ -47,15 +47,24 @@ class DocumentIngester:
 
     def ingest_file(self, path: str | Path, chunk_size: int = 400) -> int:
         """
-        Ingest a plain-text or PDF file.
+        Ingest a text document, office file, PDF, or OCR-readable image.
 
-        For PDFs, text is extracted with pdfminer if available.
+        PDFs are extracted with pdfminer when available; images use local OCR.
         """
         path = Path(path)
         source = path.name
 
-        if path.suffix.lower() == ".pdf":
+        suffix = path.suffix.lower()
+        if suffix == ".pdf":
             text = self._extract_pdf(path)
+        elif suffix == ".docx":
+            text = self._extract_docx(path)
+        elif suffix == ".xlsx":
+            text = self._extract_xlsx(path)
+        elif suffix == ".pptx":
+            text = self._extract_pptx(path)
+        elif suffix in {".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp", ".tif", ".tiff"}:
+            text = self._extract_image(path)
         else:
             text = path.read_text(encoding="utf-8", errors="replace")
 
@@ -81,3 +90,41 @@ class DocumentIngester:
         except ImportError:
             log.warning("pdfminer not available — reading PDF as binary text fallback.")
             return path.read_bytes().decode("utf-8", errors="replace")
+
+    @staticmethod
+    def _extract_docx(path: Path) -> str:
+        from docx import Document
+        return "\n".join(paragraph.text for paragraph in Document(path).paragraphs)
+
+    @staticmethod
+    def _extract_xlsx(path: Path) -> str:
+        from openpyxl import load_workbook
+        workbook = load_workbook(path, read_only=True, data_only=True)
+        rows = []
+        for sheet in workbook.worksheets:
+            rows.append(f"Sheet: {sheet.title}")
+            rows.extend(" | ".join(str(value) for value in row if value is not None)
+                        for row in sheet.iter_rows(values_only=True))
+        return "\n".join(row for row in rows if row)
+
+    @staticmethod
+    def _extract_pptx(path: Path) -> str:
+        from pptx import Presentation
+        return "\n".join(
+            shape.text for slide in Presentation(path).slides
+            for shape in slide.shapes if hasattr(shape, "text") and shape.text.strip()
+        )
+
+    @staticmethod
+    def _extract_image(path: Path) -> str:
+        """Read visible text from an image with the project's local OCR stack."""
+        try:
+            import pytesseract
+            from PIL import Image
+        except ImportError as exc:
+            raise RuntimeError("Image OCR requires Pillow and pytesseract.") from exc
+
+        text = pytesseract.image_to_string(Image.open(path), lang="eng").strip()
+        if not text:
+            raise RuntimeError("No readable text was found in this image.")
+        return text

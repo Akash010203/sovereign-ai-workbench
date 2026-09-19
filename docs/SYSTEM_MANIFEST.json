@@ -1,0 +1,3368 @@
+{
+  "timestamp": "2026-09-19T00:19:14+0530",
+  "python_version": "3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]",
+  "git": {
+    "branch": "main",
+    "commit": "3d5fdd80081adc610e207880a24d22911a5407d6",
+    "dirty_files": [
+      "M .gitignore",
+      " M README.md",
+      " M agents/agent.py",
+      " M agents/executor.py",
+      " M agents/state.py",
+      " M agents/verifier.py",
+      " M app/backend/app.py",
+      " M app/frontend/index.html",
+      " M database/repositories/conversations.py",
+      " M demo/run_demo.py",
+      " M demo/scenarios.py",
+      " M docs/BUILD_STATUS.md",
+      " M docs/FINAL_AUDIT.md",
+      " M docs/HONESTY_LEDGER.md",
+      " M docs/JUDGE_PRESENTATION_GUIDE.md",
+      " M docs/MODELS.md",
+      " M docs/OFFLINE_PROOF.md",
+      " M docs/SECURITY.md",
+      " M models/adapters/__init__.py",
+      " M models/adapters/base.py",
+      " M models/adapters/minilm_adapter.py",
+      " D models/adapters/openweight_adapter.py",
+      " M models/registry.py",
+      " M pyproject.toml",
+      " M rag/fineweb_index.py",
+      " M rag/hybrid.py",
+      " M rag/ingest.py",
+      " M requirements.txt",
+      " M router/policies.py",
+      " M scripts/verify_offline.py",
+      " M security/audit.py",
+      " M security/network_monitor.py",
+      " M security/offline_mode.py",
+      " M tests/test_agents.py",
+      " M tests/test_backend_chat_format.py",
+      " M tests/test_e2e.py",
+      " M tests/test_rag.py",
+      " M tools/code_sandbox.py",
+      " M tools/powerpoint.py",
+      " M tools/registry.py",
+      "?? data/user_knowledge_index.json",
+      "?? docs/COMPONENT_INVENTORY.md",
+      "?? docs/DATA_FLOW.md",
+      "?? docs/DATA_INVENTORY.md",
+      "?? docs/RECOVERY_TIMELINE.md",
+      "?? docs/SIH_READINESS_REPORT.md",
+      "?? docs/SYSTEM_MAP.md",
+      "?? rag/fineweb_lexical.py",
+      "?? scripts/create_recovery_snapshot.py",
+      "?? scripts/rebuild_local_rag_embeddings.py",
+      "?? scripts/run_full_test.py",
+      "?? test_reports/",
+      "?? tests/fixtures/",
+      "?? tests/regression/",
+      "?? tests/system/",
+      "?? tests/test_rag_regression.py"
+    ],
+    "stash_count": 1
+  },
+  "checkpoints": [
+    {
+      "path": "checkpoints\\_audit_finetune\\finetune_final.pt",
+      "size_bytes": 58597193,
+      "size_mb": 55.9,
+      "modified": "2026-09-10T22:46:21",
+      "sha256_first_50mb": "ea1dcbd429e7c8a30ee65036748cac8f93c542ae16bb8bc248cb2105092b5413"
+    },
+    {
+      "path": "checkpoints\\_audit_finetune\\finetune_step00001.pt",
+      "size_bytes": 19532581,
+      "size_mb": 18.6,
+      "modified": "2026-09-10T22:46:21",
+      "sha256_first_50mb": "595cb095c69522c2ba7531ec61bcb461d75b85645487186f37672fa36f1c879d"
+    },
+    {
+      "path": "checkpoints\\_audit_pretrain.pt",
+      "size_bytes": 58600977,
+      "size_mb": 55.9,
+      "modified": "2026-09-10T22:46:14",
+      "sha256_first_50mb": "a441c98e15c3d33b92baa9e8cfbedf4354e43ea7927bc41498dede01d1154dac"
+    },
+    {
+      "path": "checkpoints\\best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:57:08",
+      "sha256_first_50mb": "41795908f0f02279c9966456abfafb86fc9adb7d99428f8da8ccfc4d53a8558b"
+    },
+    {
+      "path": "checkpoints\\exp1_smoke_step00001_final.pt",
+      "size_bytes": 58600977,
+      "size_mb": 55.9,
+      "modified": "2026-09-10T22:46:14",
+      "sha256_first_50mb": "a441c98e15c3d33b92baa9e8cfbedf4354e43ea7927bc41498dede01d1154dac"
+    },
+    {
+      "path": "checkpoints\\exp1_smoke_step00025_best.pt",
+      "size_bytes": 58600811,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T00:25:05",
+      "sha256_first_50mb": "ce8413e97bc28fa060a794d6988a0f7f7d4c4c13b3e63713e8132ef798cc961d"
+    },
+    {
+      "path": "checkpoints\\exp1_smoke_step00050.pt",
+      "size_bytes": 58599533,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T00:25:07",
+      "sha256_first_50mb": "b65efec4c3b32a951d06beabec295efa9a6b8550af93c2eedf507da5f28abc5b"
+    },
+    {
+      "path": "checkpoints\\exp1_smoke_step00050_best.pt",
+      "size_bytes": 58600811,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T00:25:07",
+      "sha256_first_50mb": "a2cc4a4cbd8644ad0fb19a0e8d4286b86d92ba96e8e1b8d99ecef6321c0f8587"
+    },
+    {
+      "path": "checkpoints\\exp1_smoke_step00050_final.pt",
+      "size_bytes": 58601041,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T00:25:07",
+      "sha256_first_50mb": "b5d9ea71f6f1c9f7ce3c4533010fcae7f4a611f73c188a83196d9fe487729142"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step00100_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:24:41",
+      "sha256_first_50mb": "453982af9602aa1f93006223ddc4a24628d14654180ece898feca4f57f134393"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step00200_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:24:58",
+      "sha256_first_50mb": "c725989f821eb0b5dc237bc420aca9b5285058d66e666d2ed81d5962aafd9dd9"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step00250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:25:06",
+      "sha256_first_50mb": "bab1f08e7e62d51ae1e30525de5e173f5f4f3c307f793927aaee830a9d2b21d0"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step00300_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:25:14",
+      "sha256_first_50mb": "d695a1b751f5afc5e60f11b2a4cf9bc71e39cdf7c010fde5909b8b9b66b7524c"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step00400_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:25:31",
+      "sha256_first_50mb": "dde5ec3c6ba7143741678883c8cda783c8d9fc22b7753a12cfb5656503ff5fca"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step00500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:25:48",
+      "sha256_first_50mb": "d0915fc53102b56a899febb5b12e56da12f4bf7bd2b603ee6061ff72917f15f2"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step00500_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:25:48",
+      "sha256_first_50mb": "818c1fc2cfdc7d22589e92f89ba6a45888ee1355cd86e18a0489d8f50cab9f4f"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step00600_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:26:05",
+      "sha256_first_50mb": "4f0d14b7a6a003271ebc91b956b16014a4a343897a4f3fa40b5a0ee70328d75d"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step00700_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:26:22",
+      "sha256_first_50mb": "7123b4d080b9d17cd7cc49cb269587fe15076e98a3deca33345d1b58f42afb7d"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step00750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:26:31",
+      "sha256_first_50mb": "817ceb69425917a049d7cd0a14391bcff57b1eaac5def92d8db8f8041a5f610e"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step00800_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:26:40",
+      "sha256_first_50mb": "f0e67580e308463b28b624728d99c1b1e79bfb72f6819413867c01f77302531f"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step00900_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:26:59",
+      "sha256_first_50mb": "7618bdd1b274a2886001e02032f11a7faf0b9356637926a6c99a93b09c1b3e3a"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step01000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:27:18",
+      "sha256_first_50mb": "1b2d0da473d23a9ad68115ec284c07b42a1f4fc0ea88a3987f6768632d1bda76"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step01000_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:27:17",
+      "sha256_first_50mb": "4fa018141e682a1363a1f9bad361033e5a67b698f4c2c8ab7fb76b120875524f"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step01100_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:27:36",
+      "sha256_first_50mb": "f90b4fbde406e0049114bb3ccc448ea348c415ce750c8323373c772c7bb846bc"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step01200_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:27:55",
+      "sha256_first_50mb": "7275cc55446c9af175244f121798ba7e6f27c9809eda11502d698c22457956db"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step01250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:28:05",
+      "sha256_first_50mb": "e66c288ce22ee51bd5bb8927a5673c52bd19d980e0468abcba6ce9254de573cd"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step01300_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:28:14",
+      "sha256_first_50mb": "31c1745548d860606f2bc036ab65ec86f68ccce6891f02581e9cd4c6e0d76206"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step01400_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:28:33",
+      "sha256_first_50mb": "12c977aed3c06f8b3d5d951996c505ddb95af54b820770e746e486b068aa5572"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step01500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:28:52",
+      "sha256_first_50mb": "3a892114ac3a4d9ae556fba6709330b7119f76503116165483453922ee5c9687"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step01500_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:28:51",
+      "sha256_first_50mb": "023aebcc79ae477a7763ea3d738bf776bb82d7cf5629d0129a35fa3824c30c0d"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step01600_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:29:10",
+      "sha256_first_50mb": "96bb4b7eacbafc37fb810eb94a9332d033f28864a075244e5a29236f09defc6e"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step01700_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:29:29",
+      "sha256_first_50mb": "7ae112c70b7ca0cc9697f0eab60eb42930cfa7583e44a9ef4edd96cce762ed26"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step01750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:29:38",
+      "sha256_first_50mb": "006f4f803a3fca0849174f795e47658daecfa22e5d67df6c7780649360398e6a"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step01800_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:29:48",
+      "sha256_first_50mb": "ea57fe0dff43ba9443fe589da6f42b55f96459437db977dc34ad9b560ddbb77b"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step01900_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:30:06",
+      "sha256_first_50mb": "3c05af33ddaa9fe479bb64fb6eafd6f0e2279e75281db64344b242f804272a2a"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step02000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:30:25",
+      "sha256_first_50mb": "45d5539b111a3de374e090dca480ac875e82592213c4ff1f79b8386c588e912b"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step02000_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:30:25",
+      "sha256_first_50mb": "c1dd225ed0184f79e50d2c18b78e295ea416b881a5378bf10150c3f29a31c3f1"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step02000_final.pt",
+      "size_bytes": 58601731,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T00:21:36",
+      "sha256_first_50mb": "51e1d2ee83628512a2458607d5a426795aa57bbd8d05716aa2c381dac249b680"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step02100_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:30:44",
+      "sha256_first_50mb": "3d11763b8885fdc1933d3810e07e300e470b2a88df8e8ad5b03c565c1a4d82c8"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step02200_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:31:02",
+      "sha256_first_50mb": "8997a19dac98cc8902388f286a536e3ab2715006fb008bd0edbeefdb0575a25d"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step02250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:31:10",
+      "sha256_first_50mb": "6597e9bf601d53e4a25db571d9f9879b0adc7e4ee5b5354df9f196beb845d8e0"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step02300_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:31:19",
+      "sha256_first_50mb": "4aea12e973d5eb7fbb280d83a4505fb98fc2f6eb4572f4e39c2185c86500780d"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step02400_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:31:36",
+      "sha256_first_50mb": "545bb1648993ff23e9e89992aa83131c1f0183ea64b3d56b090d96b04ad4cd81"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step02500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:31:53",
+      "sha256_first_50mb": "77eebfb8c8306186bc3552242b9455e02904528369728790c4e28a80b784b959"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step02500_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:31:53",
+      "sha256_first_50mb": "ae815b0c80187ad0002ff77ba6bb5307074098c67359c7e7f8eed70d5f616fd1"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step02600_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:32:10",
+      "sha256_first_50mb": "9fc1abb5c7ec18d0de9ad0bafc71ca2c20483dbea8093182ab6cf4a1b01c9cf3"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step02700_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:32:26",
+      "sha256_first_50mb": "064631f664c1d5fa7a2379e433614cd2937b206faef11d4524be6eb29b141d9a"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step02750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:32:35",
+      "sha256_first_50mb": "98e56f6d79dae05af4d9b2613890e019d4741065b894ab9aef5c0855cef385f7"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step02800_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:32:43",
+      "sha256_first_50mb": "2c0bf03c35dfb984cbc8a1f45adf6415133e0cbd9c7c87a18a5f35a476b43d3e"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step02900_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:33:00",
+      "sha256_first_50mb": "92fa08df927790fdfd1841bcbf39ed36e05a881adc8287c5fcc40e7fe912308c"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step03000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:33:17",
+      "sha256_first_50mb": "5d5202ecf9f0d56d5ca48deb6e4d6ce0f736d5cfca657f37be59ba0dc8d765e4"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step03000_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:33:17",
+      "sha256_first_50mb": "94f6ef3906a8c982c4866b6adf39d2f8577f260c76fb52948d95e3fa97e1458c"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step03100_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:33:34",
+      "sha256_first_50mb": "70cfaad669f964e4b66a7262695e0ee43db2e352015d5adbf268a4a91d2ac48e"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step03200_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:33:51",
+      "sha256_first_50mb": "8355ea46f08533cf1aadafcce5a65d3c13befe8e9461d2c6fd0e6167dfafd258"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step03250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:33:59",
+      "sha256_first_50mb": "37b6802b98c6babed56ec3352b144a3a4141e622a4694c80897a5b2312e6b998"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step03300_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:34:08",
+      "sha256_first_50mb": "5773033ed5c09d298204742c48a76271e9655bb2e77f8947580869e503c89097"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step03400_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:34:25",
+      "sha256_first_50mb": "2bbae03783a606618c35f507d24b0f2ed9cff6875530115572c833f395128ce6"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step03500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:34:42",
+      "sha256_first_50mb": "59f279fc8a8ee21177a3b667465e0bb30259c2c8a195344ce79e7fd802ab2025"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step03500_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:34:41",
+      "sha256_first_50mb": "f66f41b1f606a2886637879c5d7d6a587db912d9f3ecbf013a217a2f6b2fbd0f"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step03700_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:35:17",
+      "sha256_first_50mb": "0258a714b36f1a413b4210bda139a1ce6cc997ba40ef23c4ee05e1cf2a592c71"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step03750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:35:27",
+      "sha256_first_50mb": "399c7737d2a6f376383fbec308eb08afe4ae4f4ee7499c8f37605650b3441f0d"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step03800_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:35:36",
+      "sha256_first_50mb": "25f30797bba8211397f0986ef59affb561128fabc992d291b150b7ebd17fba2e"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step03900_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:35:55",
+      "sha256_first_50mb": "29925c945589045bf0df381b8fa669f7fc7d530b430b9954e4bc53561c47d3eb"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step04000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:36:14",
+      "sha256_first_50mb": "dfacb2ad439039f166f7a6ccb766ce87bdec1451a5a77fbd2b0e79e2a7c8ccf0"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step04000_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:36:14",
+      "sha256_first_50mb": "dbba7caa66710f5ec8dc924ff5e578b677145590c8f16f85700781e222ff6549"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step04100_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:36:33",
+      "sha256_first_50mb": "fb1e8ab64b939530ea8dc98456da4e27b4d0266bb0e48b719f5cf1269aba8a2d"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step04200_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:36:52",
+      "sha256_first_50mb": "de00e8d25539f00ec64ec6cd0a5e5e10a733c73500039b1fa8d34fbe6e53de9f"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step04250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:37:01",
+      "sha256_first_50mb": "429e0031c550ff46fd0d967417df082dc84296d07137cc0868327d532ee99871"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step04300_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:37:11",
+      "sha256_first_50mb": "d9d1433dffd3610ee355136766205a68608b2944e8a40cd33c5114b582ceb7b2"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step04500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:37:48",
+      "sha256_first_50mb": "8fd355685dd5a9f043489b38f4ad78022ea7ecb87aef351e8ebedd0ca416c68a"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step04500_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:37:48",
+      "sha256_first_50mb": "6b6ff813c5bf05be5963e927366f226d912b79e4002b63d792cd45025242ceca"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step04600_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:38:07",
+      "sha256_first_50mb": "b81303acc5a196050fd57f8ec0d629fba2bda90238564fdb2e33837ef526c26a"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step04700_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:38:26",
+      "sha256_first_50mb": "0ac255a524eec931885e2954b92ee67b0b8127b5e3ac977eac228d093f412c20"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step04750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:38:36",
+      "sha256_first_50mb": "ddcbfc7f7f4985537addcf57759da89e94afdf8146f64916cdef97b3a8437c17"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step04800_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:38:45",
+      "sha256_first_50mb": "7713284bec011ba769fad7fc4ab7652b2e4fdc06e5c0b1c1364fe09db2d779d3"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step04900_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:39:04",
+      "sha256_first_50mb": "0bbc3e4d6b896ac2007c98a153e11286d5f0c89ccfd2239eccffe106bb919b1f"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step05000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:39:23",
+      "sha256_first_50mb": "f17b615e982dd66f47e92d37da5174512535850ebb046838948b709a81bf5147"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step05000_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:39:23",
+      "sha256_first_50mb": "56b9e6819a232810869255f6f44e9821f7404331279b7b69277bd0ecab5c06a5"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step05100_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:39:42",
+      "sha256_first_50mb": "a2feb2e7ef34d6852e7f98b50ab4c3731b01928853562c5c67fb64925248add6"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step05200_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:40:00",
+      "sha256_first_50mb": "fd0c932f03815dd51ee242128c10a470c40513ab480384e7d81118e445b6e1c9"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step05250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:40:10",
+      "sha256_first_50mb": "5b6f281134ae2cc6cae2827c9b612edde03594e24b0361c3683812e26d2ccb5a"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step05300_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:40:20",
+      "sha256_first_50mb": "f639fc4853892ccfdf3a6181839235f3500785b68e28ff5335f0c10d94d05651"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step05400_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:40:39",
+      "sha256_first_50mb": "e86c3d79d2d206c12297d98bda679de4099136e9ae596fbbcfb1a7f644b32121"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step05500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:40:58",
+      "sha256_first_50mb": "e75e226635483fa3c23f9cb9b388d74ecaf2a5a240a67c98e8795eca03825928"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step05500_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:40:57",
+      "sha256_first_50mb": "2fb7e0a20b1549a3c902ec9147765e79d07e7955415e0413cc89687a4ac365b5"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step05600_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:41:16",
+      "sha256_first_50mb": "ee2ce41552a638c91f54c8ec260c9bbeaf91c052ef6e1dc0f03dcb0144e6fb6f"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step05700_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:41:35",
+      "sha256_first_50mb": "fe401af050cf40df47bb010c3ab5089d35c12216692ec160b1d42b6ce749d908"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step05750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:41:45",
+      "sha256_first_50mb": "16b6ca5927e88b775c62423ef9b193d1b94855c9564b1a6d69f199cd60ea1ab2"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step05900_best.pt",
+      "size_bytes": 58601501,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T00:41:26",
+      "sha256_first_50mb": "d3869c4f96aa46fb794d56e28a016e3ac5af24e7340bc9fc2f191201dcceaa50"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step06000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:42:31",
+      "sha256_first_50mb": "364bafa49b8c8e7a73f27b316499fd25cde5159d9fa2d4cbc570b11f581d0b2a"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step06000_best.pt",
+      "size_bytes": 58601501,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T00:41:40",
+      "sha256_first_50mb": "52ff507dd7bfbaca6e55c74a60e67b02e2955d481ad4833c49dfd25881fb3dcb"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step06100_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:42:50",
+      "sha256_first_50mb": "f7e925a992cfb4408695f197f90e9528cfe791e9519df56d92b252767f9ba17c"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step06200_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:43:09",
+      "sha256_first_50mb": "e9b416d00322fb708dae549741f7c8b984073b809b062a5e05cfe1b807434efa"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step06250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:43:19",
+      "sha256_first_50mb": "f248d98f5a4b2af1ce6b34645f17b28bdbd2548b3e2563366ac26581dacb215c"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step06300_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:43:28",
+      "sha256_first_50mb": "798ec401b5f019d1c830490624e684f0a467bf061fb27c3375280b5d2bdc7417"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step06400_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:43:47",
+      "sha256_first_50mb": "c84b63b577cd3ff0bc36206390dc7bb349e3a21c592fe02c5fa9b239d2d259a7"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step06500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:44:06",
+      "sha256_first_50mb": "4b8115a5a6a66a70303ce1a1dee26c5549a16e4c60187aba08fdd710f1b8b08b"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step06600_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:44:24",
+      "sha256_first_50mb": "ad56b9cdcda932b5ccb460c0015e2fb7e50c0fcd5747452fb6877106eb7a73a9"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step06700_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:44:43",
+      "sha256_first_50mb": "f895e8c29cecdede8d0eae64eed65652b3eed1741ac47e255d21cfca72da0f1d"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step06750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:44:51",
+      "sha256_first_50mb": "418e064596c1d90ea0062577bd2c07b52f0e9105d3338542b581ded175681265"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step06800_best.pt",
+      "size_bytes": 58601501,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T00:43:24",
+      "sha256_first_50mb": "188463c469f79b8ab8b151776aaac583ac0f76bd29235f5783978358750590a3"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step06900_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:45:17",
+      "sha256_first_50mb": "45c0fff4ace27738c448276d1050b7381123f2feed551c9adfc44cd0b977d27f"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step07000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:45:35",
+      "sha256_first_50mb": "f394a8ec13b5d102a1fa952080f1d9dfe5ecfad142a07de0a51c56f6270606a4"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step07000_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:45:34",
+      "sha256_first_50mb": "960d9dd41f02ab94d777d517e708e152ac40d7553c7540a3f54b21c8d69d0aab"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step07100_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:45:52",
+      "sha256_first_50mb": "c10844eadcac7a7e44d9346017d5ca249e0a75c82e109efcfcdc7cf83ca1cc03"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step07250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:46:17",
+      "sha256_first_50mb": "8749bdd959b1ec2f4b1bf919577d843fec1904d1d88466f2fd2c67960fdf0bdb"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step07300_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:46:26",
+      "sha256_first_50mb": "9fc97d9e7588c7a7bc0c344def7ed5fb349bebe5a6d21da38b687c49bfea11d2"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step07400_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:46:43",
+      "sha256_first_50mb": "f0e10d7460dbd56a6648fb482ccabcc0e516b483c477bd330a5fee7e839aca5f"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step07500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:47:01",
+      "sha256_first_50mb": "98e327d17d1ac48dc61923f9d64d820e6c312ecb439bacb48cd3f30a25ee9f65"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step07500_best.pt",
+      "size_bytes": 58601501,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T00:44:55",
+      "sha256_first_50mb": "e9f7487b2572991701f5c6da06e1dd56ab7efc26feb4b454bfffeabc948f9af3"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step07600_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:47:17",
+      "sha256_first_50mb": "65179f2aca386321aa2abf4bb940eba3a1c356a526bdf9c133bd2071060fd17f"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step07700_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:47:35",
+      "sha256_first_50mb": "ae627a95cbb8f4f702b9a359268659a395d826fa8b86fb0fa0fd746d8f44475c"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step07750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:47:43",
+      "sha256_first_50mb": "d6e43fbc0c142019787f33f5ce8a612415c16fc793cc664b80fce2798dfb4180"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step07900_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:48:08",
+      "sha256_first_50mb": "b906936d52ae0f56b78af0ac7ec16908f9ec5ef8cff217b96d5b7448b312cf49"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step08000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:48:26",
+      "sha256_first_50mb": "4bb979b959fb18fef4861b651e34bb52b17ea0f3af68e3fd32842d729890f836"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step08000_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:48:26",
+      "sha256_first_50mb": "2b7f1adc7ac4828949a53b9f4bae8578972836c7fcac35f69a3412f01a55c938"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step08100_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:48:45",
+      "sha256_first_50mb": "a4da76725298cdaa91bb19d64c437e33546bcc043a3905a6919ad42d090f449e"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step08200_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:49:01",
+      "sha256_first_50mb": "3cd4bc259fcea3f66d0435ada929c8c16a19cafc3abaf75521772dc97104cac2"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step08250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:49:10",
+      "sha256_first_50mb": "606d6a23fdc0104db741070fcb8c2a080913ce25a1fae37f120631a80fd2c792"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step08300_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:49:18",
+      "sha256_first_50mb": "bf94e46d400f8572e9c20a06c9f901017bc1a9af0248e4e0f5faacc6aa26e7c3"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step08400_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:49:35",
+      "sha256_first_50mb": "0824140b622ef65040db390c838b7a6f9aa180f7ebe00b2570758aff67f0717a"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step08500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:49:51",
+      "sha256_first_50mb": "d22b56b7b05da82ad219ae585b6e6322aa6ab54d04500b3f471776d97e8482d3"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step08500_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:49:51",
+      "sha256_first_50mb": "c0171901eb8557f2b0936be5c6e352a2300f91c45e37884dd46d9ddc2cd19e06"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step08600_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:50:08",
+      "sha256_first_50mb": "ecfc4d57adb9f01e5c9c192c72381679a6999878ede887110c3625fd035d079a"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step08700_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:50:25",
+      "sha256_first_50mb": "600c1822cb0b55a5a8d0c8df6ebe089a0a4f42025bec762e113d16ea24fcdeea"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step08750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:50:34",
+      "sha256_first_50mb": "9fad0734ca361daf808293db1729d59e7e1c710b8cb61a3dbaa1ea35ff37a9c5"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step08900_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:50:59",
+      "sha256_first_50mb": "1e9fa64356c44bc40f72fab05527502fb7b899fc5d96ca66e50ddaa9df075ed6"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step09000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:51:16",
+      "sha256_first_50mb": "13437ece3c9e26d3ff9eb81b2ecc49f54ee0844d9797307355276f9bf760ecc2"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step09000_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:51:16",
+      "sha256_first_50mb": "d25122a19cfe62a3b25067a05e8ab66716f090756b35da629254d85f3536e63f"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step09100_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:51:33",
+      "sha256_first_50mb": "27e38c5ab7a70b153a054cbed2f0e1de3dc204437f017f2668d4d839f6450a4a"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step09200_best.pt",
+      "size_bytes": 58601501,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T00:48:50",
+      "sha256_first_50mb": "dc1d309289ed70523b8ea16e9a819bd15a6f33bb97e853a96f762c38045294fe"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step09250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:51:59",
+      "sha256_first_50mb": "c0ffa2bf84578a185845e6158cdbaf23a3936f7faa1bec6eb74c63528b7f1daf"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step09300_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:52:08",
+      "sha256_first_50mb": "49484a192350d4501c00be1df055a39e25d6cfc2475ab8582757d2196f7ca9f8"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step09400_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:52:25",
+      "sha256_first_50mb": "9859e09aa53a2fe2f3fec5458f453c2cea84940c8542cb0425a5eab8ef99d68f"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step09500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:52:43",
+      "sha256_first_50mb": "7c4cfd365a5da3a16888d83a580855a1d07b3aa027612f8eea486bf94b32aa4d"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step09500_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:52:43",
+      "sha256_first_50mb": "ffd0085ff1bef55a1491a7a06febf58d8ceb327cfaf09a05dfd71b8ac24b342d"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step09600_best.pt",
+      "size_bytes": 58601501,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T00:49:43",
+      "sha256_first_50mb": "260f8d2e4614acc87855d1db60a80da8139d4dc12d039c8ebfa99655eaf5f707"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step09700_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:53:18",
+      "sha256_first_50mb": "2b8199b6a747ed3ec46fe99512678dea78865b5f00e60ca0e41cb9643efdaa8d"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step09750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:53:26",
+      "sha256_first_50mb": "1bc30133eacf5ebf09a2b5157d8dbe83d4e365e097f40115afef4e070fa75836"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step09800_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:53:35",
+      "sha256_first_50mb": "a7749c806e81a869035728301127a63c28ef5b7336c41d851895804fb132a935"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step09900_best.pt",
+      "size_bytes": 58601501,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T00:50:22",
+      "sha256_first_50mb": "a9df8e515c931a181202dbb1ea0ede97982f1c51b6e969215923ac3d7b3de45d"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step10000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:54:10",
+      "sha256_first_50mb": "b9ad71a247aedb82faa4354f0375184741b23154457edb6c0941607cd4bbdb6a"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step10000_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:54:10",
+      "sha256_first_50mb": "bda18a0cba86b3baca92a4d2dee0a7755bf9432b9068ee62817f70daaef6cc9b"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step10100_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:54:26",
+      "sha256_first_50mb": "fc1aaa5b0abeb517d26adcfaa94f83486d993cb71403d3404c15c6c6c53eb03b"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step10200_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:54:44",
+      "sha256_first_50mb": "b04d1f86ebce7492ee6c6c69cf91f1892261f107375a600aaf3e0d843ab85135"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step10250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:54:53",
+      "sha256_first_50mb": "9ee659cb9922fcd6139b4d7dd26bdf646b6e983da6614da92b0ab5278b4bbf16"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step10400_best.pt",
+      "size_bytes": 58601501,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T00:51:29",
+      "sha256_first_50mb": "b04281994fa1d8a3636f3c58c5440f7042aba60582acc9f00254985dce05f98d"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step10500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:55:37",
+      "sha256_first_50mb": "bb8f1aca7f8f0d2dca42db82122aaac25b47b34672d23812ad6891f29ef22407"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step10500_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:55:37",
+      "sha256_first_50mb": "f4d8443353b6f99dcc93cac0b5178cc81f43c4f2ae416c344d19362fc3a5fe14"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step10600_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:55:55",
+      "sha256_first_50mb": "f0011e6cb95f7a466848ba315370599ead7307804098d46ac34be5583f009590"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step10700_best.pt",
+      "size_bytes": 58601501,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T00:52:08",
+      "sha256_first_50mb": "06e0d918aa94d10e8e30221b891137f8e4ef8725c4884809b7cb356ed89724a2"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step10750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:56:21",
+      "sha256_first_50mb": "ec987285df1eac38972e3b90ded96c7c9f1f0f83e32e118815258859568d8ed4"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step10800_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:56:31",
+      "sha256_first_50mb": "91b8f7daf4b129165c2ef4e9cee8ccdf115f4cf8b90dcdc5f84516999bcb70ef"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step11000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:57:14",
+      "sha256_first_50mb": "061d6400add4d8cbc3c19304c75dc53dd141296dfe210ee8932f96632ca81b36"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step11100_best.pt",
+      "size_bytes": 58601501,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T00:53:00",
+      "sha256_first_50mb": "71358f2fa31cd3ed940790686680ea0ce4e369f8a43d86502c6a1eaaf485571f"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step11200_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:57:52",
+      "sha256_first_50mb": "3e23756551f7c321fe0b9a1307f8da9443eb3570edf24cf92588b820112d6959"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step11250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:58:02",
+      "sha256_first_50mb": "39c21a2de08cb1e2ed856711b89e4fd9ceb72ae2b662127dbde29a2dc947fe27"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step11300_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:58:12",
+      "sha256_first_50mb": "edf7663f3076e479a4580f9b20d9c40ccfec1abb7df94d06b6edac4bebd940b5"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step11500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:58:53",
+      "sha256_first_50mb": "fa1341af27a4de00d1d9a6ff0f15dbc15a14b7ab7d453e60925076ab80d2d671"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step11500_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:58:53",
+      "sha256_first_50mb": "f60c191d9a33cba6a3bf3dbff54408dcb693ed75b410cebdca154a71106801b3"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step11600_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:59:14",
+      "sha256_first_50mb": "c487b3cde0d693f8f8187d9d76e9a519bb05f16979ea578594fe455b8601e849"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step11700_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:59:31",
+      "sha256_first_50mb": "3db907fa82833b84bc550146f039078de2a2f3ef64a6f3e3ee39a130460ee50a"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step11750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T18:59:39",
+      "sha256_first_50mb": "e5847a1bfd71f05d97abea9cdecc148eba9e60c790b9cb6f5940cd0d3a081a29"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step11900_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:00:05",
+      "sha256_first_50mb": "ab3189f95e2f47a45e51b210d7984f945e92eafe1b5b3eeb7b4056075b0514a5"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step12000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:00:21",
+      "sha256_first_50mb": "6609e4a1e5bc51428b9c000d1d2424076cca637b7b5f234f370f1d773e63a609"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step12100_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:00:38",
+      "sha256_first_50mb": "626d9f2e9d013ab9401aa123f51465e5857fb9fa3ea39d1126687813bcd5d5df"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step12200_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:00:56",
+      "sha256_first_50mb": "043780e5d6b0fff2272c205e42f730fd02278771a54408c2971b5a587796dbb5"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step12250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:01:04",
+      "sha256_first_50mb": "6754eb3210be32d867bcd06f51002910e5c0f4dc8be38d58fb2d64d78f4bab72"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step12300_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:01:13",
+      "sha256_first_50mb": "068ccd4b3fd2292e58a80676b3589ef74cfcc198ec7ddb5c9d9d02c914c8a2a4"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step12400_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:01:30",
+      "sha256_first_50mb": "d2b5a190120402b90d4d71e247d37244a4148163f366f1bfde802373a5312cfb"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step12500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:01:48",
+      "sha256_first_50mb": "915f055343ac09bca33dfc7456f244b6bd9163057aff2b84dd4ded45f99eb606"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step12500_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:01:48",
+      "sha256_first_50mb": "9e7d065484f87d57dcd353e1a9b05a3d5cbdd0f9138de50e68f9b5b45c338f14"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step12600_best.pt",
+      "size_bytes": 58601501,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T00:56:28",
+      "sha256_first_50mb": "0685930f19968408085213a35037ff16eddde3677b4fb9a48c82e1c5d886a59b"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step12700_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:02:22",
+      "sha256_first_50mb": "381962daaacb76639b06b7f9a2d72b6abb118d40e5db925d3b6129be44db2fc1"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step12750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:02:30",
+      "sha256_first_50mb": "ca87e79de05194c80e9296a9c231758d5e62f668c270f974eb992779d98e166f"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step12800_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:02:39",
+      "sha256_first_50mb": "91526dbea3dd5dc959c70a3ea158998e39c6217b8269eb7e9dc3ae0e14136119"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step12900_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:02:56",
+      "sha256_first_50mb": "346afabfb412d51dc88db1bee5246c56678682cfbbb967747c1c185a5582fb77"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step13000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:03:15",
+      "sha256_first_50mb": "4142676d1f670978995e146b00cebba3fe4caea3a8c22c04f9571d58e0d149b1"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step13000_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:03:14",
+      "sha256_first_50mb": "4889a0000acb294d4652ada0b9a432b1231b50e00c2017301ad2156de24693da"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step13100_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:03:31",
+      "sha256_first_50mb": "298a7cc6ce2a3fb1f1012564decfa6c3097ffb096abe2ee274e4080b94c5f5f1"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step13200_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:03:49",
+      "sha256_first_50mb": "9720fc29965cc75373bd268859eb50484cb32c02c3edc6fd03281390ed155789"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step13250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:03:59",
+      "sha256_first_50mb": "93d9fde37375e3d7b1f6bf91b6730b767b1ecb20c81a2da1fe01d16d85cf1ac2"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step13300_best.pt",
+      "size_bytes": 58601501,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T00:58:01",
+      "sha256_first_50mb": "ad376f136eff768b144c51c1ff9a2132098e0c6dea41460e7edbf537ef392847"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step13500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:04:42",
+      "sha256_first_50mb": "bea587e4db3b703ffccbb15ae02647f466261d121246e7e296527f685177baa9"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step13500_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:04:42",
+      "sha256_first_50mb": "a5b395f7c420c5b606fc6a4136d849b44c4c73d6a9ac4f6f37b97fa9083cc194"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step13700_best.pt",
+      "size_bytes": 58601501,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T00:58:53",
+      "sha256_first_50mb": "7d48e71ac3d4cec43919de285893e00f2fbda9d30135d6f772491a597a4f53da"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step13750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:05:25",
+      "sha256_first_50mb": "c7ef790ca607fe1a8dd781a300a458e2b2a5bcf41e5a4cddd9f6973dcba39cc4"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step13900_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:05:51",
+      "sha256_first_50mb": "922c31a26537213f417765abaaec22da86ae872603b992871a01be8dd9921ff3"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step14000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:06:08",
+      "sha256_first_50mb": "15144b3f010e09131ee2b347cf2f4d8d8c4c86c7753a388298b184ca60e9e3fc"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step14000_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:06:08",
+      "sha256_first_50mb": "1f38cd8a46e14ab9690afb7b4295e1d8dd1812a79faa9bbc36cfb1060c156364"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step14100_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:06:25",
+      "sha256_first_50mb": "31f33723258d27ccc3ddf73f9fcd92fc8af7762099c10e12a3bd89ee49d8b506"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step14200_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:06:42",
+      "sha256_first_50mb": "a0b0831b8e634e923dc2bcb6f4d8434f3dbc466b623c1747969376c38ff5984b"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step14250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:06:51",
+      "sha256_first_50mb": "2cfcbee660ee479e5488b4ba5139df50666127e142b7e4382a43e89b7c9bc0f3"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step14500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:07:34",
+      "sha256_first_50mb": "46fc9ae38e1a911031e5c19f7d8ae975c7c38b2c14bbb2400229ebe5823059a5"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step14500_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:07:34",
+      "sha256_first_50mb": "0102cc07f3eceb9961db1a57e310a0c11e8e96408df66850dfd54ae1ab1f0164"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step14700_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:08:07",
+      "sha256_first_50mb": "27bc42ef7d3d94744c5a9a36841f10b5c55211d85d5d73793c768d770887e311"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step14750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:08:16",
+      "sha256_first_50mb": "a0a6f2a2c32f883ec3043e4025bb1abd3ffaaa4b0272d6e62c8fc1030b6fdae8"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step14800_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:08:25",
+      "sha256_first_50mb": "f8f184d9b19bfea34a4813aef4919d84511f7d578da2d53b1ab0593c1a63d3d2"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step14900_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:08:42",
+      "sha256_first_50mb": "475977b27b0e2b4afe2e654be8df486f09649879d9868b91a16d3e2969a044bf"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step15000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:09:00",
+      "sha256_first_50mb": "0e5950046962be717b7971798d875ae838636670a0c93d65fa6c23c3b36b4534"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step15000_best.pt",
+      "size_bytes": 58601501,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T01:01:45",
+      "sha256_first_50mb": "ff2afdf2e413aac38ab97250b6adcd423a1062ada9e413012f7990b58e5ad63c"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step15200_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:09:35",
+      "sha256_first_50mb": "d772318dd814f550a8503562c68bd33e19512ad23a47457d089a2bab5c6c8cd3"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step15250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:09:44",
+      "sha256_first_50mb": "2283b4df052ff5fc08cfb87051476e37077ce63cf131ecb3e834ad664f50302b"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step15300_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:09:53",
+      "sha256_first_50mb": "d620264dc600012b3f8b276a78f612cfe283723247f5a1f82a4379f09e5602a7"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step15400_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:10:11",
+      "sha256_first_50mb": "26a138fdaebc121cae348aabac6512ae7953a7a7704e3491937c39b4ef57c04e"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step15500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:10:28",
+      "sha256_first_50mb": "7b9ef738a9572855b67001e2eb18935f4de6c398cd31b9381d03a8b312ff338b"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step15500_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:10:28",
+      "sha256_first_50mb": "5fdde70a50fa5ba673d5d13a1a11fb11e6a69da3540e7c607d038f2ddf08006c"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step15600_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:10:46",
+      "sha256_first_50mb": "11fca277d97f8e7e36f9f7c2f171de31ba9e76b60ee3ffaa410c215acee4c390"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step15700_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:11:03",
+      "sha256_first_50mb": "d859bd86fdd45027981486045b3e2790abb06e89406eb58543cfb042e1f14b5e"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step15750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:11:12",
+      "sha256_first_50mb": "94b1e9d5ed7a0143149a3a5ebec8d4f4e795f069c8588049bb73db7b1204fa72"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step15800_best.pt",
+      "size_bytes": 58601501,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T01:03:28",
+      "sha256_first_50mb": "2c47eb3a3b51368021163bffa69f025018193a85b884b7215d834c14248df0d9"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step15900_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:11:39",
+      "sha256_first_50mb": "8f21ce7860c851c36c562ce1915c50e572b86d12c5a826ea5e9297d1b00e3f1b"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step16000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:11:56",
+      "sha256_first_50mb": "c5a4642f31fb3849a0f9c0632dd5321674273d8996dc86839ccd548999d37876"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step16000_best.pt",
+      "size_bytes": 58601501,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T01:03:55",
+      "sha256_first_50mb": "828de70bd0072cbb506c6e62f016ddc1bd7caca34c2d7ff2f22e7730fa53a356"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step16100_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:12:13",
+      "sha256_first_50mb": "67113e145da5b4f195704a1324be9f564e85087470789646027d6a0facc7ca66"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step16250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:12:40",
+      "sha256_first_50mb": "2b980adef0b84058e4b0c50ca1dbf737e09431e042f549d04bf3f00f11baf24e"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step16400_best.pt",
+      "size_bytes": 58601501,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T01:04:47",
+      "sha256_first_50mb": "e5f5e8f2b7693143dd9fa20963fdfd8081b40b94120773bdc9dcb1b534cb52c9"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step16500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:13:25",
+      "sha256_first_50mb": "2941fb1fed455ab6638b923c475e68cc2a02a4aae0d2e84710be25436a67cadf"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step16500_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:13:24",
+      "sha256_first_50mb": "8fda8400e2f62420070c488c042cde973003c19e61268bd3ffb61253cfd4dc74"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step16600_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:13:42",
+      "sha256_first_50mb": "21ff1d5a4bf57262eb8de8d941ea542caaf3e2b0322a98f96a5566cb88d8b109"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step16750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:14:08",
+      "sha256_first_50mb": "5ddb661e0e7ce88a9fbfc2bc966d8d7270daf2c7a433882a7fc62cd022b658cc"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step16800_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:14:17",
+      "sha256_first_50mb": "d05ac9a4183f779c8e1ad234683d7fe7a8b8080aadeb874c63abe5d85badb011"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step16900_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:14:34",
+      "sha256_first_50mb": "c86d0f65ffa9cd5cb751bdc4473a3dbcf59d0268f9bac24aea73c869ffdb182d"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step17000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:14:51",
+      "sha256_first_50mb": "e3a2d4c1d4b8c77325249326b4bf704857344280a0d4f91fc5ee6b3a46348d7c"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step17000_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:14:51",
+      "sha256_first_50mb": "dbb0d77c80e0a47a861b708cb62a7a060be8bdf891e52b97f094e0372d021cab"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step17100_best.pt",
+      "size_bytes": 58601501,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T01:06:19",
+      "sha256_first_50mb": "4c34864cb40557659a1be1fa80cea0f510d9fc5065836c788debc98e3cebcb17"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step17250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:15:34",
+      "sha256_first_50mb": "39d2240eae4655faa67313668c84021fe2db6500a29ad349a7e0d8266feaff17"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step17400_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:15:58",
+      "sha256_first_50mb": "1957be27e86f21d3ba323ab6d378b02df8010ecbe70f89585562eda0766383a4"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step17500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:16:16",
+      "sha256_first_50mb": "4093a85d1c501868afaeb8fb0aa652ecb172d5cfe9fffe768f7c66cc8b8056b1"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step17500_best.pt",
+      "size_bytes": 58601501,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T01:07:11",
+      "sha256_first_50mb": "87708d7cbb14d1050fcaed8bf194cf9ec94b8796e6c3d78898d6b3e4924afefb"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step17600_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:16:33",
+      "sha256_first_50mb": "96c48fdeb3cdf598951bc87f70b2171dad479ac27d0639976fa21524df111ede"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step17700_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:16:50",
+      "sha256_first_50mb": "1fbf007424b1b46ab543061577b6ff691dd6c61b13b63378136470e413a50d73"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step17750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:17:00",
+      "sha256_first_50mb": "5a04fe0a2e7b5942fed413d03bb4d66bb26e5bb3cdd8e556f318c3bdec47a51c"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step17800_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:17:08",
+      "sha256_first_50mb": "812f11a2b538b819b8af30b1b8d31b0f5e1a9cdf7f44a6df98d5fcccd12af6a9"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step17900_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:17:25",
+      "sha256_first_50mb": "36e5740f413af8e1eace4c0ffc506766f14d2442580c980df1eef3bc06572a01"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step18000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:17:42",
+      "sha256_first_50mb": "e28ea7a89dbef483f29ea9e9fb378acf134a23b5a423e9cf20bc82d631bf0e8b"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step18000_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:17:42",
+      "sha256_first_50mb": "248d0019fdc9cab90fc19a6adf89bf402abc4a504cc330ea9c2e0757a2e6e32c"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step18100_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:18:00",
+      "sha256_first_50mb": "c89486ff63bf7df1a1bf39630bc982b0d663e417c51e3e6556ba543541f8e003"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step18200_best.pt",
+      "size_bytes": 58601501,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T01:08:44",
+      "sha256_first_50mb": "a993dbb966a6127d78d4da0a5c6254a366708c2f5e9769233931e25d9187c4d6"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step18250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:18:26",
+      "sha256_first_50mb": "ecd3890ef06af0a79f9e93add89aa2634687bfd93706eac1780c53b6f9a6253b"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step18300_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:18:35",
+      "sha256_first_50mb": "24a839b00b3a07a503148e03ca64828b1fea656de883a2bb5ddcb5ef39c505d1"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step18400_best.pt",
+      "size_bytes": 58601501,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T01:09:12",
+      "sha256_first_50mb": "61b3ab41360510f6b14af3d1ba3e28c69dc165fc584c6c33007d29913e006e7d"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step18500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:19:09",
+      "sha256_first_50mb": "1412da558880d8b82d9768e190fb8a9e686674ba2e5fbafbd0fc3280b94b16fb"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step18500_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:19:09",
+      "sha256_first_50mb": "c5d61eb4330d81374b2f2c7d1da49d867769426adb9213e5591190cb691b3c61"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step18600_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:19:27",
+      "sha256_first_50mb": "0d1f37e1997d79bf2e1a5356b459ab496d18aa2b2ba00df62a410655661de9ae"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step18750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:19:53",
+      "sha256_first_50mb": "53bf5ba39c43497c3c11704a46af106d429e0b0461c3cc7741e5b4b1cdda3f96"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step18800_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:20:01",
+      "sha256_first_50mb": "1836252839110ed2a36297feaad6b1fb420270611ac518dc3a272b39bc33cf06"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step18900_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:20:19",
+      "sha256_first_50mb": "bb341a025f616f4c08d2bd0842c4f865c791629c81f45d889abcd0c39400bd12"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step19000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:20:37",
+      "sha256_first_50mb": "6c09e393ad278cb6416ea8ed60b30f51edd3143a1adb045ae3bed806ddbda354"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step19000_best.pt",
+      "size_bytes": 58601501,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T01:10:33",
+      "sha256_first_50mb": "4026c68313b745830a85880ebb3aff53af510f159c9fab524acada95ec197b7c"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step19100_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:20:54",
+      "sha256_first_50mb": "2e236bc65899c4a2f6fe18c3f769cc959b0ec2dc1385820e85d26ffd0df27435"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step19250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:21:21",
+      "sha256_first_50mb": "dfa4b4b3e5658e8f97724fe616c55539490b809b3a1d3b758cca5720ae65eebb"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step19300_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:21:29",
+      "sha256_first_50mb": "37540a2b15001c814ffdb1be17d1f6e19f885607805d769344c396f574198219"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step19400_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:21:47",
+      "sha256_first_50mb": "002da869036b3b05186f87cf3201877b4e4f1acebe3063294344427ffb5ea713"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step19500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:22:07",
+      "sha256_first_50mb": "442545a378555b52ba937ea0b911f9343bc8afc4c5972feadc47549dd38ea152"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step19500_best.pt",
+      "size_bytes": 58601501,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T01:11:41",
+      "sha256_first_50mb": "11a3e7e345c29ff4c125de9e915ac8f83a555ec10f639c629f8bc4992de2ec92"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step19700_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:22:51",
+      "sha256_first_50mb": "77a481113f2f42de508c8f230ff908dcf218721f0d4a46c5561b8a2ff1462bb7"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step19750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:23:01",
+      "sha256_first_50mb": "20f335675fb638b9a2bbe919b91093b9a5b0447f2a65c6cc1c14ba673943dba1"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step19800_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:23:12",
+      "sha256_first_50mb": "fe542c090ade5fa88792034870c43ac44fbe88f7e970148bcb37ea0dd464f028"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step19900_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:23:34",
+      "sha256_first_50mb": "cbf2f77cf634c12e5f2d26375d80a9f137e71c86cd7da861af79705dcc186fc8"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step20000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:23:57",
+      "sha256_first_50mb": "c4cbe36f5d8f405bc0c5715e0efa568ab9924ff06a1b5a4219558ba6114b05e4"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step20000_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:23:57",
+      "sha256_first_50mb": "48632074d4c1c75e8a754057be73361149ac053bcb24563a02477d7181dd1e46"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step20000_final.pt",
+      "size_bytes": 58601731,
+      "size_mb": 55.9,
+      "modified": "2026-09-11T01:12:47",
+      "sha256_first_50mb": "4d2820ad423ef7ff576d91d4d996c3f6b43fb12898352010f971f30098ccdf7e"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step20250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:24:47",
+      "sha256_first_50mb": "23dfc12be6518749249cbfa9397e8537ad30fb91f194b64e3bb86e22a2a9d499"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step20300_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:24:57",
+      "sha256_first_50mb": "99cd9cecd93066fd9db13e3d2bf28ad682b8819a0e17844c8f221eb6ceae5e92"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step20400_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:25:17",
+      "sha256_first_50mb": "742141cddefe45d4f7f9578c27cb17ce4fa40d54c4fa610dd6d792e44c84759c"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step20500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:25:37",
+      "sha256_first_50mb": "6a03591821dd9ca086fe981772719b07304b2c68dd846fd4bd5bf4611712f9db"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step20500_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:25:37",
+      "sha256_first_50mb": "0984bdd6f77a71495cd205d7c499c4003c97a998dcf634153d0b488ff6ad46ee"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step20600_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:25:57",
+      "sha256_first_50mb": "a223367b3c94abd871aed1b49fcec56b175ad21be0f75fbc6bcf3931ff588f36"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step20750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:26:27",
+      "sha256_first_50mb": "10dc5bfffe093c6765b684d1b7bdaa4c10dffd7e1722d5e73ca35d3afa545014"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step20800_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:26:38",
+      "sha256_first_50mb": "64ae119eb1d147e6e60444c427be1f1d7b33c76e8f5324dbe87deb6c28d4d46f"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step21000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:27:22",
+      "sha256_first_50mb": "509fd32b914c5034aa0f551ee717b420e80f609119bf1e041173ced45af4faa9"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step21000_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:27:22",
+      "sha256_first_50mb": "94cd80275b98510773c7b26920c2a3eb1ff3cd203abd478245cc3c19e1327db8"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step21200_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:27:58",
+      "sha256_first_50mb": "f5f0479201a778d0493b523d2d8740dce742a5fd750d4d7a3050ce728ae0d018"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step21250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:28:08",
+      "sha256_first_50mb": "866f83ba2d5ae4c35fc1b8faf45f47793d22b35498c68c096dec2b37851b3a9d"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step21500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:28:53",
+      "sha256_first_50mb": "40bf3e2fc67561792118363c94b7ecf06927169a673734e405d2d7fef8f42380"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step21500_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:28:53",
+      "sha256_first_50mb": "8e94beb18ddf23abbe3ad1a6efa076f2f84df67b1b1cc81dd2efec52d005f42e"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step21750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:29:40",
+      "sha256_first_50mb": "9d758f2e142d2fdb0e135a3310fe71452ef514b3cea7e4b5c7c94b5ff3906d86"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step21800_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:29:49",
+      "sha256_first_50mb": "823e6a2e2a56cc4a5888665a3de1f5784e3bf43492ea04e3370729536f894b83"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step22000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:30:27",
+      "sha256_first_50mb": "5914f9738c70672b86f1ae0321358622aa17688a114e84b2c5c654c1485b4917"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step22000_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:30:26",
+      "sha256_first_50mb": "9aa8c2203999dddeebd5e81d543d218e41e85dd79a3ceb40fe584cc9202b712d"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step22200_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:31:03",
+      "sha256_first_50mb": "826fc6948696ef2ffc2549274610943c7ad1f5dc4d3ff97067e2547ba17427ea"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step22250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:31:12",
+      "sha256_first_50mb": "01619e068570daa79496609f88e98f5b55c808a6c1e66da578cbd31ce39337b0"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step22300_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:31:21",
+      "sha256_first_50mb": "c17b6a843c82a1266fd0d3ecc635204941b0873f8c290d80f7ab17e109c63d12"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step22500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:32:00",
+      "sha256_first_50mb": "cd7295011a1de95a363173aff66349ff199ccbf79e613ac4a4c3923971e59954"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step22500_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:31:59",
+      "sha256_first_50mb": "9f7b17b39e9d6a9c2b62d3420e0b43afb103d144e30070f1c278fd3ea15c9156"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step22600_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:32:18",
+      "sha256_first_50mb": "574510c2319726fab1d4d91997e29d20292bd9be59730825f1729e44c743248c"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step22750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:32:47",
+      "sha256_first_50mb": "50c022d789d1432f3e4283794ca45c0d58aa8b5701b8ca4a44f47ed7859f56d2"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step22800_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:32:56",
+      "sha256_first_50mb": "d0630aa1d07970bd0667f37a13b15dc1025ea31075790888f5e7ae8fea55aea7"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step22900_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:33:15",
+      "sha256_first_50mb": "d567f5b912ca801bb6512d4d3e5dbc0254c665f4d1adf73fb56f82a27f742d61"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step23000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:33:34",
+      "sha256_first_50mb": "38dcb5d9a9e95fa49facc39e6ec400cbf81749ee60c5a4ada3be79dad62e16e7"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step23100_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:33:53",
+      "sha256_first_50mb": "6c11f95c01a1e318e2c1b320fdf5253a7b27f960db646166461aa50efabbe3ba"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step23200_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:34:11",
+      "sha256_first_50mb": "d8ca65ad34eaa184d32b906b499f83364c190bdc45dd5969bea9819b6cae4d0e"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step23250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:34:20",
+      "sha256_first_50mb": "91ca75eb593499094cbec4c9621bb15ccafe3a660f865cf62e5900d5326a591f"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step23400_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:34:47",
+      "sha256_first_50mb": "d7f7fb20e9a8ea892a59c09157c8654820148e7b27f7a55104ce044b7407324e"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step23500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:35:06",
+      "sha256_first_50mb": "3531693a59341ef5d995c591473da895e30bdd26fe499aef85d501c64b0f42cf"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step23500_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:35:06",
+      "sha256_first_50mb": "ae59fe8aef5678625d4a088fe94cb6a7937ae95a458cb5907aba01d608817b13"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step23600_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:35:25",
+      "sha256_first_50mb": "e41bdaaa0918b7e497ccf3e4bae20925d69c86e3b686585260a2ff8495ae9c24"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step23700_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:35:44",
+      "sha256_first_50mb": "230cc0b09de27405131992a77cba0f0aa8b05b1c6ea15cecf55828731da52a4e"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step23750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:35:53",
+      "sha256_first_50mb": "64359e428f8e3bf6394e50d3eaae2dcdb53ff054455ebc089a06395b7513df86"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step23800_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:36:03",
+      "sha256_first_50mb": "fa1c3d3971f860d01e2cfcf5227e74b596c55bebcb39acdf0cbc06bb6e40569b"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step23900_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:36:21",
+      "sha256_first_50mb": "cf03c148159744f4fd8f7589e0090d1c34ca72f50f1db94abb85242422854f92"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step24000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:36:40",
+      "sha256_first_50mb": "3c49165f1b1f823d0015ba46723633f82dbe3a144a7148851c85d100689c7b55"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step24100_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:36:58",
+      "sha256_first_50mb": "2ee2dac5156857f2f67ae57dab4a62c21b3ffb8f3fd9ffa9668522a709e4f056"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step24200_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:37:16",
+      "sha256_first_50mb": "5ee2dca340035945610985c84a793c50f17030476728d37231d9b45d59fd9165"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step24250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:37:26",
+      "sha256_first_50mb": "91806d52c22ad0b93fdd8b81de04b33430de77e8f8118bd81dba0af3da67bd58"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step24300_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:37:35",
+      "sha256_first_50mb": "554f3c325f222040bb37240b0d5711e642bb229a97aa50a304b98ec8adbdd203"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step24500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:38:11",
+      "sha256_first_50mb": "06a3e814310ffbd154650164582e13f1f1990d10c4e083dbb4579c54f468dddf"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step24500_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:38:11",
+      "sha256_first_50mb": "723003b5f94eda4b5135b31d3d8587c6996f91367c73c1518d28883f1d7d6f03"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step24600_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:38:29",
+      "sha256_first_50mb": "e80ce32f3452948085ad914d097578afbaa433656df21f13dea8374f9fbc7d76"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step24700_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:38:48",
+      "sha256_first_50mb": "83ea3e4fdab2a745fc5286ebfdc7960e3a62c97a3f92b661e3fdd93daa2aca9a"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step24750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:38:57",
+      "sha256_first_50mb": "f635892bc7b401e176d4cfa2ba61f60b7bf32e17584b19e186996bfd4ec145d2"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step25000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:39:47",
+      "sha256_first_50mb": "9d8f291d148a477ad0546650bd64251b13c774fd93edd685d47d13363d694c02"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step25250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:40:36",
+      "sha256_first_50mb": "edbe235b86f6fccb1ff099e90e0f9c8a4af2e3827ddb05d38f32724d75ee3b0a"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step25400_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:41:05",
+      "sha256_first_50mb": "c1849321f6ee869a4d25a298b2efda596e656a212b2f6699391cb5ec393ab401"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step25500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:41:24",
+      "sha256_first_50mb": "5c02bec6c19d33249b36d4661206b69372320fb1a40712245309ec43b67b3da6"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step25500_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:41:24",
+      "sha256_first_50mb": "c78c36d182cddf946378bcc1f437d51f35f2c5986f9214fd7136c1e6c5ecc8db"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step25600_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:41:43",
+      "sha256_first_50mb": "84d2d695a32b188dd9416aeb80d2740c1068de00d083844730304fbae949c2a5"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step25750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:42:15",
+      "sha256_first_50mb": "1f126085432a7185adc226250f796d151f94bc0b692dee404fd4d7e6dca6ea1e"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step25800_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:42:26",
+      "sha256_first_50mb": "93b5a3e333b5e8df0c1741a490a022085ec3ab3edc72448838195ee39901032e"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step26000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:43:12",
+      "sha256_first_50mb": "f1427be7c9cb4b4aabe99996366ffe3fdb26b1432dd1e2054747dacf4889fd1d"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step26100_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:43:34",
+      "sha256_first_50mb": "21d74089bcfd6ec44d9ee2451c247408f931ea3e28d6ca22fc7f29160892c631"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step26250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:44:06",
+      "sha256_first_50mb": "90d14c8f024454501098cb07eb7bd40bcf17b15a224eada56fe6a6c5e3753972"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step26300_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:44:17",
+      "sha256_first_50mb": "fc5e5e90e5db2d2baeafa3199d6a9de094f1f6828e66b8c372d90485b197d29c"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step26400_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:44:38",
+      "sha256_first_50mb": "354eb96e2f90ea992aa770fe9863518fa61e3a587cb505a5469f9682d0294856"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step26500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:44:58",
+      "sha256_first_50mb": "16c6818d389dfe919628539dd17b8c2281bf81dfdcad6918618f69b29e683274"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step26600_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:45:19",
+      "sha256_first_50mb": "b752dadda2d7f3a543d6dff1362fc84488f03429993445caf720e7346137fc10"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step26700_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:45:39",
+      "sha256_first_50mb": "5cca1e06c6c003759a8498ae842bda9c5e92b238afa5d360fed51a9a11bb540e"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step26750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:45:49",
+      "sha256_first_50mb": "2f8b23105dd353aa40a419908312056aa5bc0af1149efd8d22d14192ceeefe2b"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step27000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:46:43",
+      "sha256_first_50mb": "b6645a6292d19dc056601c94bb7842b4b3c41d348167029be3e2fd262107f116"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step27000_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:46:43",
+      "sha256_first_50mb": "0613c8960d8c1c721a7c5ead4114ff0151aaacbc211a1a3e3170f0b82296481c"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step27100_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:47:06",
+      "sha256_first_50mb": "8d0d7321b49df45b25aab061cbd0b7db1e1be6c2b1cb36ab63cc33bd72431735"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step27250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:47:36",
+      "sha256_first_50mb": "bd8500c0946d6145760f5a202b742f266d99cdf37b977227a273f94c34ed3cd7"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step27500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:48:27",
+      "sha256_first_50mb": "68e87548714c015a4c5b190e7e52a0e8bb575a733e1f1088800a7ca2474dcf62"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step27500_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:48:26",
+      "sha256_first_50mb": "62be9646a56ff0d0b1cc51ace66b12c233fcc854d11a869531f54498fa0b640f"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step27700_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:49:11",
+      "sha256_first_50mb": "ee5c73273f6de1ed6ec661fb77abf9d1966b21fd226272d12025d98f17e660fb"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step27750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:49:21",
+      "sha256_first_50mb": "992473fcfad30b13d3f6ce90a08871140797f09bcdf4f7da71085760703525b3"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step27900_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:49:52",
+      "sha256_first_50mb": "5a1b52391099394dac0ea6092d7bd117a3c03177a5a0a0e4504ab6916c1d2ae9"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step28000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:50:13",
+      "sha256_first_50mb": "624d8d4db275b16cb7744b0d4d9904024c049d7c660db3c75f6f9ee2a88701fe"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step28000_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:50:13",
+      "sha256_first_50mb": "24085ca1216827112c80b6812fe9e89a2c73ffaa187de50acb2d7c2cf01017de"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step28100_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:50:33",
+      "sha256_first_50mb": "d6caf6f5746f5614c1302b532e8f11e077dfba71008e07c9cc99c1cf09899d53"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step28200_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:50:53",
+      "sha256_first_50mb": "40145f79cddf36b7f9bd3dc5c744913325daef5f370d392912797ef8df0aaf46"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step28250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:51:04",
+      "sha256_first_50mb": "9fcc6059f11785a378da9e8f0ec14aff0192a416967d7065ae7b27fc6c8ca3f2"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step28400_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:51:34",
+      "sha256_first_50mb": "4f13402b883c863bb1d0b587b4c4556899cbde006fc49bfd7dbe01ba0ee39eeb"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step28500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:51:54",
+      "sha256_first_50mb": "df47403d97e78266f3408a6db6e0e1591e50cbda96e25c2e81afdbe2a6922148"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step28500_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:51:54",
+      "sha256_first_50mb": "34cf18dddb7f6260ebe0a64cf4be2108ad21cf095a3b7b248b6f50c2d1dd20f6"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step28600_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:52:14",
+      "sha256_first_50mb": "008ccc5ac13659298cd056ae4a8bc9df3db50d9e534b1e3af893efe8087ba15d"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step28750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:52:45",
+      "sha256_first_50mb": "fcb3deaedc04d52d78abc56c1ffbd029ced4ae09d13ec87fc67d6b7c8b20d319"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step28800_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:52:55",
+      "sha256_first_50mb": "22b0d9becf422ea5933430f199337176874f87e2a05dc602ec0a34c53150b43a"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step29000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:53:37",
+      "sha256_first_50mb": "70fb8a23e433f4bff97039ca527a951c2cf186d6ebc71ba768aa77600f5faf61"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step29250.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:54:32",
+      "sha256_first_50mb": "cbb7efd47928ec664b350f97a09fde05a981fa446ab1f637829a058b39066727"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step29400_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:55:03",
+      "sha256_first_50mb": "4aa4b1c70714416318c7ceaea34c25cd070a3ccbafd248ace07cd7f678b0635c"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step29500.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:55:23",
+      "sha256_first_50mb": "3f107b0362f69e256f58244724ea44bb64e485e79a257aada621725bce3e3f0c"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step29500_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:55:23",
+      "sha256_first_50mb": "1c39a532f5a3d5bc7b5170bfe53a4f911b421457c605b724986149282d37b21a"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step29600_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:55:45",
+      "sha256_first_50mb": "56336af00894289b141352267a0a3f072ea33c763784aae969e3804187c7e339"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step29750.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:56:17",
+      "sha256_first_50mb": "788ac5e890eef48164d2b407bbe724c99a6c65b52dc52f4e4cb482279d60f5ea"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step29900_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:56:48",
+      "sha256_first_50mb": "2ca9579532cbd5f36e64512109d4bde273a2b725cd04047d1a589a34ab3d9fb5"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step30000.pt",
+      "size_bytes": 206910735,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:57:09",
+      "sha256_first_50mb": "7bf1e3a97c0e6a12dc11d6fc8013d83864a90fd615a322eb3c3a4f69cbc65ce4"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step30000_best.pt",
+      "size_bytes": 206912245,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:57:08",
+      "sha256_first_50mb": "41795908f0f02279c9966456abfafb86fc9adb7d99428f8da8ccfc4d53a8558b"
+    },
+    {
+      "path": "checkpoints\\exp4_openorca_step30000_final.pt",
+      "size_bytes": 206912547,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T19:57:09",
+      "sha256_first_50mb": "c3dac9f1cbe94d6830b2267df28b4815905c8c56edb273a0e0aa4ea3716e1068"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_best.pt",
+      "size_bytes": 997173571,
+      "size_mb": 951.0,
+      "modified": "2026-09-18T07:49:24",
+      "sha256_first_50mb": "90bf898801a9fe22de9faaa173d35679c6a792bd1fd9529aadbd80e6c0d8674a"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_final.pt",
+      "size_bytes": 997174017,
+      "size_mb": 951.0,
+      "modified": "2026-09-18T07:49:33",
+      "sha256_first_50mb": "b40e0de5141d6f6f04cde717d220d6c304bf2c3aa4bf978c170d3cbc7c2df029"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step00100.pt",
+      "size_bytes": 997175801,
+      "size_mb": 951.0,
+      "modified": "2026-09-18T07:49:00",
+      "sha256_first_50mb": "d0a396711d771a34f99042e475e01ac5332bece7569bd79550e1b17846a3eca3"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step00200.pt",
+      "size_bytes": 997175801,
+      "size_mb": 951.0,
+      "modified": "2026-09-18T07:49:10",
+      "sha256_first_50mb": "f6091cafeecdef653d660687860091683f58ae7cef8481cdc8af77c8401003c7"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step00300.pt",
+      "size_bytes": 997175801,
+      "size_mb": 951.0,
+      "modified": "2026-09-18T07:49:17",
+      "sha256_first_50mb": "bc4262e53a1f41dd569072ea3f84e02efb3c5b9bca31e1474baafd9f02a4b7f3"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step00400.pt",
+      "size_bytes": 997175801,
+      "size_mb": 951.0,
+      "modified": "2026-09-18T07:49:25",
+      "sha256_first_50mb": "85769bbb3a1e003b3676e3703b661de6aca6d4663cba22506d4ce380833d197a"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step00500.pt",
+      "size_bytes": 997175801,
+      "size_mb": 951.0,
+      "modified": "2026-09-18T07:49:32",
+      "sha256_first_50mb": "09e3c9daf96ad07dee9e12d5139d55f94e47d40beebd2e2508259f5daad140d9"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step00600.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-12T12:35:32",
+      "sha256_first_50mb": "a8aa3123162be2730aa7ee25c0d83da61c1c7f1c594ac5ec8cdc94cb0ad9eb36"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step00700.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-12T12:35:38",
+      "sha256_first_50mb": "10b62f7ab6685eab3402dcab7f1115b4882780a2c67da4039c7d774d631d75e0"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step00800.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-12T12:35:43",
+      "sha256_first_50mb": "f13cf4e2ca80dab19f75b2a7af229446a3f1e3f6336947286871a9a5514bbf13"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step00900.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-12T12:35:49",
+      "sha256_first_50mb": "0f7b3fd419e2065cfe2cdebb2e9493efc6413bab514df304581cd63d5d5f3872"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step01000.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-12T12:35:55",
+      "sha256_first_50mb": "c8e496f14532f6b6833d706e0e512590eee7514693c36dc612c347deb8e5e9b9"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step01100.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-12T12:36:00",
+      "sha256_first_50mb": "6099ccd5a817885054cbca3675806e7f236f14c60f08e8b416e07db359f87e86"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step01200.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-12T12:36:06",
+      "sha256_first_50mb": "04c4e170d3d28391e62b66450bd39f24c5d4e791f6c82f372c314f513698fd28"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step01300.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-12T12:36:11",
+      "sha256_first_50mb": "7f9914beaaf6a471608f177375ec696193396beeb2d4d6672c5b88cd1ec1562b"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step01400.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-12T12:36:17",
+      "sha256_first_50mb": "23aeb9966c822fe6f14d03053bebda62abc5446909e724bae8851b1649171232"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step01500.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-12T12:36:23",
+      "sha256_first_50mb": "5929714fec7fb055581b8f20eea9b5406d288c8198c98f71fbe2e866fa59409b"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step01600.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-12T12:36:29",
+      "sha256_first_50mb": "c0aeea5d60d63621886b89a56f1c3fdc1d912e53cb58e4d6b5009300f6d5b93f"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step01700.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-12T12:36:34",
+      "sha256_first_50mb": "e149d18b665023cfb0aeeb415e4bc14874704a11f6ffbe8f0c23f0cec411c52b"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step01800.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-12T12:36:41",
+      "sha256_first_50mb": "25a01d2ecce07876909ecaf3ae6d679aad868fdc54d37a23df15c64316c0628a"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step01900.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-12T12:36:48",
+      "sha256_first_50mb": "3e8401adbae0ee275ee6f149aad5c1b7fa385e58c644c87107921742758439d1"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step02000.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-12T12:36:55",
+      "sha256_first_50mb": "55061c06f5875cb79af107491d72073fe3397e3bbb3c401b79a9b8f6242a4fe9"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step02100.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-12T12:37:00",
+      "sha256_first_50mb": "1ef5aa1b3b0bbaeb8ff75f34f5abdf7d122df4e067ae5215af5c17e20e270e2c"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step02200.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-12T12:37:06",
+      "sha256_first_50mb": "f4e24063376f1e772accdf6f92e55595799a6dc142ddb46a7827827a553946c2"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step02300.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-12T12:37:11",
+      "sha256_first_50mb": "8e77ff7221138897c9f5cdcade976732f9b984f22e6849dc6d2792f0e57d3ab4"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step02400.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-12T12:37:18",
+      "sha256_first_50mb": "5558dfa46551324ac23bc6dd8477681a91c3d72fbcf5666988ff6ef2a02a4d7c"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step02500.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-12T12:37:24",
+      "sha256_first_50mb": "ae1e8629dffc4d416e0e8ad967b24c6f0db83b9d80f0191782ba9f689402e74a"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step02600.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-12T12:37:30",
+      "sha256_first_50mb": "fa3350e7ff3485691181fe7173038552958b1674e8c657af48015d777b6344fa"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step02700.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-12T12:37:36",
+      "sha256_first_50mb": "e8aac21056870363c3cb46373b016bb3cd53a1b428d72e2e942863f798d51210"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step02800.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-12T12:37:42",
+      "sha256_first_50mb": "9e69eed25074d38773cdfd98b3cb57e11a0bec0edfffe1b85a63f8f4b7367f3d"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step02900.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-12T12:37:48",
+      "sha256_first_50mb": "b0edfa3b2ca21bfae93c1065c1e2b510bce0bf4421d0a13f217c2444bff3768c"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step03000.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-12T12:37:56",
+      "sha256_first_50mb": "e8700ca089b45f22dacc802c6233055da54c7e5202d696c7b7517566f0464144"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step03100.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T20:35:19",
+      "sha256_first_50mb": "a61a205b9316a02459f048ddacbd48b8bd3aa8701baefa3197ca28c3b2ceec77"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step03200.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T20:35:24",
+      "sha256_first_50mb": "6f81ed2a58987c4fbbd41fdd32059615c6dcdd2180908cb0b27dcdb0741a01e5"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step03300.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T20:35:29",
+      "sha256_first_50mb": "adaf46c3dabf4d9332d707cb3536a803a60890451f2701af21c8669ba7123915"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step03400.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T20:35:34",
+      "sha256_first_50mb": "f619669b414ae3bdc0d18f8902f2dc141020194773ac413d5583666f121f6186"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step03500.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T20:35:40",
+      "sha256_first_50mb": "a855c78978a7f21f186fdcef47aafb1f2bb35fbfa4e6fa5302d121c889139622"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step03600.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T20:35:46",
+      "sha256_first_50mb": "298090d3ba7f1c3bf9106f1152ac3cc15451c6c5d2172af09fbb9b3b65a1f7a2"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step03700.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T20:35:51",
+      "sha256_first_50mb": "c4dc52acaef65e090378c14784b4adf4ae4c6be748b994a5a97fe7d794260e84"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step03800.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T20:35:57",
+      "sha256_first_50mb": "fe5d87823287c5e94eef3bae7907189731267c24d911ba9492453bb98d287f95"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step03900.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T20:36:02",
+      "sha256_first_50mb": "613f55f8eb13573bc0e293858075297a0c2ef00699272cb958f2e1788b574615"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step04000.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T20:36:09",
+      "sha256_first_50mb": "d89a4f1258173a65c4819fb920dfe513e905c5b3c556b96eec2890a233608814"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step04100.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T20:36:14",
+      "sha256_first_50mb": "71aef5236f0455f2a84190479d6a90a8b11b8e9ddadffeb3c491dc9acf3a88f4"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step04200.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T20:36:20",
+      "sha256_first_50mb": "228b68f2244879fbafc5d742223e4f768d8fbcd7b735faf6f0c4eeadd2c966db"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step04300.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T20:36:25",
+      "sha256_first_50mb": "3e6b02dee1166d66587e8d427a69a3da2f965a7e7783ce5fd9018614c6b6eadc"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step04400.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T20:36:31",
+      "sha256_first_50mb": "17d8d721a8e2486d48e087017aec0f283bb99b6c2e6a4c908e0815b1364ca299"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step04500.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T20:36:37",
+      "sha256_first_50mb": "af4fd88973e57ad1708be857a3450f9a844af048a2df432fdaf4a408056d84ad"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step04600.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T20:36:43",
+      "sha256_first_50mb": "447f01b9479807be7b8bd459034be568ed924604e2b053c91d931f2df6449e3f"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step04700.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T20:36:49",
+      "sha256_first_50mb": "b264ca8172243279eb2b9021b75a5d539eeaf047a4b7225ee951b28a406fbe32"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step04800.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T20:36:55",
+      "sha256_first_50mb": "663b9b8c5af38ee2d09070e904d9816b67720837aec0b32e273ca252ee92fe8b"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step04900.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T20:37:01",
+      "sha256_first_50mb": "74350bbff0fb75134a851f2376b131974e8b6fac5e85b9a26f273b4b08015935"
+    },
+    {
+      "path": "checkpoints\\finetuned\\finetune_step05000.pt",
+      "size_bytes": 206908201,
+      "size_mb": 197.3,
+      "modified": "2026-09-11T20:37:07",
+      "sha256_first_50mb": "d12584ef22fc48b2490f5e6430d6760bfa48dca0805dd5cd3ce3611d58d126ae"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step00005_final.pt",
+      "size_bytes": 997184343,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T06:06:33",
+      "sha256_first_50mb": "e90798c0cf8a3c3a5901d00453e87ad2d3906271b8d80142e4fb3e402ad6cc40"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step00500_best.pt",
+      "size_bytes": 997183897,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T06:17:21",
+      "sha256_first_50mb": "3fa56daa0ad2c841a3fb5002b5bb497199d507f60692639f42dcc4e76bdf9bfb"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step01000.pt",
+      "size_bytes": 997181667,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T06:25:53",
+      "sha256_first_50mb": "9d8445a23e1aba39740e5e466d2b8d807efa94ba6665f12b9e7cd22a3afad6d2"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step01000_best.pt",
+      "size_bytes": 997183897,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T06:25:52",
+      "sha256_first_50mb": "9fbdab62df05784f03e9be44823cdcfb28e355ce03d1a9e3a3bb8dd09c288f7b"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step01500_best.pt",
+      "size_bytes": 997183897,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T06:33:56",
+      "sha256_first_50mb": "af16dcfec075772beb11aff27b4f041b2dc2054c7a3f7d81835232240cc34ac3"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step02000.pt",
+      "size_bytes": 997181667,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T06:41:40",
+      "sha256_first_50mb": "efb5cfeff2fc545d86d36e657d732d64615b65a2df934f6a8ccbe6aa3621d78a"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step02000_best.pt",
+      "size_bytes": 997183897,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T06:41:39",
+      "sha256_first_50mb": "ec73db9820cfb6fd42a0ba5817debaa55b53bd6169468c970730e31a855902f5"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step02500_best.pt",
+      "size_bytes": 997183897,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T06:49:26",
+      "sha256_first_50mb": "a7b600d0015b077b150343cc7bd417c604d8e03ef5c1c8952b8758429f24864a"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step03000.pt",
+      "size_bytes": 997181667,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T06:58:09",
+      "sha256_first_50mb": "876494bbfc382bb3aacc6c22d43fb941f281bf3ac6ef64a22cdc3511ad84c586"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step03500_best.pt",
+      "size_bytes": 997183897,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T07:05:56",
+      "sha256_first_50mb": "d43c2e7888121a923818280fd7504d12c0fb4b5eac279b05dbc25fc39a2ffa22"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step04000.pt",
+      "size_bytes": 997181667,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T07:13:46",
+      "sha256_first_50mb": "e40e18dec2b5ba1b3895b6ed036efd07d12efd893a5df53f17bcedebf1a88e17"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step04000_best.pt",
+      "size_bytes": 997183897,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T07:13:45",
+      "sha256_first_50mb": "4aa02ba2c142413fedcfbd6cb399e999dceb97991324d74705de912234a0b218"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step04500_best.pt",
+      "size_bytes": 997183897,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T07:21:28",
+      "sha256_first_50mb": "1e0f04771c0228b71f445522c2eca6cac6110a9a7bb504a89a9df3d783847187"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step05000.pt",
+      "size_bytes": 997181667,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T07:29:11",
+      "sha256_first_50mb": "36c210fc1c8d1e8063973a1b87a9639665eaf58f06ed0fea1ac9cbd47bb50fdf"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step05000_best.pt",
+      "size_bytes": 997183897,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T07:29:10",
+      "sha256_first_50mb": "2a16c4cab3f4eb821ccc0fe00a3f3397da18cd9d014a3617e70635b7c050128a"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step05500_best.pt",
+      "size_bytes": 997183897,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T07:36:56",
+      "sha256_first_50mb": "4645420c5068a806ab98b7e9b224de944d34192d922159fa1de2f159d0dc6d15"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step06000.pt",
+      "size_bytes": 997181667,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T07:44:37",
+      "sha256_first_50mb": "d4b6f440a065f655d7b9781f9fc00ba4c0e5c9d32069c4ceda366d1c7e0ffc86"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step07000.pt",
+      "size_bytes": 997181667,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T08:01:03",
+      "sha256_first_50mb": "47b0b3090ab04ecb8b8c0c4f6cbab249d35481fed0311287e49875bc09661dd9"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step07000_best.pt",
+      "size_bytes": 997183897,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T08:01:02",
+      "sha256_first_50mb": "cd722719a6f24c3d9481a615b539b5daf449059e9dd09c5df2cab56765fb322a"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step07500_best.pt",
+      "size_bytes": 997183897,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T08:08:45",
+      "sha256_first_50mb": "359cebf7fa80f8787a898dafb85530c5a8cb49f90d6ebbd6f36a533588eb2f99"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step08000.pt",
+      "size_bytes": 997181667,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T08:17:20",
+      "sha256_first_50mb": "9319702257143977d4b1b72e940c4d682e2a4d9092cbdbc64f4ea68a498767b0"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step08000_best.pt",
+      "size_bytes": 997183897,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T08:17:19",
+      "sha256_first_50mb": "7f6741237bf9c29ef6ca49d65928d2522e48131cd888155a0be6bc65653efa21"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step08500_best.pt",
+      "size_bytes": 997183897,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T08:25:27",
+      "sha256_first_50mb": "27b540c804cce34d81c9bb42a57d55e112101d56d44a99a2b7fc8b29e49d7c02"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step09000.pt",
+      "size_bytes": 997181667,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T08:33:37",
+      "sha256_first_50mb": "14fe4027b986055af3572bee0efabba5c2942c64b64f64e9ff8d524f0f8101de"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step10000.pt",
+      "size_bytes": 997181667,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T08:49:48",
+      "sha256_first_50mb": "a92222d1c3097f572a9512dc257deb480e8f362b4c911374c5ef832dfa4ea078"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step10500_best.pt",
+      "size_bytes": 997183897,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T08:58:21",
+      "sha256_first_50mb": "efa820d2754b1a9ac9cd6aa8a3746ae29f1313137c6c16a13a50d4415d92f6be"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step11000.pt",
+      "size_bytes": 997181667,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T09:06:38",
+      "sha256_first_50mb": "4f0297792426a553af118006b2fc6c71df52a0b0d6a6cef30341144fb6d8076c"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step12000.pt",
+      "size_bytes": 997181667,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T09:23:29",
+      "sha256_first_50mb": "2e787a34a39e5a2c2c6bbf50fe135c4dca344f450d4f163c1c53640215ad7bda"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step13000.pt",
+      "size_bytes": 997181667,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T09:39:47",
+      "sha256_first_50mb": "9cf37168df05982361780c2160cec220f69b9ea48c6c91b20c25eeb03779f7f8"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step14000.pt",
+      "size_bytes": 997181667,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T09:56:04",
+      "sha256_first_50mb": "f1c1b7c9a6bc195e7c15db6701691292d51a23f3ae62818127b2271fbe2c7d19"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step14000_best.pt",
+      "size_bytes": 997183897,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T09:56:03",
+      "sha256_first_50mb": "09e5ee6fa89691701271ab6c086133863b7e48eeb515dbe2e06e1a24cc5400e0"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step15000.pt",
+      "size_bytes": 997181667,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T10:12:44",
+      "sha256_first_50mb": "a63cb1611fd0ebcc6426e40a635fd8ee049172b977ebc8a0ccd80f9d58ad3eb1"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step16000.pt",
+      "size_bytes": 997181667,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T10:29:05",
+      "sha256_first_50mb": "6cc4bab6fbf75d88e36b874a3598fc467a75896a58881e8d098f4b97e4196f2c"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step17000.pt",
+      "size_bytes": 997181667,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T10:45:28",
+      "sha256_first_50mb": "b77c014ac9f5753cf492a45e41b5850dfb636fb7d8c11abd5df34db93e69ca44"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step18000.pt",
+      "size_bytes": 997181667,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T11:01:46",
+      "sha256_first_50mb": "62e60b99ce9a2bdb28cc70bca9465c097a216d011788de99f184fb976c10de68"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step19000.pt",
+      "size_bytes": 997181667,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T11:18:26",
+      "sha256_first_50mb": "1b9909d859703e302b88ef2edac4227c89d58d78b8283f9cc965b6bc87fc5b9c"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step20000.pt",
+      "size_bytes": 997181667,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T11:34:42",
+      "sha256_first_50mb": "3dbd82d8ff8c5e5754c7c1d07c068678305dd9fcf863e944ce63b6a5a0156f7c"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_4050_step20000_final.pt",
+      "size_bytes": 997184343,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T11:34:43",
+      "sha256_first_50mb": "a22d8572a83fa964f56c24516b1d83fc1312b69d4fe195d4a3bd599aca2fdf77"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_best.pt",
+      "size_bytes": 997183897,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T09:56:03",
+      "sha256_first_50mb": "09e5ee6fa89691701271ab6c086133863b7e48eeb515dbe2e06e1a24cc5400e0"
+    },
+    {
+      "path": "checkpoints\\industrial_80m_smoke.pt",
+      "size_bytes": 997184343,
+      "size_mb": 951.0,
+      "modified": "2026-09-16T06:06:33",
+      "sha256_first_50mb": "e90798c0cf8a3c3a5901d00453e87ad2d3906271b8d80142e4fb3e402ad6cc40"
+    }
+  ],
+  "indexes": [
+    {
+      "path": "data\\rag_index.json",
+      "size_bytes": 136361803,
+      "record_count": 10975,
+      "embedding_dimensions": [
+        384
+      ],
+      "sha256_first_50mb": "984f255bbbde4d186861f4aa3f2de4404d576ae105a02c981c33d85d33893447"
+    },
+    {
+      "path": "data\\rag_index_tfidf.json",
+      "size_bytes": 39164562,
+      "record_count": 10975,
+      "embedding_dimensions": [
+        512
+      ],
+      "sha256_first_50mb": "ad5bfb4131224713d84447da3893130a0d823c16e5ddcb1ca1295625b0adc80b"
+    },
+    {
+      "path": "data\\user_knowledge_index.json",
+      "size_bytes": 90351973,
+      "record_count": 10975,
+      "embedding_dimensions": [
+        512
+      ],
+      "sha256_first_50mb": "1407beb24a556a2017a0806330c4028b4e02102cee7aea82f265dfa5a1cf1cae"
+    }
+  ],
+  "tokenizers": [
+    {
+      "path": "tokenizer\\vocab\\blended_16k.json",
+      "size_bytes": 3556379,
+      "vocab_size": 3,
+      "sha256": "a6602d095f38bfa4da5746d8efbc3812196fd0df4cda061f7240781d4f757a79"
+    },
+    {
+      "path": "tokenizer\\vocab\\bpe_8k.json",
+      "size_bytes": 1654993,
+      "vocab_size": 3,
+      "sha256": "453d65f6a0994ee78f6e2b15c458f4ae08356ffff3f5a4aa93be1ea93d0126d7"
+    },
+    {
+      "path": "tokenizer\\vocab\\demo_bpe_vocab.json",
+      "size_bytes": 64905,
+      "vocab_size": 3,
+      "sha256": "801e6816516e00b6e56fe09073167a5921051aee3aaad703f3dd1fe28ed8ace7"
+    }
+  ],
+  "training_data": [
+    {
+      "path": "data\\processed\\blended_train.txt",
+      "size_bytes": 3288024343,
+      "size_mb": 3135.7,
+      "sha256_first_50mb": "302e60bef07de0fa8ca3e5a6a81b089ebd948efe8d0932fcb397a289ee09a7b6"
+    },
+    {
+      "path": "data\\processed\\blended_val.txt",
+      "size_bytes": 66142118,
+      "size_mb": 63.1,
+      "sha256_first_50mb": "6fad644aca8170651ae6b555643bb939fd8cdea7f1afd97dfc2c4c0e65ea78c1"
+    },
+    {
+      "path": "data\\processed\\openorca_instruct.jsonl",
+      "size_bytes": 416372985,
+      "size_mb": 397.1,
+      "sha256_first_50mb": "9ecfa472bb615d336e313b2eaf38e7f503063bd2460181580382bea30cfb0b9c"
+    },
+    {
+      "path": "data\\processed\\openorca_pretrain.txt",
+      "size_bytes": 489607667,
+      "size_mb": 466.9,
+      "sha256_first_50mb": "de7c0a834d1f40c2a62e47c2773e0fdf53b506e818d0324d44024c51fd46a48e"
+    },
+    {
+      "path": "data\\processed\\openorca_val.txt",
+      "size_bytes": 9898619,
+      "size_mb": 9.4,
+      "sha256_first_50mb": "7b7a596e5dc4582288368d7e3fb49b8f6da3aaf58f961ed27e746b1ebf61d683"
+    },
+    {
+      "path": "data\\processed\\train.txt",
+      "size_bytes": 3906,
+      "size_mb": 0.0,
+      "sha256_first_50mb": "f4d6698fd0aaa2c4a644a7e07bc5160252c32f8fca8159bf54d1c6e1d00a0d4c"
+    },
+    {
+      "path": "data\\processed\\val.txt",
+      "size_bytes": 850,
+      "size_mb": 0.0,
+      "sha256_first_50mb": "1ec956b09205a28c028056daf38fb5ee0fcc45b82592fe8967bc6e33a5fce473"
+    }
+  ],
+  "fineweb": {
+    "available": true,
+    "manifest": {
+      "dataset": "HuggingFaceFW/fineweb-edu",
+      "dataset_config": "default",
+      "purpose": "RAG knowledge chunks; this does not train or modify the language model weights.",
+      "token_count_kind": "estimated from normalized character count; retokenize with the training tokenizer for an exact training budget.",
+      "config": {
+        "target_tokens": 1600000000,
+        "chunk_tokens": 384,
+        "overlap_tokens": 48,
+        "chars_per_token": 4.0,
+        "min_document_chars": 200,
+        "shard_size": 50000,
+        "dataset_id": "HuggingFaceFW/fineweb-edu",
+        "dataset_config": "default"
+      },
+      "stats": {
+        "source_rows_seen": 1319408,
+        "accepted_documents": 1319405,
+        "skipped_documents": 3,
+        "chunks_written": 5240427,
+        "source_estimated_tokens": 1600000091,
+        "retrieval_chunk_estimated_tokens": 1789576929,
+        "embedding_dimension": 384
+      },
+      "chunk_format": "JSONL TextChunk-compatible records",
+      "embedding_format": "optional little-endian float32 sidecar referenced by each JSONL record"
+    },
+    "chunk_shard_count": 105,
+    "embedding_shard_count": 105,
+    "total_size_gb": 17.09
+  },
+  "summary": {
+    "checkpoint_count": 452,
+    "checkpoint_total_gb": 117.1,
+    "index_count": 3,
+    "tokenizer_count": 3,
+    "training_data_count": 7,
+    "training_data_total_gb": 3.98,
+    "fineweb_available": true
+  }
+}

@@ -99,7 +99,8 @@ class Executor:
         Execute all steps in state.plan in order.
 
         Updates state.current_step and state.status throughout.
-        Stops early if a critical step fails (tool failure with no retry).
+        Stops at the first failed step.  A later step may depend on a failed
+        tool result, so continuing would produce an ungrounded final answer.
         """
         state.update_status(TaskStatus.RUNNING)
 
@@ -112,6 +113,10 @@ class Executor:
                 log.warning(
                     "Step %d failed: %s", step.step_number, completed_step.error
                 )
-                # Continue to next step regardless — best effort
+                state.error = (
+                    f"Step {step.step_number} failed: "
+                    f"{completed_step.error or 'unknown error'}"
+                )
+                break
 
         return state

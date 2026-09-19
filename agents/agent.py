@@ -24,6 +24,7 @@ AGENT LIFECYCLE
 from __future__ import annotations
 
 import logging
+import re
 import uuid
 from typing import Optional
 
@@ -113,11 +114,24 @@ class Agent:
     def _default_tool_args(self, tool_name: str, user_input: str) -> dict:
         """Provide sensible default args for each tool based on user input."""
         defaults: dict[str, dict] = {
-            "calculator": {"expression": user_input},
+            "calculator": {"expression": self._calculation_expression(user_input)},
             "code_sandbox": {"code": "# Generated code will be placed here\nprint('Hello from sandbox')"},
             "rag_search": {"query": user_input},
         }
         return defaults.get(tool_name, {})
+
+    @staticmethod
+    def _calculation_expression(user_input: str) -> str:
+        """Extract a calculator-safe expression from a natural-language request."""
+        expression = user_input.lower().strip()
+        expression = re.sub(r"^(?:please\s+)?(?:calculate|compute|evaluate|what is)\s+", "", expression)
+        replacements = {
+            "multiplied by": "*", "times": "*", "x": "*",
+            "divided by": "/", "plus": "+", "minus": "-",
+        }
+        for phrase, symbol in replacements.items():
+            expression = re.sub(rf"\b{re.escape(phrase)}\b", symbol, expression)
+        return expression.rstrip("?. ")
 
     def _compile_answer(
         self, state: TaskState, model: Optional[object]
@@ -141,4 +155,4 @@ class Agent:
                 return model.generate(prompt, GenerationConfig(max_new_tokens=256))
             except Exception:
                 pass
-        return "Task completed. No text output was produced."
+        return f"Unable to complete task: {state.error or 'no model or tool produced output.'}"

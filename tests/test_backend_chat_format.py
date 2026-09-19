@@ -23,10 +23,10 @@ def test_legacy_adapter_keeps_legacy_instruction_format():
     assert adapter._build_instruction_prompt("hi") == "Q: hi\nA:"
 
 
-def test_chat_scope_keeps_typos_and_vague_messages_out_of_generation():
+def test_chat_scope_allows_general_questions_to_reach_generation():
     from app.backend.app import _chat_response_kind
 
     assert _chat_response_kind("ihi") == "greeting"
-    assert _chat_response_kind("what?") == "needs_detail"
-    assert _chat_response_kind("Pump P-101 has high vibration") == "domain"
-    assert _chat_response_kind("Tell me a joke") == "out_of_scope"
+    assert _chat_response_kind("what?") == "question"
+    assert _chat_response_kind("Pump P-101 has high vibration") == "question"
+    assert _chat_response_kind("Tell me a joke") == "question"

@@ -21,7 +21,7 @@
 
 > [!IMPORTANT]
 > **Sovereignty & Architectural Transparency (Honesty First):**
-> Sovereign AI Workbench is a locally controlled AI system that demonstrates how a language model can be trained **completely from scratch** (random initialization, custom tokenizer, custom Transformer architecture) and integrated with retrieval-augmented generation (RAG), structured SQL databases, deterministic local tools, autonomous agents, and cryptographic security controls—**without relying on an external cloud LLM API or Ollama for model inference**.
+> Sovereign AI Workbench is a locally controlled AI system that demonstrates how a language model can be trained **completely from scratch** (random initialization, custom tokenizer, custom Transformer architecture) and integrated with retrieval-augmented generation (RAG), structured SQL databases, deterministic local tools, autonomous agents, and cryptographic security controls—**without relying on cloud LLM APIs or external model servers for inference**.
 > 
 > *The language model herein is a genuine, from-scratch, randomly-initialized, self-trained educational/research LLM (~10M parameters)—not an API wrapper and not a pretrained foundation download. Complete architectural and training transparency is documented in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), [`docs/LLM_FROM_SCRATCH.md`](docs/LLM_FROM_SCRATCH.md), and [`docs/FINAL_AUDIT.md`](docs/FINAL_AUDIT.md).*
 
@@ -52,7 +52,7 @@
 - [21. Checkpointing Mechanics](#21-checkpointing-mechanics)
 - [22. Local Inference](#22-local-inference)
 - [23. Zero External LLM APIs](#23-zero-external-llm-apis)
-- [24. No Ollama Dependency for Core Model Execution](#24-no-ollama-dependency-for-core-model-execution)
+- [24. Direct Local Model Execution](#24-direct-local-model-execution)
 - [25. Why RAG Is Essential](#25-why-rag-is-essential)
 - [26. Retrieval-Augmented Generation Architecture](#26-retrieval-augmented-generation-architecture)
 - [27. RAG Subsystem Modules](#27-rag-subsystem-modules)
@@ -817,9 +817,9 @@ The Sovereign AI Workbench does **not** make calls to OpenAI, Anthropic, Google,
 
 ---
 
-## 24. No Ollama Dependency for Core Model Execution
+## 24. Direct Local Model Execution
 
-While the workbench provides an optional adapter interface for hosting external open-weight models via Ollama (for visual or secondary tasks), the **core LLM runs directly via native PyTorch**.
+The workbench runs its **only generative model directly through native PyTorch**. Model weights originate from this project's random initialization and local training pipeline; no external model server or model API participates in inference.
 This ensures that the project represents genuine architectural engineering rather than a wrapper around a pre-compiled model-serving binary.
 
 ---
@@ -1802,7 +1802,7 @@ the project proves that data sovereignty, complete architectural transparency, a
 | **11** | Agent Framework | ✅ COMPLETE | `agents/{planner,executor,verifier,memory,state}.py` |
 | **12** | Local RAG Pipeline | ✅ COMPLETE | `rag/{chunking,embeddings,index,retriever,citations}.py` |
 | **13** | Local OCR Extraction | ✅ COMPLETE | `tools/ocr.py` (Tesseract local) |
-| **14** | Multimodal Vision Adapter | ✅ COMPLETE | `models/adapters/openweight_adapter.py` |
+| **14** | Multimodal Vision | ⏳ OUT OF SCOPE | No external vision model is included in this from-scratch build. |
 | **15** | Code Execution Sandbox | ✅ COMPLETE | `tools/code_sandbox.py` |
 | **16** | Document Generation | ✅ COMPLETE | `tools/{word,powerpoint,spreadsheet}.py` |
 | **17** | SQLite Persistence | ✅ COMPLETE | `database/{schema.sql,db.py,repositories/}` |

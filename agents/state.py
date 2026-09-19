@@ -14,7 +14,7 @@ AGENT LIFECYCLE STATES
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Optional
 
@@ -29,6 +29,10 @@ class TaskStatus(str, Enum):
     CANCELLED = "cancelled"
 
 
+def _utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
 @dataclass
 class AgentStep:
     """One step in the agent's plan."""
@@ -39,7 +43,7 @@ class AgentStep:
     result:       Any = None
     success:      Optional[bool] = None
     error:        Optional[str] = None
-    timestamp:    str = field(default_factory=lambda: datetime.utcnow().isoformat())
+    timestamp:    str = field(default_factory=_utc_now)
 
 
 @dataclass
@@ -56,18 +60,18 @@ class TaskState:
     artifacts:     list[dict] = field(default_factory=list)   # generated files
     final_answer:  Optional[str] = None
     error:         Optional[str] = None
-    created_at:    str = field(default_factory=lambda: datetime.utcnow().isoformat())
-    updated_at:    str = field(default_factory=lambda: datetime.utcnow().isoformat())
+    created_at:    str = field(default_factory=_utc_now)
+    updated_at:    str = field(default_factory=_utc_now)
 
     def update_status(self, status: TaskStatus) -> None:
         self.status = status
-        self.updated_at = datetime.utcnow().isoformat()
+        self.updated_at = _utc_now()
 
     def add_artifact(self, name: str, path: str, artifact_type: str) -> None:
         self.artifacts.append({
             "name": name, "path": path,
             "type": artifact_type,
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": _utc_now(),
         })
 
     def to_dict(self) -> dict:

@@ -14,7 +14,7 @@ THE 5 DEMO SCENARIOS
 --------------------
 1. OCR + Document Analysis
    "Read this scanned maintenance logbook page and identify action items."
-   → Tesseract OCR → Ollama/phi3 analysis → Word report generated
+   → Tesseract OCR → custom MiniLLM analysis → Word report generated
 
 2. RAG + Knowledge Retrieval
    "What does our SOP say about replacing a faulty compressor seal?"
@@ -22,7 +22,7 @@ THE 5 DEMO SCENARIOS
 
 3. Code Generation + Sandboxed Execution
    "Write a Python script to plot the pressure sensor data from this CSV."
-   → Ollama/deepseek-coder → sandbox execution → output captured
+   → custom MiniLLM → sandbox execution → output captured
 
 4. Engineering Calculation
    "Calculate the pressure drop across a 50m pipeline, d=0.1m, flow=0.05 m³/s, μ=0.001 Pa·s."
@@ -76,10 +76,10 @@ DEMO_SCENARIOS = [
             "Identify all action items and generate a formal approval note."
         ),
         tools_used=["ocr", "word_write"],
-        models_used=["ollama/phi3:mini", "custom_minilm_v1"],
+        models_used=["custom_minilm_v1"],
         what_it_proves=[
             "Local OCR pipeline works without cloud services",
-            "Open-weight model (Ollama) processes domain-specific text",
+            "From-scratch MiniLLM processes domain-specific text in-process",
             "Word document is generated and saved to disk",
             "Full pipeline: scan → extract → analyze → output",
         ],
@@ -95,7 +95,7 @@ DEMO_SCENARIOS = [
         ),
         user_input="What is the correct procedure for replacing a faulty compressor seal?",
         tools_used=["rag_search"],
-        models_used=["ollama/phi3:mini", "custom_minilm_v1"],
+        models_used=["custom_minilm_v1"],
         what_it_proves=[
             "Local vector index (no Pinecone, no Chroma, no cloud) returns relevant results",
             "Answer includes source citations (prevents hallucination)",
@@ -118,7 +118,7 @@ DEMO_SCENARIOS = [
             "Then run it and show the output."
         ),
         tools_used=["code_sandbox"],
-        models_used=["ollama/deepseek-coder:6.7b", "ollama/phi3:mini", "custom_minilm_v1"],
+        models_used=["custom_minilm_v1"],
         what_it_proves=[
             "LLM generates correct domain-specific Python code",
             "Code executes in an isolated subprocess (not the main process)",
@@ -143,7 +143,7 @@ DEMO_SCENARIOS = [
             "So: (0.02 * 50 * 1000 * 0.637 * 0.637) / (2 * 0.1)"
         ),
         tools_used=["calculator"],
-        models_used=["ollama/phi3:mini", "custom_minilm_v1"],
+        models_used=["custom_minilm_v1"],
         what_it_proves=[
             "Safe AST-based calculator — no eval() or exec() vulnerabilities",
             "Handles real engineering formulas correctly",
@@ -164,7 +164,6 @@ DEMO_SCENARIOS = [
         models_used=[],
         what_it_proves=[
             "No external TCP connections attempted during operation",
-            "Ollama serves models from localhost — not the cloud",
             "The custom MiniLLM runs in-process — no API calls",
             "Timestamped proof log saved to disk",
         ],

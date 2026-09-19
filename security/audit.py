@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 log = logging.getLogger(__name__)
@@ -33,7 +33,7 @@ def log_event(
         task_id:    Associated task ID (optional).
     """
     entry = {
-        "timestamp":  datetime.utcnow().isoformat(),
+        "timestamp":  datetime.now(timezone.utc).isoformat(),
         "event_type": event_type,
         "task_id":    task_id,
         "details":    details,

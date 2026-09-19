@@ -2,8 +2,8 @@
 demo/run_demo.py — SIH 2026 live demonstration runner.
 
 Usage:
-    python demo\\run_demo.py --scenario 4    (engineering calculation — no Ollama needed)
-    python demo\\run_demo.py --scenario 1    (OCR + Word — needs Tesseract + Ollama)
+    python demo\\run_demo.py --scenario 4    (engineering calculation)
+    python demo\\run_demo.py --scenario 1    (OCR + Word — needs Tesseract)
     python demo\\run_demo.py --all           (run all 5 in sequence)
     python demo\\run_demo.py --list          (show all scenario descriptions)
 """
@@ -102,7 +102,7 @@ def run_scenario(number: int) -> dict:
 
 def _run_airgap_demo() -> dict:
     """Scenario 5: air-gap verification."""
-    from security.network_monitor import NetworkMonitor, check_internet
+    from security.network_monitor import NetworkMonitor
     from security.offline_mode import verify_offline
 
     monitor = NetworkMonitor()

@@ -19,6 +19,9 @@ data/raw/*.txt         # exclude big downloads
 data/knowledge/
 !data/raw/synthetic_demo_corpus.txt   # keep — small, project-authored demo corpus
 data/rag_index.json
+data/rag_index_tfidf.json
+data/user_knowledge_index.json
+data/user_knowledge/
 output/*
 !output/.gitkeep
 

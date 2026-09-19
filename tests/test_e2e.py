@@ -3,7 +3,7 @@ tests/test_e2e.py — End-to-end integration tests for the full platform.
 
 These tests exercise the complete stack without requiring:
   - a trained model checkpoint (tests use untrained MiniLLM)
-  - Ollama running (Ollama adapter is tested for import / availability check only)
+  - A locally trained MiniLLM checkpoint for generation-oriented scenarios
   - GPU (all tests run on CPU)
 
 Each test proves one complete vertical slice works end-to-end.

@@ -55,7 +55,7 @@ class CustomMiniLLMAdapter(ModelProvider):
     def _ensure_loaded(self) -> None:
         if self._loaded:
             return
-        if not self._ckpt_path.exists():
+        if not self._ckpt_path.is_file():
             log.warning("MiniLLM checkpoint not found: %s", self._ckpt_path)
             return
         self._model, self._meta = load_model_from_checkpoint(

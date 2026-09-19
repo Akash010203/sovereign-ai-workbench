@@ -27,7 +27,7 @@ Point to the **Security panel** → Air-Gap Status: **OFFLINE CONFIRMED ✓**
 
 ---
 
-### 2. Scenario 4 — Engineering Calculation (1 min) [most reliable, no Ollama needed]
+### 2. Scenario 4 — Engineering Calculation (1 min) [most reliable]
 ```
 Run in chat:
 "Calculate the pressure drop: (0.02 * 50 * 1000 * 0.637 * 0.637) / (2 * 0.1)"
@@ -37,7 +37,7 @@ Run in chat:
 
 ---
 
-### 3. Scenario 3 — Code Generation + Sandbox (2 min) [needs Ollama]
+### 3. Scenario 3 — Code Generation + Sandbox (2 min)
 ```
 Run in Agent tab:
 "Write a Python script that calculates the average, max, and min of
@@ -74,9 +74,8 @@ Then search:
 
 ### 6. Architecture explanation (1 min)
 Point to `docs/HONESTY_LEDGER.md` on screen:
-- *"The custom MiniLLM is 5M parameters trained on the demo corpus — it proves we understand
-  the math. For real capability, the platform routes to locally-served open-weight models
-  like Phi-3 and Mistral via Ollama."*
+- *"The custom MiniLLM is trained on the local corpus and runs directly in-process.
+  The system does not use a model API or a separate model server."*
 - *"The honesty ledger documents exactly what's custom vs. pre-trained — we're not claiming
   to have invented the Transformer."*
 
@@ -102,9 +101,8 @@ Point to `docs/HONESTY_LEDGER.md` on screen:
 ## JUDGE QUESTIONS — PRE-ANSWERED
 
 **"What if I ask it something complex, will it hallucinate?"**
-> *"The platform routes complex queries to Ollama/phi3:mini. For RAG answers, it
-> shows citations — you can see exactly which document it retrieved the answer from.
-> The custom MiniLLM is for demonstrating architecture knowledge, not production chat."*
+> *"Complex answers are constrained by the capability of our local MiniLLM. For RAG
+> answers, the workbench shows citations so you can see exactly which document it retrieved."*
 
 **"How is this different from just using ChatGPT locally?"**
 > *"Three things: (1) we built the neural network architecture ourselves — not using the
